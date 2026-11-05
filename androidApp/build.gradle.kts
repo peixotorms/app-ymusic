@@ -161,6 +161,10 @@ dependencies {
     implementation(project(":remote-config"))
     implementation(project(":yt-media")) // the player-cache router (LocalMediaProxy) for the WebView
     implementation(Libs.Media3.session)
+    implementation("com.google.android.gms:play-services-cast-framework:22.3.1")
+    implementation("androidx.mediarouter:mediarouter:1.8.1")
+    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("org.nanohttpd:nanohttpd:2.3.1")
     implementation(project(":telemetry")) // api: sentry-kotlin-multiplatform + SentryLogger
     implementation(project(":log-store")) // the app log (logs.db)
     // androidx.media.app.NotificationCompat.MediaStyle for the playback notification.
