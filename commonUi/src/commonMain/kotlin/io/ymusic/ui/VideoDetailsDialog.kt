@@ -143,6 +143,8 @@ internal class VideoDetailsState(
     var posting by mutableStateOf(false)
     var postErrorCode by mutableStateOf<String?>(null)
     var likeStatus by mutableStateOf(YtVideoDetails.INDIFFERENT)
+    var ratingPending by mutableStateOf(false)
+    private var commentsRequested = false
 
     /** A failed rate / comment rating / delete, for the UI to surface once. */
     var actionErrorCode by mutableStateOf<String?>(null)
@@ -164,14 +166,15 @@ internal class VideoDetailsState(
     var replyPosting by mutableStateOf(false)
     var replyErrorCode by mutableStateOf<String?>(null)
 
-    fun load() {
+    fun load(includeComments: Boolean = true) {
+        commentsRequested = commentsRequested || includeComments
         detailsErrorCode = null
         scope.launch {
             try {
                 val loaded = graph.engines.extractVideoDetails(videoId, log)
                 likeStatus = loaded.likeStatus
                 details = loaded
-                loaded.commentsContinuation?.let { reloadComments(it) }
+                if (commentsRequested) loaded.commentsContinuation?.let { reloadComments(it) }
             } catch (error: CancellationException) {
                 throw error
             } catch (error: Throwable) {
@@ -179,6 +182,12 @@ internal class VideoDetailsState(
                 detailsErrorCode = error.errorCode() ?: "E20094"
             }
         }
+    }
+
+    fun loadComments() {
+        if (commentsRequested) return
+        commentsRequested = true
+        details?.commentsContinuation?.let { reloadComments(it) }
     }
 
     /** Replace the list from [token] — the first page or a sort chip. */
@@ -219,9 +228,11 @@ internal class VideoDetailsState(
 
     /** Toggle [status] (LIKE / DISLIKE) optimistically; a failure restores the previous rating. */
     fun toggleRating(status: String) {
+        if (ratingPending) return
         val target = if (likeStatus == status) YtVideoDetails.INDIFFERENT else status
         val token = details?.rateTokens?.get(target) ?: return
         val previous = likeStatus
+        ratingPending = true
         likeStatus = target
         scope.launch {
             try {
@@ -232,6 +243,8 @@ internal class VideoDetailsState(
                 log?.log(Logger.Level.WARN, "rate video failed", error)
                 if (likeStatus == target) likeStatus = previous
                 actionErrorCode = error.errorCode() ?: "E20097"
+            } finally {
+                ratingPending = false
             }
         }
     }
@@ -371,10 +384,13 @@ internal fun VideoDetailsDialog(
     videoId: String,
     onOpenChannel: (url: String, title: String) -> Unit,
     onDismiss: () -> Unit,
+    sharedState: VideoDetailsState? = null,
 ) {
     val scope = rememberCoroutineScope()
-    val state = remember(videoId) { VideoDetailsState(graph, scope, videoId, graph.logger) }
-    LaunchedEffect(state) { state.load() }
+    val state = sharedState ?: remember(graph, videoId) { VideoDetailsState(graph, scope, videoId, graph.logger) }
+    LaunchedEffect(state) {
+        if (sharedState == null) state.load() else state.loadComments()
+    }
     val listState = rememberLazyListState()
     ElevatedBarDialog(
         title = stringResource(Res.string.video_details),
@@ -402,9 +418,9 @@ private fun VideoDetailsContent(
     val snackbar = LocalSnackbar.current
     val actionError = state.actionErrorCode?.let { errorMessage(it) }
     LaunchedEffect(actionError) {
-        if (actionError != null) {
-            snackbar(actionError)
+        if (actionError != null && state.actionErrorCode != null) {
             state.actionErrorCode = null
+            snackbar(actionError)
         }
     }
     DeleteCommentConfirm(state)
@@ -503,7 +519,7 @@ private fun DetailsHeader(state: VideoDetailsState, details: YtVideoDetails, onO
 
 /** Like (with count) | dislike. Signed out, a tap explains that rating needs sign-in. */
 @Composable
-private fun RatingPill(state: VideoDetailsState, details: YtVideoDetails) {
+internal fun RatingPill(state: VideoDetailsState, details: YtVideoDetails) {
     val snackbar = LocalSnackbar.current
     val signIn = stringResource(Res.string.video_details_sign_in_to_rate)
     val canRate = details.rateTokens.isNotEmpty()
@@ -518,7 +534,7 @@ private fun RatingPill(state: VideoDetailsState, details: YtVideoDetails) {
         val likeCount = if (liked) details.likeCountLiked ?: details.likeCount else details.likeCount
         Row(
             Modifier
-                .toggleable(value = liked, role = Role.Checkbox) { tap(YtVideoDetails.LIKE) }
+                .toggleable(value = liked, enabled = !state.ratingPending, role = Role.Checkbox) { tap(YtVideoDetails.LIKE) }
                 .a11yActionLabel(listOfNotNull(stringResource(Res.string.video_details_like), likeCount).joinToString(", "))
                 .padding(horizontal = DesignSpacing.Space16, vertical = DesignSpacing.Space8),
             verticalAlignment = Alignment.CenterVertically,
@@ -536,7 +552,7 @@ private fun RatingPill(state: VideoDetailsState, details: YtVideoDetails) {
         Box(Modifier.size(width = 1.dp, height = 20.dp).background(DesignColors.Divider))
         Box(
             Modifier
-                .toggleable(value = disliked, role = Role.Checkbox) { tap(YtVideoDetails.DISLIKE) }
+                .toggleable(value = disliked, enabled = !state.ratingPending, role = Role.Checkbox) { tap(YtVideoDetails.DISLIKE) }
                 .a11yActionLabel(stringResource(Res.string.video_details_dislike))
                 .padding(horizontal = DesignSpacing.Space16, vertical = DesignSpacing.Space8),
         ) {

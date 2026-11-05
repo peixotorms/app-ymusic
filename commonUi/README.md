@@ -8,6 +8,8 @@ The shared Compose Multiplatform app UI (jvm + android; iOS later).
   (live suggestions, paged results) over `:dynamic-engine`'s `yt` task methods; LibraryScreen over `:media-store`
   flows; the persistent mini-player + full Now Playing (transport, sleep timer, capability selectors, queue).
 
+- **Track ratings** — Now Playing exposes YouTube like/dislike controls in portrait and landscape; a second tap removes the rating. The details dialog shares the same state. Writes use the signed-in YouTube account through `yt/video/rate`, wait for each request to finish, and roll back with a visible error on failure. Comments load only when details are opened.
+
 - **SponsorBlock seam** — `ymusic.ui.sponsorblock`: `SponsorBlockApi` + `MockSponsorBlockApi` +
   SQLite cache/whitelist (`SponsorBlockStore`) + `SponsorBlockService` + `SponsorBlockCoordinator`
   (queue videoId → `Player.setSkipSegments`). The mock returns a 0–10s intro and a 60–75s mid-roll;

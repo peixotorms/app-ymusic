@@ -398,6 +398,13 @@ fun NowPlayingScreen(
     onOpenChannel: (url: String, title: String) -> Unit = { _, _ -> },
     onLogin: () -> Unit = {},
 ) {
+    val queue by coordinator.player.queue.collectAsState()
+    val videoId = (queue.currentItem as? PlayableItem.YtMedia)?.videoId
+    val scope = rememberCoroutineScope()
+    val videoDetails = remember(graph, videoId) {
+        videoId?.let { VideoDetailsState(graph, scope, it, graph.logger) }
+    }
+    LaunchedEffect(videoDetails) { videoDetails?.load(includeComments = false) }
     var fullscreen by remember { mutableStateOf(false) }
     DisposableEffect(fullscreen) {
         graph.pip.videoFullscreen.value = fullscreen
@@ -442,7 +449,11 @@ fun NowPlayingScreen(
     ) {
         // No full-screen fill: the video hole is opaque (TextureView) and the chrome paints
         // Surface itself. A wrapping Surface under the picture is 1× overdraw on every pixel.
-        CompositionLocalProvider(LocalOpenChannel provides onOpenChannel, LocalOpenLogin provides onLogin) {
+        CompositionLocalProvider(
+            LocalOpenChannel provides onOpenChannel,
+            LocalOpenLogin provides onLogin,
+            LocalNowPlayingDetails provides videoDetails,
+        ) {
             // A key press brings back auto-hidden video controls, so Tab can reach them again.
             Box(
                 Modifier.fillMaxSize().onPreviewKeyEvent { event ->
@@ -451,6 +462,37 @@ fun NowPlayingScreen(
                 },
                 content = { shell() },
             )
+        }
+    }
+}
+
+private val LocalNowPlayingDetails = staticCompositionLocalOf<VideoDetailsState?> { null }
+
+@Composable
+private fun NowPlayingRating() {
+    val state = LocalNowPlayingDetails.current ?: return
+    val snackbar = LocalSnackbar.current
+    val actionError = state.actionErrorCode
+    LaunchedEffect(state, actionError) {
+        if (actionError != null && state.actionErrorCode == actionError) {
+            state.actionErrorCode = null
+            snackbar(errorText(actionError).load())
+        }
+    }
+    Row(
+        Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        val details = state.details
+        when {
+            details != null -> RatingPill(state, details)
+            state.detailsErrorCode != null -> ActionIcon(
+                Icons.Outlined.Refresh,
+                stringResource(Res.string.menu_details_comments),
+                onClick = { state.load(includeComments = false) },
+            )
+            else -> CircularProgressIndicator(Modifier.size(24.dp), color = DesignColors.Accent)
         }
     }
 }
@@ -638,6 +680,7 @@ private fun PortraitNowPlaying(
                             Modifier.padding(top = 5.dp),
                         )
                     }
+                    NowPlayingRating()
                     SeekBar(player, progress)
                     TransportRow(coordinator, status.showsPause())
                 }
@@ -718,6 +761,7 @@ private fun LandscapeNowPlaying(
                     .background(DesignColors.Surface),
             ) {
                 PlayerTopBar(coordinator, sleepMs, onClose)
+                NowPlayingRating()
                 val queueListState = rememberLazyListState()
                 val locateCurrent = rememberLocateCurrent(queueListState, queue.currentIndex, indexOffset = 0)
                 QueueHeader(coordinator, queue.currentIndex, queue.displayTotal, queue.shuffle, queue.loopMode, locateCurrent)
@@ -1545,6 +1589,7 @@ private fun PlayerMoreMenu(coordinator: PlaybackCoordinator) {
             video.videoId,
             onOpenChannel = { url, title -> detailsOpen = false; openChannel(url, title) },
             onDismiss = { detailsOpen = false },
+            sharedState = LocalNowPlayingDetails.current,
         )
     }
     if (eqOpen) {
