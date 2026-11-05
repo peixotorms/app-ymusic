@@ -407,7 +407,7 @@ class YMusicApplication : Application() {
             cookieJar = cookies,
             settings = settings,
             // Debug builds crash on an engine-thread stall (StrictMode-style); release only logs.
-            strictStints = BuildConfig.DEBUG,
+            strictStints = BuildConfig.DEBUG && BuildConfig.STRICT_ENGINE_STINTS,
             // Every Sentry event and service call names the engine-js bundle that was live (start + each swap).
             onBackendVersion = { version ->
                 installSentryEngineVersion(version)

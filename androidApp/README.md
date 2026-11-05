@@ -40,6 +40,10 @@ playlist, previous/next, pause/resume, seeking, queue display, artwork, and reco
 The [Media Controller Test app](https://github.com/android/media-controller-test) can also exercise
 the browser/session independently. Compilation and manifest inspection do not replace these tests.
 
+On a software emulator, build with `-Pymusic.strictEngineStints=false` to log slow engine tasks
+without the debug watchdog killing the process. The default remains strict for debug builds;
+release builds already log without throwing. This flag does not change playback timeouts.
+
 ## Google Cast audio
 
 The Cast button in Now Playing uses Google's device picker and default media receiver, including

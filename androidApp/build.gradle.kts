@@ -60,6 +60,10 @@ android {
         versionName = appVersionName
         buildConfigField("String", "SENTRY_DSN", "\"${sentryDsn()}\"")
         buildConfigField("String", "GIT_COMMIT", "\"${gitCommit()}\"")
+        buildConfigField(
+            "boolean", "STRICT_ENGINE_STINTS",
+            providers.gradleProperty("ymusic.strictEngineStints").map(String::toBooleanStrict).orElse(true).get().toString(),
+        )
         // Base url of the remote config service. Empty = no request, compiled-in defaults.
         val configUrl = remoteConfigUrl()
         buildConfigField("String", "REMOTE_CONFIG_URL", "\"$configUrl\"")
