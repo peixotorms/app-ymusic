@@ -642,4 +642,6 @@
     <string name="download_quality_medium">Orta</string>
     <string name="download_quality_best">En iyi</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">Seç</string>
+    <string name="downloads_selected_count">%1$d seçildi</string>
 </resources>

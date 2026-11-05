@@ -658,4 +658,6 @@
     <string name="download_quality_medium">Střední</string>
     <string name="download_quality_best">Nejlepší</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">Vybrat</string>
+    <string name="downloads_selected_count">Vybráno: %1$d</string>
 </resources>

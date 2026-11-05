@@ -10,6 +10,8 @@ The shared Compose Multiplatform app UI (jvm + android; iOS later).
 
 - **Track ratings** — Now Playing exposes YouTube like/dislike controls in portrait and landscape; a second tap removes the rating. The details dialog shares the same state. Writes use the signed-in YouTube account through `yt/video/rate`, wait for each request to finish, and roll back with a visible error on failure. Comments load only when details are opened.
 
+- **Download selection** — long-press a download to select it, tap others or select all in the current filter, then remove entries or delete completed files after confirming their titles. Removing entries preserves finished files; failed file deletions preserve the entries and selection. Back clears selection, and changing filters starts a fresh selection.
+
 - **SponsorBlock seam** — `ymusic.ui.sponsorblock`: `SponsorBlockApi` + `MockSponsorBlockApi` +
   SQLite cache/whitelist (`SponsorBlockStore`) + `SponsorBlockService` + `SponsorBlockCoordinator`
   (queue videoId → `Player.setSkipSegments`). The mock returns a 0–10s intro and a 60–75s mid-roll;

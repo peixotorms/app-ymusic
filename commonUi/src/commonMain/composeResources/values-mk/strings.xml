@@ -642,4 +642,6 @@
     <string name="download_quality_medium">Средно</string>
     <string name="download_quality_best">Најдобро</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">Избери</string>
+    <string name="downloads_selected_count">Избрани: %1$d</string>
 </resources>

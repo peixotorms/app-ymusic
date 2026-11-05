@@ -642,4 +642,6 @@
     <string name="download_quality_medium">நடுத்தரம்</string>
     <string name="download_quality_best">சிறந்தது</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">தேர்ந்தெடு</string>
+    <string name="downloads_selected_count">%1$d தேர்ந்தெடுக்கப்பட்டன</string>
 </resources>

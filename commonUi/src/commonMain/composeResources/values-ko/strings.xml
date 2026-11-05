@@ -634,4 +634,6 @@
     <string name="download_quality_medium">중간</string>
     <string name="download_quality_best">최고</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">선택</string>
+    <string name="downloads_selected_count">%1$d개 선택됨</string>
 </resources>

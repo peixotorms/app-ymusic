@@ -642,4 +642,6 @@
     <string name="download_quality_medium">Keskmine</string>
     <string name="download_quality_best">Parim</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">Vali</string>
+    <string name="downloads_selected_count">Valitud: %1$d</string>
 </resources>

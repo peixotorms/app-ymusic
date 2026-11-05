@@ -642,4 +642,6 @@
     <string name="download_quality_medium">મધ્યમ</string>
     <string name="download_quality_best">શ્રેષ્ઠ</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">પસંદ કરો</string>
+    <string name="downloads_selected_count">%1$d પસંદ કર્યાં</string>
 </resources>

@@ -642,4 +642,6 @@
     <string name="download_quality_medium">ഇടത്തരം</string>
     <string name="download_quality_best">മികച്ചത്</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">തിരഞ്ഞെടുക്കുക</string>
+    <string name="downloads_selected_count">%1$d തിരഞ്ഞെടുത്തു</string>
 </resources>

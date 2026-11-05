@@ -807,4 +807,6 @@
     <string name="download_quality_medium">متوسطة</string>
     <string name="download_quality_best">الأفضل</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">تحديد</string>
+    <string name="downloads_selected_count">تم تحديد %1$d</string>
 </resources>

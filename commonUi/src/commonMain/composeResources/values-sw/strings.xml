@@ -642,4 +642,6 @@
     <string name="download_quality_medium">Wastani</string>
     <string name="download_quality_best">Bora zaidi</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">Chagua</string>
+    <string name="downloads_selected_count">%1$d zimechaguliwa</string>
 </resources>

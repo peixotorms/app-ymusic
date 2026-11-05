@@ -815,4 +815,6 @@
     <string name="download_quality_medium">Середня</string>
     <string name="download_quality_best">Найкраща</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">Вибрати</string>
+    <string name="downloads_selected_count">Вибрано: %1$d</string>
 </resources>

@@ -177,3 +177,4 @@ E91015 D android update install refused by the device: SD-card install it can't 
 
 E60070 - Cast audio preparation or receiver playback failed
 E60071 - Cast playback route transfer failed
+E70072 - Bulk deletion of downloaded files failed

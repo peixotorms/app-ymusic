@@ -658,4 +658,6 @@
     <string name="download_quality_medium">Średnia</string>
     <string name="download_quality_best">Najlepsza</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">Wybierz</string>
+    <string name="downloads_selected_count">Wybrano: %1$d</string>
 </resources>

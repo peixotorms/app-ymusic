@@ -2,6 +2,7 @@ package io.ymusic.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -19,21 +21,28 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -43,6 +52,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
@@ -60,6 +72,8 @@ import io.ymusic.mediastore.model.MediaStoreItem
 import io.ymusic.ui.resources.Res
 import io.ymusic.ui.resources.a11y_x_of_y
 import io.ymusic.ui.resources.cd_share
+import io.ymusic.ui.resources.delete_from_disk_confirm
+import io.ymusic.ui.resources.delete_from_disk_message
 import io.ymusic.ui.resources.dialog_cancel
 import io.ymusic.ui.resources.download_other_format
 import io.ymusic.ui.resources.download_size_kb
@@ -86,6 +100,8 @@ import io.ymusic.ui.resources.downloads_none_message
 import io.ymusic.ui.resources.downloads_none_title
 import io.ymusic.ui.resources.downloads_pause_all
 import io.ymusic.ui.resources.downloads_resume_all
+import io.ymusic.ui.resources.downloads_select
+import io.ymusic.ui.resources.downloads_selected_count
 import io.ymusic.ui.resources.downloads_state_canceled
 import io.ymusic.ui.resources.downloads_state_done
 import io.ymusic.ui.resources.downloads_state_downloading
@@ -103,6 +119,7 @@ import io.ymusic.ui.resources.month_abbr
 import io.ymusic.ui.resources.playback_retry_later
 import io.ymusic.ui.resources.playback_sign_in_required
 import io.ymusic.ui.resources.playback_unavailable
+import io.ymusic.ui.resources.playlist_import_select_all
 import io.ymusic.ui.resources.retry
 import kmpcommon.log.Logger
 import kmpcommon.uri.Uri
@@ -174,6 +191,57 @@ fun DownloadsScreen(graph: AppGraph, coordinator: PlaybackCoordinator) {
     val snackbar = LocalSnackbar.current
     val scans = LocalScanController.current
     var retryBlock by remember { mutableStateOf<RetryBlock?>(null) }
+    var selectedIds by remember(filter) { mutableStateOf(emptySet<String>()) }
+    val selectedTasks = shown.filter { it.id in selectedIds }
+    val selecting = selectedTasks.isNotEmpty()
+    val shownIds = shown.map { it.id }.toSet()
+    LaunchedEffect(shownIds) { selectedIds = selectedIds.intersect(shownIds) }
+    var selectionHeight by remember { mutableIntStateOf(0) }
+    val selectionInset = with(LocalDensity.current) { selectionHeight.toDp() }
+    var pendingDelete by remember { mutableStateOf<List<DownloadTask>?>(null) }
+    var deleting by remember { mutableStateOf(false) }
+    PlatformBackHandler(enabled = selecting && !deleting && pendingDelete == null) { selectedIds = emptySet() }
+    pendingDelete?.let { doomed ->
+        DeleteSelectedDownloadsDialog(
+            tasks = doomed,
+            busy = deleting,
+            onDismiss = { if (!deleting) pendingDelete = null },
+            onConfirm = {
+                if (deleting) return@DeleteSelectedDownloadsDialog
+                deleting = true
+                scope.launch {
+                    val deleted = mutableSetOf<String>()
+                    var failure: Throwable? = null
+                    try {
+                        val mediaStore = checkNotNull(store)
+                        val deleteFile = checkNotNull(graph.deleteFromDisk)
+                        for (task in doomed) {
+                            try {
+                                val item = checkNotNull(libraryItemOf(mediaStore, task)) { "Downloaded file is not in the media store: ${task.id}" }
+                                deleteFile(item)
+                                mediaStore.deleteItem(item.id, hard = true)
+                                service.remove(task.id)
+                                deleted += task.id
+                            } catch (cancel: CancellationException) {
+                                throw cancel
+                            } catch (error: Throwable) {
+                                if (failure == null) failure = error else failure.addSuppressed(error)
+                            }
+                        }
+                        failure?.let { cause ->
+                            val code = cause.errorCode() ?: "E70072"
+                            graph.logger?.fork("download-delete")?.captureError(cause, "Some selected downloads could not be deleted")
+                            snackbar(errorText(code).load())
+                        }
+                    } finally {
+                        selectedIds = selectedIds - deleted
+                        deleting = false
+                        pendingDelete = null
+                    }
+                }
+            },
+        )
+    }
     var renaming by remember { mutableStateOf<DownloadTask?>(null) }
     renaming?.let { task ->
         graph.fileRenaming?.let { renamer -> RenameDownloadDialog(graph, renamer, service, task, onDismiss = { renaming = null }) }
@@ -199,7 +267,7 @@ fun DownloadsScreen(graph: AppGraph, coordinator: PlaybackCoordinator) {
                 start = DesignSpacing.MarginCompact,
                 end = DesignSpacing.MarginCompact,
                 top = DesignSpacing.Space8,
-                bottom = FabClearance + LocalMiniPlayerInset.current, // so the last card isn't hidden behind the FAB
+                bottom = (if (selecting) maxOf(selectionInset, FabClearance) else FabClearance) + LocalMiniPlayerInset.current,
             ),
             horizontalArrangement = Arrangement.spacedBy(DesignSpacing.Gutter),
             verticalArrangement = Arrangement.spacedBy(CardGap),
@@ -222,6 +290,11 @@ fun DownloadsScreen(graph: AppGraph, coordinator: PlaybackCoordinator) {
                 DownloadCard(
                     task, service,
                     modifier = Modifier.animateItem(),
+                    selected = task.id in selectedIds,
+                    selecting = selecting,
+                    busy = deleting,
+                    onToggle = { selectedIds = if (task.id in selectedIds) selectedIds - task.id else selectedIds + task.id },
+                    onLongPress = { selectedIds = selectedIds + task.id },
                     onRetry = {
                         val playability = playabilityOf(task.errorCode)
                         when {
@@ -270,7 +343,26 @@ fun DownloadsScreen(graph: AppGraph, coordinator: PlaybackCoordinator) {
             }
         }
 
-        if (running || paused) {
+        if (selecting) {
+            DownloadSelectionBar(
+                count = selectedTasks.size,
+                busy = deleting,
+                canDelete = graph.deleteFromDisk != null && store != null && selectedTasks.all {
+                    it.state == DownloadState.COMPLETED && it.fileUri != null
+                },
+                onClear = { selectedIds = emptySet() },
+                onSelectAll = { selectedIds = shownIds },
+                onRemove = {
+                    selectedTasks.forEach { service.remove(it.id) }
+                    selectedIds = emptySet()
+                },
+                onDelete = { pendingDelete = selectedTasks.toList() },
+                modifier = Modifier.align(Alignment.BottomCenter)
+                    .padding(bottom = LocalMiniPlayerInset.current)
+                    .onSizeChanged { selectionHeight = it.height },
+            )
+        }
+        if ((running || paused) && !selecting) {
             ExtendedFloatingActionButton(
                 onClick = { if (running) service.pauseAll() else service.resumeAll() },
                 text = { Text(stringResource(if (running) Res.string.downloads_pause_all else Res.string.downloads_resume_all)) },
@@ -278,6 +370,63 @@ fun DownloadsScreen(graph: AppGraph, coordinator: PlaybackCoordinator) {
                 modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = LocalMiniPlayerInset.current).padding(DesignSpacing.Space16),
             )
         }
+    }
+}
+
+@Composable
+private fun DownloadSelectionBar(
+    count: Int,
+    busy: Boolean,
+    canDelete: Boolean,
+    onClear: () -> Unit,
+    onSelectAll: () -> Unit,
+    onRemove: () -> Unit,
+    onDelete: () -> Unit,
+    modifier: Modifier,
+) {
+    val c = downloadColors()
+    Surface(
+        shape = RoundedCornerShape(MediaCardCorner), color = c.surface,
+        border = BorderStroke(1.dp, c.border), shadowElevation = 6.dp,
+        modifier = modifier.fillMaxWidth().padding(DesignSpacing.Space16),
+    ) {
+        Column(Modifier.padding(horizontal = DesignSpacing.Space8)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onClear, enabled = !busy) {
+                    Icon(Icons.Filled.Close, stringResource(Res.string.dialog_cancel), tint = c.ink)
+                }
+                Text(stringResource(Res.string.downloads_selected_count, count), color = c.ink)
+            }
+            Row(Modifier.horizontalScroll(rememberScrollState())) {
+                TextButton(onClick = onSelectAll, enabled = !busy) { Text(stringResource(Res.string.playlist_import_select_all)) }
+                TextButton(onClick = onRemove, enabled = !busy) { Text(stringResource(Res.string.menu_remove)) }
+                TextButton(onClick = onDelete, enabled = !busy && canDelete) {
+                    Text(stringResource(Res.string.menu_remove_from_disk), color = if (canDelete) c.danger else c.inkMuted)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DeleteSelectedDownloadsDialog(tasks: List<DownloadTask>, busy: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit) {
+    val scroll = rememberScrollState()
+    ElevatedBarDialog(
+        title = stringResource(Res.string.menu_remove_from_disk),
+        onDismiss = onDismiss,
+        canScrollBackward = scroll.canScrollBackward,
+        canScrollForward = scroll.canScrollForward,
+        buttons = {
+            DialogSecondaryButton(stringResource(Res.string.dialog_cancel), enabled = !busy, onClick = onDismiss)
+            TextButton(onClick = onConfirm, enabled = !busy) {
+                Text(stringResource(Res.string.delete_from_disk_confirm), color = MaterialTheme.colorScheme.error)
+            }
+        },
+    ) {
+        Text(
+            stringResource(Res.string.delete_from_disk_message, tasks.joinToString("\n") { it.title }),
+            modifier = Modifier.heightIn(max = 320.dp).verticalScroll(scroll).padding(horizontal = 24.dp, vertical = 16.dp),
+        )
     }
 }
 
@@ -312,6 +461,11 @@ private fun DownloadCard(
     task: DownloadTask,
     service: DownloadService,
     modifier: Modifier,
+    selected: Boolean,
+    selecting: Boolean,
+    busy: Boolean,
+    onToggle: () -> Unit,
+    onLongPress: () -> Unit,
     onRetry: () -> Unit,
     onPlay: () -> Unit,
     onRevealLibrary: (() -> Unit)?,
@@ -323,12 +477,18 @@ private fun DownloadCard(
     val failed = task.state == DownloadState.FAILED
     Surface(
         shape = RoundedCornerShape(MediaCardCorner),
-        color = if (failed) c.dangerSoft else c.surface,
-        border = BorderStroke(1.dp, if (failed) c.danger.copy(alpha = 0.4f) else c.border),
-        modifier = modifier.fillMaxWidth(),
+        color = if (selected) c.accentSoft else if (failed) c.dangerSoft else c.surface,
+        border = BorderStroke(if (selected) 2.dp else 1.dp, if (selected) c.accent else if (failed) c.danger.copy(alpha = 0.4f) else c.border),
+        modifier = modifier.fillMaxWidth().semantics { this.selected = selected }.combinedClickable(
+            enabled = !busy,
+            onClick = { if (selecting) onToggle() },
+            onLongClickLabel = stringResource(Res.string.downloads_select),
+            onLongClick = onLongPress,
+        ),
     ) {
         Column(Modifier.padding(CardPadding), verticalArrangement = Arrangement.spacedBy(DesignSpacing.Space8)) {
             Row(Modifier.semantics(mergeDescendants = true) {}, horizontalArrangement = Arrangement.spacedBy(CardGap)) {
+                if (selecting) Checkbox(checked = selected, onCheckedChange = { onToggle() }, enabled = !busy)
                 LibraryThumb(icon = Icons.Outlined.FileDownload, badge = null, artUrl = task.thumbnailUrl, corner = MediaCardCorner)
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(DesignSpacing.Space4)) {
                     Text(
@@ -345,7 +505,7 @@ private fun DownloadCard(
                         }
                     }
                 }
-                MoreMenu(actionsFor(task, service, onRetry, onPlay, onRevealLibrary, onRevealFolder, fileActions, onOtherFormat))
+                if (!selecting) MoreMenu(actionsFor(task, service, onRetry, onPlay, onRevealLibrary, onRevealFolder, fileActions, onOtherFormat))
             }
             if (task.showsBar()) {
                 Box(Modifier.fillMaxWidth().padding(start = ContentIndent).a11ySilent()) { DownloadBar(task, c) }
@@ -376,6 +536,7 @@ private fun DownloadCard(
                         DownloadState.FAILED -> {
                             Text(downloadErrorText(task), style = MaterialTheme.typography.bodySmall, color = c.danger, maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
                             Button(
+                                enabled = !selecting,
                                 onClick = onRetry,
                                 shape = RoundedCornerShape(percent = 50),
                                 colors = ButtonDefaults.buttonColors(containerColor = c.accent, contentColor = c.onAccent),

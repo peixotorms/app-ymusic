@@ -650,4 +650,6 @@
     <string name="download_quality_medium">Srednja</string>
     <string name="download_quality_best">Najbolja</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">Odaberi</string>
+    <string name="downloads_selected_count">Odabrano: %1$d</string>
 </resources>

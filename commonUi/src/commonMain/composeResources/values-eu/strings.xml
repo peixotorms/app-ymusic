@@ -642,4 +642,6 @@
     <string name="download_quality_medium">Ertaina</string>
     <string name="download_quality_best">Onena</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">Hautatu</string>
+    <string name="downloads_selected_count">%1$d hautatuta</string>
 </resources>

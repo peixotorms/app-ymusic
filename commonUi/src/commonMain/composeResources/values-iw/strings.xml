@@ -650,4 +650,6 @@
     <string name="download_quality_medium">בינונית</string>
     <string name="download_quality_best">הטובה ביותר</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">בחירה</string>
+    <string name="downloads_selected_count">%1$d נבחרו</string>
 </resources>

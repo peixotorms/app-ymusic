@@ -642,4 +642,6 @@
     <string name="download_quality_medium">متوسط</string>
     <string name="download_quality_best">بهترین</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">انتخاب</string>
+    <string name="downloads_selected_count">%1$d مورد انتخاب‌شده</string>
 </resources>

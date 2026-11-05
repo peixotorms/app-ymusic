@@ -642,4 +642,6 @@
     <string name="download_quality_medium">මධ්‍යම</string>
     <string name="download_quality_best">හොඳම</string>
     <string name="download_kbps">%1$d kbps</string>
+    <string name="downloads_select">තෝරන්න</string>
+    <string name="downloads_selected_count">%1$dක් තෝරා ඇත</string>
 </resources>
