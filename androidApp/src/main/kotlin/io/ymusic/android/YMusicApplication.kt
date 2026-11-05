@@ -593,9 +593,24 @@ class YMusicApplication : Application() {
 
         var ytEngine: io.ymusic.player.YtEngine? = null
         var msePlayer: MsePlayer? = null
-        val player = createPlayer(
+        lateinit var player: io.ymusic.player.Player
+        val ytResolver = YtEngineSabrSpecResolver {
+            withContext(Dispatchers.Main) { player.prepareYoutubeEngine() }
+            ytEngine ?: error("youtube engine missing")
+        }
+        val sabrClient = KmpHttpClient.create {
+            defaultExecuteTimeout = APP_HTTP_TIMEOUT
+            logger = rootLogger.fork("kmphttp")
+            cookieJar = shared.cookies
+            defaultRedirectOptions = RedirectOptions(followRedirects = false, followSslRedirects = false)
+        }
+        val cast = io.ymusic.android.cast.CastController(
+            applicationContext, appScope, ytResolver, sabrClient,
+            WebSettings.getDefaultUserAgent(applicationContext), rootLogger.fork("cast"),
+        )
+        player = createPlayer(
             PlayerEngines(
-                local = { createLocalPlayer(LocalPlayerContext(this, videoContainer)) },
+                local = { cast.route(createLocalPlayer(LocalPlayerContext(this, videoContainer))) },
                 youtube = {
                     MsePlayer.create(
                         client = shared.http.engine,
@@ -617,7 +632,7 @@ class YMusicApplication : Application() {
                         ytEngine = it
                         msePlayer = it
                         mseBridge.attach(it)
-                    }
+                    }.let(cast::route)
                 },
             ),
         )
@@ -635,16 +650,6 @@ class YMusicApplication : Application() {
                     SafDocumentsProvider(applicationContext),
                     FfmpegMetadataExtractor(FfmpegMetadataGetter(it, AndroidFfInputResolver(contentResolver))),
                 )
-            }
-            val sabrClient = KmpHttpClient.create {
-                defaultExecuteTimeout = APP_HTTP_TIMEOUT
-                logger = rootLogger.fork("kmphttp")
-                cookieJar = shared.cookies
-                defaultRedirectOptions = RedirectOptions(followRedirects = false, followSslRedirects = false)
-            }
-            val ytResolver = YtEngineSabrSpecResolver {
-                withContext(Dispatchers.Main) { player.prepareYoutubeEngine() }
-                ytEngine ?: error("youtube engine missing")
             }
             // Leftover scratch root of beta builds; best-effort, the OS may trim it anyway.
             File(cacheDir, "download-work").deleteRecursively()
@@ -689,6 +694,7 @@ class YMusicApplication : Application() {
         return AppGraph(
             shared.engines,
             player,
+            castButton = { modifier -> cast.Button(modifier) },
             logger = rootLogger,
             playerCache = playerCache,
             systemAudioEffects = true,

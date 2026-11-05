@@ -39,3 +39,30 @@ Check discovery and library browsing before opening YMusic, signed-out browsing,
 playlist, previous/next, pause/resume, seeking, queue display, artwork, and reconnect after process death.
 The [Media Controller Test app](https://github.com/android/media-controller-test) can also exercise
 the browser/session independently. Compilation and manifest inspection do not replace these tests.
+
+## Google Cast audio
+
+The Cast button in Now Playing uses Google's device picker and default media receiver, including
+Cast audio devices and speaker groups. The Nest stereo pair should be discovered as its configured
+pair name when phone and speakers share a reachable Wi-Fi network; guest-network isolation or a VPN
+can prevent the receiver from reaching the phone.
+
+`cast/` wraps both playback engines so the existing queue, transport controls, notifications, sleep
+timer, and history use the remote status/progress. Connecting transfers the current position and
+play intent; disconnecting restores local playback. Receiver suspension keeps the remote route
+selected to avoid starting a second audible copy on the phone. Local playback retains its native
+audio-session handle for system effects; casting exposes audio-only capabilities.
+
+YouTube audio uses the existing authenticated SABR resolver and downloads AAC/M4A to app cache,
+then an HTTP server bound to the phone's receiver-facing address serves that one file at an
+unguessable URL with byte-range support. Cookies and account tokens stay on the phone. The server
+and temporary audio are retired on replacement, stop, or disconnect. Cast SDK notifications and
+media sessions are disabled because `PlaybackService` already supplies those controls.
+
+Current limits: each track is fully buffered before the receiver starts, so track changes may pause;
+live YouTube streams are unsupported; local media is copied without transcoding, so receiver codec
+support applies. Receiver speed is limited to 0.5–2×, and phone equalizer/pitch effects do not process
+remote audio. The phone must remain reachable while casting. Runtime errors surface through the
+existing player error UI. Real Nest playback, pair discovery, reconnect, screen-off playback, and
+long queues need hardware validation; HTTP/routing checks and Android compilation alone cannot
+establish receiver compatibility.

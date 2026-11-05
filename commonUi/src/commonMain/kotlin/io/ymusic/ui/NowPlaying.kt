@@ -1307,6 +1307,7 @@ private fun PlayerTopBar(coordinator: PlaybackCoordinator, sleepMs: Long?, onClo
     ) {
         ActionIcon(Icons.Default.KeyboardArrowDown, stringResource(Res.string.cd_close), onClick = onClose)
         Box(Modifier.weight(1f))
+        coordinator.graph.castButton?.invoke(Modifier.size(40.dp))
         // Only for a downloadable item (a non-live YouTube video) where there is a download service.
         if (downloadLauncher != null && downloadable != null) {
             ActionIcon(
