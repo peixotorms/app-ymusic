@@ -22,3 +22,9 @@ Module detail for the one-line summary in the root [`AGENTS.md`](../AGENTS.md) â
 ## Open With
 
 Media files list the app under the OS's Open With without taking any default: `CFBundleDocumentTypes` in the macOS plist, `OpenWithProgids` in `installer/windows/ymusic.iss`, `MimeType` and `%F` added to the `.desktop` entry when the deb is built. The file types follow the packed ffmpeg's demuxers, so update all three together. Opened files arrive as arguments (handed to the running app by `SingleInstance`) or, on macOS, through the open-file handler, and play as a temporary queue (`IncomingFiles`). The OS reads these from an installed app, so `:desktopApp:run` never shows up; use `createDistributable`.
+
+## App updates
+
+Install new builds manually. The desktop shell does not create the app-update service or supply an
+updater to the shared UI, so update checks, installer downloads, and update controls are disabled
+on Windows, Linux, and macOS. Remote engine/player bundle configuration is separate.

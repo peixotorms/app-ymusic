@@ -14,8 +14,6 @@
     <!-- Import from device: reads the playlists other music apps registered in MediaStore. -->
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-    <!-- In-app updates: the downloaded APK is handed to PackageInstaller. -->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <!-- Android 11+ package visibility: premium is "the Support Development app is installed", and
@@ -278,9 +276,6 @@
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
-        <receiver
-            android:name=".UpdateInstallReceiver"
-            android:exported="false" />
     </application>
 
 </manifest>

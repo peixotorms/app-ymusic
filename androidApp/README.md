@@ -70,3 +70,12 @@ remote audio. The phone must remain reachable while casting. Runtime errors surf
 existing player error UI. Real Nest playback, pair discovery, reconnect, screen-off playback, and
 long queues need hardware validation; HTTP/routing checks and Android compilation alone cannot
 establish receiver compatibility.
+
+## App updates
+
+App updates are installed manually by sideloading. The Android shell does not create an app updater,
+and declares neither an update-install receiver nor the package-install permission. The shared UI
+hides its update check and automatic-download controls when no updater is supplied.
+
+Use the same application ID and signing certificate for subsequent APKs. Remote engine/player bundle
+configuration is separate from app installation; it cannot replace the APK.

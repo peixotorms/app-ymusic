@@ -85,11 +85,7 @@ import io.sentry.kotlin.multiplatform.Sentry
 import io.ymusic.desktop.media.MacDock
 import io.ymusic.desktop.media.connectMediaSession
 import io.ymusic.desktop.resources.ymusic_logo_dock
-import io.ymusic.desktop.update.DesktopAppUpdates
-import io.ymusic.desktop.update.UpdateService
 import io.ymusic.desktop.update.desktopArch
-import io.ymusic.desktop.update.desktopPlatformKey
-import io.ymusic.desktop.update.installerFor
 import io.ymusic.dynamicengine.DefaultJsSourceProvider
 import io.ymusic.dynamicengine.DynamicEngineManager
 import io.ymusic.dynamicengine.EMBEDDED_PLAYER_JS_VERSION
@@ -1070,35 +1066,6 @@ private suspend fun buildGraph(settings: AppStoreSettings, session: CookieSessio
         )
     }
 
-    // Self-update: the config service's appUpdate, verified against the pinned update key.
-    // Disabled outright without a key — an unverifiable update is worse than none.
-    val updateScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    val updateService = UpdateService(
-        client = http.engine,
-        publicKey = UPDATE_PUBLIC_KEY,
-        currentVersionCode = APP_VERSION_CODE,
-        platform = desktopPlatformKey(desktopOsKey()),
-        downloadDir = File(dataDir, "update"),
-        installer = installerFor(desktopOsKey()),
-        scope = updateScope,
-        configUpdates = remoteConfig.appUpdate,
-        logger = rootLogger,
-        autoDownload = { settings.flow(AppSettings.autoDownloadUpdates).value },
-        autoDownloadFailed = { settings.flow(AppSettings.updateAutoDownloadFailed).value },
-        rememberAutoDownloadFailed = { settings.put(AppSettings.updateAutoDownloadFailed, it) },
-    )
-    val desktopUpdates = if (updateService.isEnabled) {
-        updateService.pruneDownloads()
-        DesktopAppUpdates(
-            updateService,
-            updateScope,
-            freshConfig = { remoteConfig.awaitFresh(timeoutMs = 3_000L) },
-            downloadSite = { remoteConfig.config.value.features.downloadPageUrl },
-        )
-    } else {
-        null
-    }
-
     val windowResizing = MutableStateFlow(false)
     return AppGraph(
         engines,
@@ -1153,7 +1120,6 @@ private suspend fun buildGraph(settings: AppStoreSettings, session: CookieSessio
             )
         },
         downloads = downloadService,
-        updates = desktopUpdates,
         stats = stats,
         api = api,
         remoteConfig = remoteConfig.config,
