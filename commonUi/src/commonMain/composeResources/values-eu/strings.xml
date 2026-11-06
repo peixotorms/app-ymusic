@@ -644,4 +644,5 @@
     <string name="download_kbps">%1$d kbps</string>
     <string name="downloads_select">Hautatu</string>
     <string name="downloads_selected_count">%1$d hautatuta</string>
+    <string name="settings_audio_buffer_ahead">Audioaren aurretiazko bufferra</string>
 </resources>

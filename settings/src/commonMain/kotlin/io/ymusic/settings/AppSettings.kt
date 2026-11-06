@@ -100,6 +100,8 @@ object AppSettings {
     val captionBackgroundOpacity = FloatSetting("captions.backgroundOpacity", 0.55f)
 
     /** Player cache size limit in MB; 0 = no cache. The cache also leaves the disk's last 100 MB free. */
+    val audioBufferAheadSeconds = IntSetting("playback.audioBufferSeconds", 120)
+
     val playerCacheMaxMb = IntSetting("playerCache.maxMb", 2048)
 
     /** UI language override (BCP-47); empty = follow the system locale. */

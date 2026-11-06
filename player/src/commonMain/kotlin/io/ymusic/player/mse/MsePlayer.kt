@@ -243,6 +243,7 @@ class MsePlayer internal constructor(
                     speed = config.speed.coerceIn(0.25f, 3f),
                     pitch = config.pitchFactor.coerceIn(0.5f, 2f),
                     loop = loop,
+                    audioBufferSeconds = config.audioBufferAheadSeconds,
                 )
                 trace.commandAcked()
             } catch (error: CancellationException) {
@@ -273,9 +274,8 @@ class MsePlayer internal constructor(
 
     override fun preload(source: PlayableItem.YtMedia?) {
         requireMainThread()
-        source ?: return
         if (released || !_status.value.state.readyToLoad) return
-        send { it.preload(source.videoId, log) }
+        send { it.preload(source?.videoId, log) }
     }
 
     override fun play() {
@@ -334,8 +334,8 @@ class MsePlayer internal constructor(
                 ?: VideoQualityState.AUTO
             val nextQuality = config.preferVideoQuality.first.takeIf { it != VideoQualityState.AUDIO_ONLY }
                 ?: VideoQualityState.AUTO
-            if (previous == null || config.audioOnly != previous.audioOnly || nextQuality != previousQuality) {
-                enginePlayer.setQuality(nextQuality, config.audioOnly, log)
+            if (previous == null || config.audioOnly != previous.audioOnly || nextQuality != previousQuality || config.audioBufferAheadSeconds != previous.audioBufferAheadSeconds) {
+                enginePlayer.setQuality(nextQuality, config.audioOnly, log, config.audioBufferAheadSeconds)
             }
             if (loop != previousLoop) enginePlayer.setLoop(loop, log)
             if (previous == null || config.speed != previous.speed || config.pitchFactor != previous.pitchFactor) {

@@ -344,6 +344,9 @@ class AppGraph(
     /** Restores the saved quality, audio-only, volume, speed, pitch and EQ, and saves every later change. */
     private fun bindPlayerConfig(scope: CoroutineScope) {
         scope.launch {
+            settings.flow(AppSettings.audioBufferAheadSeconds).collect { player.setAudioBufferAheadSeconds(it) }
+        }
+        scope.launch {
             val quality = settings.string(PlaybackQualitySettingKey, VideoQualityState.AUTO).value
             if (quality != VideoQualityState.AUDIO_ONLY) player.selectVideoQuality(quality)
             player.setAudioOnly(settings.string(PlaybackAudioOnlyKey, "1").value != "0")

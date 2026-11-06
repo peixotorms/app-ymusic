@@ -188,6 +188,7 @@ fun SettingsScreen(graph: AppGraph, signedIn: Boolean = false, onLogin: () -> Un
                 Res.string.settings_sponsor_block,
                 Res.string.settings_sponsor_block_hint,
             )
+            AudioBufferRow(graph)
             PlayerCacheRow(graph)
         }
         if (graph.downloads != null) {

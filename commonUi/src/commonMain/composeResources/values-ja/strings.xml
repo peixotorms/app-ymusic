@@ -636,4 +636,5 @@
     <string name="download_kbps">%1$d kbps</string>
     <string name="downloads_select">選択</string>
     <string name="downloads_selected_count">%1$d件を選択中</string>
+    <string name="settings_audio_buffer_ahead">音声の先読みバッファ</string>
 </resources>

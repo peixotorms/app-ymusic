@@ -62,6 +62,7 @@ enum class ScaleMode { COVER, FILL, CONTAIN }
 data class PlaybackConfig(
     val preferVideoQuality: Pair<String, Long> = VideoQualityState.AUTO to 0L,
     val audioOnly: Boolean = true,
+    val audioBufferAheadSeconds: Int = 120,
     val captionVisible: Boolean = false,
     val volume: Float = 1f,
     val speed: Float = 1f,

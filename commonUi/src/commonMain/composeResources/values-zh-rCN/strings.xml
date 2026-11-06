@@ -636,4 +636,5 @@
     <string name="download_kbps">%1$d kbps</string>
     <string name="downloads_select">选择</string>
     <string name="downloads_selected_count">已选择 %1$d 项</string>
+    <string name="settings_audio_buffer_ahead">音频预缓冲</string>
 </resources>

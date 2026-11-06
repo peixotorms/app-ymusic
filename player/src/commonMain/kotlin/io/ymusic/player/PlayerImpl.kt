@@ -45,6 +45,7 @@ internal class PlayerImpl(
     /** Next queue index ([QueueController.peekNext]); [prepareNextArmed] once preload (or skip) ran. */
     private var prepareNextIndex: Int? = null
     private var prepareNextArmed = false
+    private var preloadedItem: PlayableItem? = null
     private var queueOrigin = QueueOrigin.Unknown
     private var lastChange = QueueChange.Load
 
@@ -279,6 +280,9 @@ internal class PlayerImpl(
     override fun seekTo(positionMs: Long) {
         if (released) return
         val engine = _currentEngine.value ?: return
+        preloadedItem?.let { item -> engineFor(item, create = false)?.let { preloadOn(it, null) } }
+        preloadedItem = null
+        prepareNextArmed = false
         val ms = positionMs.coerceAtLeast(0L)
         engine.seekTo(ms)
     }
@@ -373,6 +377,10 @@ internal class PlayerImpl(
     override fun setPreamp(db: Float) = pushConfig(currentConfig.copy(preampDb = db.coerceIn(-12f, 12f)))
 
     override fun setInAppAudioFx(enabled: Boolean) = pushConfig(currentConfig.copy(inAppAudioFx = enabled))
+
+    override fun setAudioBufferAheadSeconds(seconds: Int) {
+        pushConfig(currentConfig.copy(audioBufferAheadSeconds = seconds.coerceIn(30, 120)))
+    }
 
     override fun setAudioOnly(audioOnly: Boolean) {
         pushConfig(currentConfig.copy(audioOnly = audioOnly))
@@ -495,7 +503,14 @@ internal class PlayerImpl(
 
     private fun refreshPrepareNext() {
         prepareNextIndex = controller.peekNext(userInitiated = false)
-        prepareNextArmed = false
+        val candidate = controller.state.items.getOrNull(prepareNextIndex ?: -1)
+        if (preloadedItem != null && preloadedItem != candidate) {
+            if (preloadedItem != controller.state.currentItem) {
+                engineFor(checkNotNull(preloadedItem), create = false)?.let { preloadOn(it, null) }
+            }
+            preloadedItem = null
+        }
+        prepareNextArmed = preloadedItem != null && preloadedItem == candidate
         nextFromPage = false
         if (rolledGeneration != loadGeneration) {
             rolledGeneration = loadGeneration
@@ -594,7 +609,6 @@ internal class PlayerImpl(
         }
     }
 
-    /** UniPlayer: last 10s, playing, not buffering, not live, not loop-one — cue the next engine. */
     private fun maybePreloadNext() {
         if (released || prepareNextArmed) return
         val nextIndex = prepareNextIndex ?: return
@@ -613,7 +627,11 @@ internal class PlayerImpl(
         val p = engine.progress.value
         val dur = p.durationMs
         if (dur <= 0L) return
-        if (p.positionMs > dur || contentEndMs(dur) - p.positionMs > PRELOAD_LEAD_MS) return
+        val end = contentEndMs(dur)
+        val music = current is PlayableItem.YtMedia && currentConfig.audioOnly
+        val lead = if (music) 60_000L else PRELOAD_LEAD_MS
+        if (p.positionMs > dur || end - p.positionMs > lead) return
+        if (music && p.bufferedPositionMs < end - 250L) return
         val nextItem = controller.state.items.getOrNull(nextIndex) ?: return
         val nextEngine = engineFor(nextItem, create = true) ?: run {
             prepareNextArmed = true
@@ -621,12 +639,14 @@ internal class PlayerImpl(
         }
         if (nextEngine.status.value.state.readyToLoad) {
             preloadOn(nextEngine, nextItem)
+            preloadedItem = nextItem
             val currentEngine = _currentEngine.value
             if (currentEngine != null && currentEngine !== nextEngine) {
                 preloadOn(currentEngine, null)
             }
         } else {
             nextEngine.init()
+            return
         }
         prepareNextArmed = true
     }
@@ -857,6 +877,9 @@ internal class PlayerImpl(
     private fun stopActive() {
         prepareJob?.cancel()
         holdPrepareTimeout = false
+        preloadedItem?.let { item -> engineFor(item, create = false)?.let { preloadOn(it, null) } }
+        preloadedItem = null
+        prepareNextArmed = false
         val engine = _currentEngine.value
         if (engine != null) {
             engine.stop()

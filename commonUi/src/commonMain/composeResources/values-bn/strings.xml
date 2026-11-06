@@ -644,4 +644,5 @@
     <string name="download_kbps">%1$d kbps</string>
     <string name="downloads_select">নির্বাচন করুন</string>
     <string name="downloads_selected_count">%1$dটি নির্বাচিত</string>
+    <string name="settings_audio_buffer_ahead">আগাম অডিও বাফার</string>
 </resources>

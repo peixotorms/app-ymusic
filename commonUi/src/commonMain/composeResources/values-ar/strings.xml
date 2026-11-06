@@ -809,4 +809,5 @@
     <string name="download_kbps">%1$d kbps</string>
     <string name="downloads_select">تحديد</string>
     <string name="downloads_selected_count">تم تحديد %1$d</string>
+    <string name="settings_audio_buffer_ahead">التخزين المؤقت للصوت مسبقًا</string>
 </resources>

@@ -154,6 +154,8 @@ interface Player {
     /** Sets [PlaybackConfig.audioOnly]. Quality is unchanged and restored when this is false. */
     fun setAudioOnly(audioOnly: Boolean)
 
+    fun setAudioBufferAheadSeconds(seconds: Int) {}
+
     /** Sets [PlaybackConfig.preferVideoQuality]. [VideoQualityState.AUDIO_ONLY] maps to [setAudioOnly]. */
     fun selectVideoQuality(quality: String)
 

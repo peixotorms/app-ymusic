@@ -644,4 +644,5 @@
     <string name="download_kbps">%1$d kbps</string>
     <string name="downloads_select">ಆಯ್ಕೆಮಾಡಿ</string>
     <string name="downloads_selected_count">%1$d ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ</string>
+    <string name="settings_audio_buffer_ahead">ಮುಂಚಿತ ಆಡಿಯೊ ಬಫರ್</string>
 </resources>

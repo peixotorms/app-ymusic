@@ -101,3 +101,9 @@ The cross-platform playback layer.
   iOS-simulator suites run on an Apple-Silicon box with real-playback tests gated off (`canPlayRealMedia` — AVFoundation can't
   open the media pipeline in a bare simctl-spawned sim process, CoreMedia -12746; app-context sim playback = the
   ios-player-lab spike); android/jvm compile-verified.
+
+- **Buffer ahead / queue preparation** — `PlaybackConfig.audioBufferAheadSeconds` defaults to 120
+  and is clamped to 30–120 by the facade. MSE forwards it through load and quality changes.
+  Music queues prepare the next item only in the last minute and after the current buffer reaches
+  its effective end (including an active SponsorBlock outro skip). Other media keeps its ten-second
+  lead. Queue changes clear obsolete preloads; promoting the prepared item preserves its data.

@@ -644,4 +644,5 @@
     <string name="download_kbps">%1$d kbps</string>
     <string name="downloads_select">Chagua</string>
     <string name="downloads_selected_count">%1$d zimechaguliwa</string>
+    <string name="settings_audio_buffer_ahead">Bafa ya sauti ya mapema</string>
 </resources>

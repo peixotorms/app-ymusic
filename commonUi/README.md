@@ -24,11 +24,17 @@ The shared Compose Multiplatform app UI (jvm + android; iOS later).
   Skip data is provided by [SponsorBlock](https://sponsor.ajay.app/) under
   [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
+- **Playback buffering** — Settings → Playback → Audio buffer ahead offers 30/60/120 seconds,
+  default 120. YouTube audio starts normally with a 15-second starter target, then expands after
+  five seconds of actual playback. Refill resumes at target minus 15 seconds and stops at target;
+  video targets 30 seconds, and live streams keep the existing policy. Queue audio preloading waits
+  until the current track is buffered through its effective end and has at most 60 seconds left;
+  the next track targets 15 seconds. Skips retire obsolete fetches. Cast buffers separately.
+
 - **Playback cache** — Settings → Playback → Player cache defaults to 2 GB, with Off, 128/256/512 MB,
   and 1/2/5/10 GB choices. Streaming stores media chunks in a persistent least-recently-used cache;
-  it does not automatically create offline downloads for the queue. The facade cues the next track
-  during the current track's final ten seconds, except live streams and repeat-one. There is no
-  configurable multi-track download-ahead option. Cast's full-track buffering is separate; see
+  it does not automatically create offline downloads for the queue. Cache retention is unchanged.
+  Cast's full-track buffering is separate; see
   [`androidApp/README.md`](../androidApp/README.md#google-cast).
 
 - **AppGraph** — shells construct `AppGraph` (engines + `Player` facade + optional mediaStore/scan callback + the
