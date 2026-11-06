@@ -7,6 +7,7 @@
 Based on upstream YMusic 4.0.16. Builds target Android ARM64, Windows x64, and Linux x64.
 
 - **Separate Android installation:** named YMusic, with its own app ID and private storage so the original YMusic V4 can remain installed.
+- **Track transitions:** explicitly start requested playback when loading the next song, tolerate buffer-end rounding when preparing it, and keep the startup timeout active until playback advances instead of accepting metadata or 0:00 as success.
 - **Audio buffering:** choose 30 seconds, one minute, or two minutes ahead. Playback starts normally and expands the buffer after five seconds of listening. Video targets 30 seconds.
 - **Next song:** prepare about 15 seconds of the next queued song once the current song is buffered through its end and has at most one minute left. Skips, seeks, and queue changes cancel obsolete fetching.
 - **SponsorBlock:** use the public service first, with YMusic as a fallback if the lookup fails. Existing category controls still apply.
@@ -15,9 +16,9 @@ Based on upstream YMusic 4.0.16. Builds target Android ARM64, Windows x64, and L
 - **Casting:** added Google Cast audio support on Android for compatible speakers and groups.
 - **Downloads:** select multiple downloads to remove entries or delete completed files. Up to three downloads run at once.
 - **Manual updates:** removed app update checks and installer downloads. New builds are installed manually.
-- **Android Auto:** documented sideload discovery and checked the media-browser service in an emulator. Support was already present upstream.
+- **Android Auto:** documented sideload discovery, checked the media-browser service in an emulator, and confirmed playback in a car. Support was already present upstream.
 
-Car controls, Google Nest stereo-pair playback, and signed-in rating synchronization still need testing on the actual devices and account.
+The track-transition fixes, Google Nest stereo-pair playback, and signed-in rating synchronization still need testing on the actual devices and account.
 
 ## 4.0.16
 

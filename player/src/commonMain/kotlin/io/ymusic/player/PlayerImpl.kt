@@ -631,7 +631,7 @@ internal class PlayerImpl(
         val music = current is PlayableItem.YtMedia && currentConfig.audioOnly
         val lead = if (music) 60_000L else PRELOAD_LEAD_MS
         if (p.positionMs > dur || end - p.positionMs > lead) return
-        if (music && p.bufferedPositionMs < end - 250L) return
+        if (music && p.bufferedPositionMs < end - 1_000L) return
         val nextItem = controller.state.items.getOrNull(nextIndex) ?: return
         val nextEngine = engineFor(nextItem, create = true) ?: run {
             prepareNextArmed = true

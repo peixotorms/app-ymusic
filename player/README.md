@@ -107,3 +107,5 @@ The cross-platform playback layer.
   Music queues prepare the next item only in the last minute and after the current buffer reaches
   its effective end (including an active SponsorBlock outro skip). Other media keeps its ten-second
   lead. Queue changes clear obsolete preloads; promoting the prepared item preserves its data.
+
+  The buffer-end comparison allows one second for segment/duration rounding. MSE loads requesting playback retain their startup deadline until the playhead advances, including after an intro seek; metadata and a zero-position tick do not prove playback started. An explicit pause cancels this deadline. A startup stall reports E60051 after 15 seconds rather than remaining indefinitely at zero.
