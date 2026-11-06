@@ -161,6 +161,8 @@ class MsePlayer internal constructor(
     private var loadingVideoId: String? = null
     private var loadedVideoId: String? = null
     private var loadTimeoutJob: Job? = null
+    private var awaitingPlaybackStart = false
+    private var loadStartPositionMs = 0L
     private var loadTrace: MseLoadTrace? = null
     private var pendingVideoSurface: MseVideoSurface? = null
     private var hasPendingVideoSurface = false
@@ -212,6 +214,8 @@ class MsePlayer internal constructor(
         activeSession.loop = loop
         activeSession.live = source.live
         loadingVideoId = source.videoId
+        awaitingPlaybackStart = playWhenReady
+        loadStartPositionMs = startPositionMs
         _progress.value = Progress(positionMs = startPositionMs)
         _status.update { it.copy(details = null) }
         applySurfaceAudio(previous, config)
@@ -287,12 +291,16 @@ class MsePlayer internal constructor(
     override fun pause() {
         requireMainThread()
         if (released || !_status.value.state.readyToLoad) return
+        awaitingPlaybackStart = false
+        loadTimeoutJob?.cancel()
+        loadTimeoutJob = null
         send { it.pause(log) }
     }
 
     override fun seekTo(positionMs: Long) {
         requireMainThread()
         if (released || _status.value.state is PlaybackState.Uninitialized) return
+        if (awaitingPlaybackStart) loadStartPositionMs = positionMs
         send { it.seekTo(positionMs, log) }
     }
 
@@ -704,8 +712,6 @@ class MsePlayer internal constructor(
         if (videoId != (loadingVideoId ?: loadedVideoId)) return
         if (videoId == loadingVideoId) {
             loadTrace?.details(hasPlayerResponse = json.stringOrNull("channelTitle") != null)
-            loadTimeoutJob?.cancel()
-            loadTimeoutJob = null
         }
         val details = MediaDetails(videoId, json.stringOrNull("channelTitle"), json.stringOrNull("channelUrl"))
         _status.update { it.copy(details = details) }
@@ -721,9 +727,6 @@ class MsePlayer internal constructor(
             }
             loadingVideoId = null
             loadedVideoId = videoId
-            loadTimeoutJob?.cancel()
-            loadTimeoutJob = null
-            loadTrace = null
         } else if (videoId != loadedVideoId) {
             return
         }
@@ -732,6 +735,12 @@ class MsePlayer internal constructor(
         val seekableEndMs = json.longOrNull("seekableEndMs") ?: 0L
         /* Engine already maps the DVR window onto progress/duration (0..positionMs). */
         val positionMs = json.longOrNull("progress") ?: json.longOrNull("positionMs") ?: 0L
+        if (!awaitingPlaybackStart || positionMs > loadStartPositionMs + 250L) {
+            awaitingPlaybackStart = false
+            loadTimeoutJob?.cancel()
+            loadTimeoutJob = null
+            loadTrace = null
+        }
         _progress.value = Progress(
             positionMs = positionMs,
             durationMs = if (durationMs > 0L) durationMs else Progress.DURATION_UNKNOWN,
@@ -825,7 +834,7 @@ class MsePlayer internal constructor(
 
     companion object {
         private const val INIT_TIMEOUT_MS = 30_000L
-        private const val LOAD_TIMEOUT_MS = 5_000L
+        private const val LOAD_TIMEOUT_MS = 15_000L
         private const val ENGINE_CLOSE_TIMEOUT_MS = 3_000L
 
         fun create(
