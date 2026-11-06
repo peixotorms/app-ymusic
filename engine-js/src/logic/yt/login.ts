@@ -69,7 +69,7 @@ function jarSignedIn(map: Record<string, string>): boolean {
 }
 
 /** The cookie-only gate: an essential cookie present in BOTH the www and m jars. No network. */
-async function isSignedIn(): Promise<boolean> {
+export async function isSignedIn(): Promise<boolean> {
   const www = await Cookies.get(YT);
   const mobile = await Cookies.get(YT_MOBILE);
   return jarSignedIn(www) && jarSignedIn(mobile);

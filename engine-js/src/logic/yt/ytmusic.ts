@@ -41,6 +41,10 @@ export async function musicJson(
     res.close();
     throw JsEngineErrorImpl.httpStatus("ytmusic " + endpoint, res.status, "E20142");
   }
+  if (res.status === 204) {
+    res.close();
+    return {};
+  }
   return res.jsonObject();
 }
 

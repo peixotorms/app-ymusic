@@ -454,6 +454,21 @@ internal suspend fun readVideoDetails(r: JsonReader): YtVideoDetails {
     )
 }
 
+internal suspend fun readMusicRating(r: JsonReader): YtMusicRating {
+    var status = YtVideoDetails.INDIFFERENT
+    var canRate = false
+    r.beginObject()
+    while (r.hasNextObjectKey()) {
+        when (r.nextKey()) {
+            "likeStatus" -> status = r.stringOrNull() ?: YtVideoDetails.INDIFFERENT
+            "canRate" -> canRate = r.boolean()
+            else -> r.skipValue()
+        }
+    }
+    r.endObject()
+    return YtMusicRating(status, canRate)
+}
+
 private suspend fun JsonReader.readStringMap(): Map<String, String> {
     val out = mutableMapOf<String, String>()
     beginObject()

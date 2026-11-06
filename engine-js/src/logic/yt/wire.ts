@@ -282,6 +282,12 @@ export interface WireVideoDetails {
   commentsContinuation?: string;
 }
 
+/** Authenticated YouTube Music rating, independent of WEB watch-page metadata. */
+export interface WireMusicRating {
+  likeStatus: string;
+  canRate: boolean;
+}
+
 export interface WireComment {
   id: string;
   text: string;

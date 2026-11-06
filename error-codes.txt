@@ -98,6 +98,9 @@ E20161 D subscribing/unsubscribing from a channel row menu failed with an uncode
 E20162 D player/setAudioTrack: the video has no audio track with the requested id, or base.js lacks setAudioTrack (engine-js logic/player/boot.ts)
 E20163 D player/setAudioTrack called without an id (engine-js logic/player.ts)
 E20164 D player/setAudioTrack before Application.create (no movie_player) (engine-js logic/player/boot.ts)
+E20165 - YouTube Music next omitted the requested song's rating
+E20166 - YouTube Music rating write attempted without a signed-in session
+E20167 - YouTube Music rejected a rating write in its response body
 E24242 - (example) dynamic-engine HostCommandTest fixture
 E29999 - (example) EngineErrorDecodeTest / HOST_PROTOCOLS.md fixture
 

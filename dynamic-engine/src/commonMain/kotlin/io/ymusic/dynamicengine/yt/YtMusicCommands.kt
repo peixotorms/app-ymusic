@@ -3,6 +3,26 @@ package io.ymusic.dynamicengine.yt
 import io.ymusic.dynamicengine.DynamicEngineManager
 import kmpcommon.log.Logger
 
+data class YtMusicRating(val likeStatus: String = YtVideoDetails.INDIFFERENT, val canRate: Boolean = false)
+
+suspend fun DynamicEngineManager.extractMusicVideoRating(videoId: String, logger: Logger? = null): YtMusicRating = use { engine ->
+    engine.jsonCommand(
+        "ytmusic/video-rating",
+        { it.name("videoId").value(videoId) },
+        logger.cmd("extractMusicVideoRating", "videoId" to videoId),
+    ) { readMusicRating(it) }
+}
+
+suspend fun DynamicEngineManager.rateMusicVideo(videoId: String, status: String, logger: Logger? = null) {
+    use { engine ->
+        engine.jsonCommand(
+            "ytmusic/video/rate",
+            { it.name("videoId").value(videoId).name("status").value(status) },
+            logger.cmd("rateMusicVideo", "videoId" to videoId, "status" to status),
+        ) { it.skipValue() }
+    }
+}
+
 /**
  * The music.youtube.com (WEB_REMIX) extraction surface — intent-level twins of the engine bundle's
  * `ytmusic/…` commands (engine-js `logic/yt/musicCommands.ts`). Same contract as [extractHomeFeed] &

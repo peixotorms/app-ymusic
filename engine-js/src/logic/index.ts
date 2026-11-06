@@ -4,6 +4,7 @@
 import "./diagnostics";
 import "./yt/commands";
 import "./yt/musicCommands";
+import "./yt/musicRatings";
 import "./yt/login";
 import "./yt/videoDetails";
 import "./yt/playlistEdit";
