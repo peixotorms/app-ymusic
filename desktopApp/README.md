@@ -4,6 +4,8 @@ Module detail for the one-line summary in the root [`AGENTS.md`](../AGENTS.md) �
 
 - **Run** — the JVM desktop product shell: `./gradlew :desktopApp:run`.
 
+- **Privacy** — the shell uses the local database logger and debug stdout only. It does not initialize Sentry, ship the crash SDK, construct a usage-stat recorder, or upload feedback automatically. Feedback is handled through the fork's explicit Copy/GitHub controls.
+
 - **Boot sequence** — boots:
   - `DynamicEngineManager` (QuickJS + engine-js)
   - a file-backed `:media-store` + `:media-scanner` "Scan folder…" (packed ffmpeg, or `-Dio.ymusic.ffmpeg` / PATH)

@@ -10,6 +10,14 @@ The shared Compose Multiplatform app UI (jvm + android; iOS later).
 
 - **Track ratings** — Now Playing exposes YouTube like/dislike controls in portrait and landscape; a second tap removes the rating. The details dialog shares the same state. Writes use the signed-in YouTube account through `yt/video/rate`, wait for each request to finish, and roll back with a visible error on failure. Comments load only when details are opened.
 
+  `AppGraph.videoRatings` shares rating state between screens and Android's media service. It guards concurrent writes, discards metadata fetched before a newer rating, rolls back failed writes, and invalidates tokens on account changes. Rating entries are bounded while retaining the current track and observed states. Car commands use an explicit desired rating and video ID rather than blindly toggling a potentially stale button.
+
+- **Opening screen** — a fresh launch opens YouTube Music Home; activity recreation retains saveable navigation state. Back from another root returns to YouTube Music. Discover-specific UI tests select Discover explicitly.
+
+- **Music Home arrangement** — `MusicHomeLayout.kt` combines Fresh finds/old favorites with Mixed for you, prioritizes the named mixes, filters the existing library shelf to playlist cards, and moves Listen again to the end without the liked-music or Supermix shortcuts. The requested named recommendation shelves come next, followed by unrecognized shelves in their supplied order. Recognition uses the known English section names; renamed or localized server headings pass through rather than being dropped. Contents remain YouTube Music's personalized recommendations. `Pager` retains raw sections and arranges the aggregate after pagination so Listen again stays last and removals are not undone by another page. Shelf expansion reveals already-loaded cards; the bottom Show more requests a continuation page. This policy is shared with Android Auto.
+
+- **Privacy and links** — crash-report and anonymous usage-stat controls and senders are removed. Feedback only copies diagnostic text or opens an issue when requested. Project links are fixed to `peixotorms/app-ymusic`, including when a service supplies upstream defaults. No upstream email or Telegram contact is presented.
+
 - **Download selection** — long-press a download to select it, tap others or select all in the current filter, then remove entries or delete completed files after confirming their titles. Removing entries preserves finished files; failed file deletions preserve the entries and selection. Back clears selection, and changing filters starts a fresh selection.
 
 - **SponsorBlock** — Android and desktop use the public SponsorBlock API first, querying a four-character

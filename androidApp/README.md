@@ -65,6 +65,8 @@ release builds already log without throwing. This flag does not change playback 
 
 ## Google Cast audio
 
+The Cast picker requires `MainActivity` to extend `AppCompatActivity` and both activity theme variants to inherit `Theme.AppCompat.DayNight.NoActionBar`. Theme-wrapping only the button leaves the dialog with the activity's incompatible colors and can crash with `background can not be translucent`. Preserve the activity/theme setup when merging upstream. A temporary Android emulator probe reproduced the old dynamic picker crash and opened the corrected picker; this does not verify a physical Cast connection.
+
 The Cast button in Now Playing uses Google's device picker and default media receiver, including
 Cast audio devices and speaker groups. The Nest stereo pair should be discovered as its configured
 pair name when phone and speakers share a reachable Wi-Fi network; guest-network isolation or a VPN
@@ -100,3 +102,13 @@ Use the same application ID and signing certificate for subsequent APKs. Remote 
 configuration is separate from app installation; it cannot replace the APK.
 
 - **Release target** — one `arm64-v8a` APK. `FfmpegBuild.androidAbis(project)` keeps APK splits and every native dependency aligned; `-Pymusic.androidAbis=x86_64` is available for development emulators.
+
+## Car controls and navigation
+
+YouTube Music is the first browse root, followed by Library and Discover. Android Auto controls its own remembered tab selection and presentation. Home uses the same section arrangement as the phone, while the car renders the cards in its native layout.
+
+The custom action order starts with Like/Unlike, then Shuffle, then Repeat (or Close while paused). Standard Media3 thumb icons let the host use consistent sizing and tint. The thumb is filled when liked and outlined when unliked or a write is pending; duplicate pending taps are ignored. Actions include the video ID so an outdated control cannot rate the next song. Shared process rating state keeps the phone and car synchronized. These are authenticated YouTube ratings, not a local favorites list; YouTube Music's settings determine how YouTube likes appear in its library.
+
+## Privacy and project links
+
+The shell has no crash-reporting SDK, telemetry initializer, background usage-stat recorder, or automatic feedback upload. Logs stay in the local log store. Previously saved reporting preferences have no sending code to enable. Project and feedback links belong to this fork; feedback offers explicit Copy and GitHub actions. Upstream email, Telegram, and donation actions are not offered.
