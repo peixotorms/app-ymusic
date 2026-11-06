@@ -21,7 +21,8 @@ import java.nio.ByteBuffer
  * MSE-style stretch then color on ExoPlayer PCM. Volume stays on `ExoPlayer.volume`.
  * Video still follows [PlaybackParameters.speed] on the renderer.
  */
-internal class AudioFxProcessor(private val handle: Long) : BaseAudioProcessor() {
+internal class AudioFxProcessor(private var handle: Long) : BaseAudioProcessor() {
+    @Synchronized
     override fun onConfigure(inputAudioFormat: AudioFormat): AudioFormat {
         if (inputAudioFormat.encoding != C.ENCODING_PCM_16BIT || inputAudioFormat.channelCount !in 1..2) {
             return AudioFormat.NOT_SET
@@ -30,6 +31,7 @@ internal class AudioFxProcessor(private val handle: Long) : BaseAudioProcessor()
         return inputAudioFormat
     }
 
+    @Synchronized
     override fun queueInput(inputBuffer: ByteBuffer) {
         val remaining = inputBuffer.remaining()
         if (remaining == 0) return
@@ -62,18 +64,29 @@ internal class AudioFxProcessor(private val handle: Long) : BaseAudioProcessor()
         AudioFxNative.color(handle, out, 0, nout, ch)
     }
 
+    @Synchronized
     override fun onFlush(streamMetadata: AudioProcessor.StreamMetadata) {
         if (handle != 0L) AudioFxNative.reset(handle)
     }
 
+    @Synchronized
     override fun onReset() {
         if (handle != 0L) AudioFxNative.reset(handle)
     }
 
+    @Synchronized
     fun applyRate(speed: Float, pitch: Float) {
         if (handle == 0L) return
         AudioFxNative.setSpeed(handle, speed.coerceIn(0.25f, 4f))
         AudioFxNative.setPitch(handle, pitch.coerceIn(0.5f, 2f))
+    }
+
+    // ExoPlayer release can time out while its playback thread still has sink callbacks queued.
+    @Synchronized
+    fun release() {
+        val oldHandle = handle
+        handle = 0L
+        if (oldHandle != 0L) AudioFxNative.destroy(oldHandle)
     }
 }
 

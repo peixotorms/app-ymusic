@@ -487,7 +487,7 @@ internal class AndroidLocalPlayer(
         scope.cancel()
         rootView?.let { root -> videoContainer?.removeView(root) }
         player.release()
-        AudioFxNative.destroy(fxHandle)
+        fxProcessor.release()
         _audioSessionId.value = 0
         _status.update { it.copy(state = PlaybackState.Uninitialized(isInitializing = false)) }
     }

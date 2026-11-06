@@ -47,6 +47,7 @@ The cross-platform playback layer.
   - Impls do NOT marshal — ExoPlayer hard-enforces main, AVPlayer/ffmpeg are thread-safe and merely expect it
     (their internal poll/tickers run off-main).
   - Flows collect from anywhere.
+  - Android's audio-effects processor serializes native calls with handle invalidation/destruction. ExoPlayer release can return after a timeout while its playback thread still flushes the sink; late callbacks must see a cleared handle rather than native memory that has been freed.
 
 - **Loading** — `load` is **fire-and-forget** (non-suspend): it returns immediately and readiness/failure is observed
   via `status` (Buffering→Ready/Error, `status.error` — loading never throws).
