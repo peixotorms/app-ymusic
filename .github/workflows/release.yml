@@ -473,14 +473,13 @@ jobs:
       run: |
         set -euo pipefail
         notes="$RUNNER_TEMP/release-notes.md"
-        gh api "repos/$GITHUB_REPOSITORY/releases/generate-notes" -f tag_name="$TAG" -q .body > "$notes"
         version="${TAG#*-v}"
-        section="$(awk -v head="## $version" '$0 == head { found = 1 } found && /^## / && $0 != head { exit } found' YMusicV4/CHANGELOG.md)"
-        if [ -z "$section" ]; then
-          echo "::warning::CHANGELOG.md has no '## $version' section; the release notes carry only the compare link"
-        else
-          printf '\n%s\n' "$section" >> "$notes"
-        fi
+        awk -v head="## $version" '
+          $0 == head { found = 1; next }
+          found && /^## / { exit }
+          found { print }
+        ' YMusicV4/CHANGELOG.md > "$notes"
+        test -s "$notes" || { echo "CHANGELOG.md has no section for $version" >&2; exit 1; }
         cat "$notes" >> "$GITHUB_STEP_SUMMARY"
     - name: Create the draft release
       env:
@@ -495,7 +494,7 @@ jobs:
                    --title "$TAG" --notes-file "$notes" ;;
           # A re-run of the tag refreshes its draft's files and notes.
           true)  gh release upload "$TAG" release/* --repo "$GITHUB_REPOSITORY" --clobber
-                 gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes-file "$notes" ;;
+                 gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TAG" --notes-file "$notes" ;;
           *)     echo "release $TAG is already published; not touching it" >&2; exit 1 ;;
         esac
     if: ${{ always() && needs.android.result == 'success' && needs.windows.result == 'success' && needs.linux.result == 'success' && needs.test.result == 'success'

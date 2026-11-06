@@ -4,29 +4,26 @@
 
 Based on upstream YMusic 4.0.16. Builds target Android, Windows, and Linux.
 
-### 2026-11-06
-
-- Fixed a crash when canceled work finishes after the player’s engine has closed.
-
-- Added an audio buffer setting: 30 seconds, one minute, or two minutes ahead.
-  Playback starts normally, then fills toward the selected target after five
-  seconds of listening. Video targets 30 seconds.
-- Changed next-song preparation: when the current song is buffered through its end
-  and has at most one minute left, prepare about 15 seconds of the next queued song.
+- **2026-11-06 — Audio buffering:** choose 30 seconds, one minute, or two minutes
+  ahead. Playback starts normally and expands the buffer after five seconds of
+  listening. Video targets 30 seconds.
+- **2026-11-06 — Next song:** prepare about 15 seconds of the next queued song once
+  the current song is buffered through its end and has at most one minute left.
   Skips, seeks, and queue changes cancel obsolete fetching.
-- Changed SponsorBlock lookups to use the public service first, with YMusic as a
-  fallback on lookup failures. Existing category controls still apply.
-
-### 2026-11-05
-
-- Added like, dislike, and remove-rating controls to Now Playing, using the signed-in
-  YouTube account.
-- Added Google Cast audio support on Android for compatible speakers and groups.
-- Added bulk download selection: remove entries or delete completed files.
-  Download concurrency remains three.
-- Removed app update checks and installer downloads. New builds are installed manually.
-- Documented Android Auto sideload discovery and checked the media-browser service
-  in an emulator. Android Auto was already supported upstream.
+- **2026-11-06 — SponsorBlock:** use the public service first, with YMusic as a
+  fallback if the lookup fails. Existing category controls still apply.
+- **2026-11-06 — Stability:** fixed a crash when canceled work finishes after the
+  player’s engine has closed.
+- **2026-11-05 — Ratings:** like, dislike, or remove a rating directly from Now
+  Playing using the signed-in YouTube account.
+- **2026-11-05 — Casting:** added Google Cast audio support on Android for
+  compatible speakers and groups.
+- **2026-11-05 — Downloads:** select multiple downloads to remove entries or delete
+  completed files. Up to three downloads run at once.
+- **2026-11-05 — Updates:** removed app update checks and installer downloads.
+  New builds are installed manually.
+- **2026-11-05 — Android Auto:** documented sideload discovery and checked the
+  media-browser service in an emulator. Support was already present upstream.
 
 Car controls, Google Nest stereo-pair playback, and signed-in rating synchronization
 still need testing on the actual devices and account.
