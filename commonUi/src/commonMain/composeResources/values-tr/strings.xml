@@ -625,4 +625,8 @@
     <string name="downloads_select">Seç</string>
     <string name="downloads_selected_count">%1$d seçildi</string>
     <string name="settings_audio_buffer_ahead">Sesi önceden arabelleğe al</string>
+    <string name="cast_play_on">Şurada oynat</string>
+    <string name="cast_this_device">Bu cihaz</string>
+    <string name="cast_searching">Hoparlörler aranıyor…</string>
+    <string name="cast_discovery_unavailable">Hoparlör araması kullanılamıyor. Bu cihazda oynatmaya devam edebilirsiniz.</string>
 </resources>

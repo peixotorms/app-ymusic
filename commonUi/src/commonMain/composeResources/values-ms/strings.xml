@@ -617,4 +617,8 @@
     <string name="downloads_select">Pilih</string>
     <string name="downloads_selected_count">%1$d dipilih</string>
     <string name="settings_audio_buffer_ahead">Penimbal audio awal</string>
+    <string name="cast_play_on">Main pada</string>
+    <string name="cast_this_device">Peranti ini</string>
+    <string name="cast_searching">Mencari pembesar suara…</string>
+    <string name="cast_discovery_unavailable">Carian pembesar suara tidak tersedia. Anda masih boleh memainkan pada peranti ini.</string>
 </resources>

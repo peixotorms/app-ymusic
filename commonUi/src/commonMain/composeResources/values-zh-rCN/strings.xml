@@ -617,4 +617,8 @@
     <string name="downloads_select">选择</string>
     <string name="downloads_selected_count">已选择 %1$d 项</string>
     <string name="settings_audio_buffer_ahead">音频预缓冲</string>
+    <string name="cast_play_on">播放设备</string>
+    <string name="cast_this_device">此设备</string>
+    <string name="cast_searching">正在查找扬声器…</string>
+    <string name="cast_discovery_unavailable">无法查找扬声器。仍可在此设备上播放。</string>
 </resources>

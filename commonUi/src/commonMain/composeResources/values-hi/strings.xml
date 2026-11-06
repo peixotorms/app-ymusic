@@ -625,4 +625,8 @@
     <string name="downloads_select">चुनें</string>
     <string name="downloads_selected_count">%1$d चुने गए</string>
     <string name="settings_audio_buffer_ahead">पहले से ऑडियो बफ़र</string>
+    <string name="cast_play_on">इस पर चलाएँ</string>
+    <string name="cast_this_device">यह डिवाइस</string>
+    <string name="cast_searching">स्पीकर खोजे जा रहे हैं…</string>
+    <string name="cast_discovery_unavailable">स्पीकर की खोज उपलब्ध नहीं है। आप इस डिवाइस पर चला सकते हैं।</string>
 </resources>

@@ -625,4 +625,8 @@
     <string name="downloads_select">Ընտրել</string>
     <string name="downloads_selected_count">Ընտրված է՝ %1$d</string>
     <string name="settings_audio_buffer_ahead">Ձայնի նախնական բուֆեր</string>
+    <string name="cast_play_on">Նվագարկել այստեղ</string>
+    <string name="cast_this_device">Այս սարքը</string>
+    <string name="cast_searching">Բարձրախոսների որոնում…</string>
+    <string name="cast_discovery_unavailable">Բարձրախոսների որոնումն անհասանելի է։ Կարող եք նվագարկել այս սարքում։</string>
 </resources>

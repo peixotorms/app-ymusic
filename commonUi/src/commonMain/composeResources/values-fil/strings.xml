@@ -625,4 +625,8 @@
     <string name="downloads_select">Piliin</string>
     <string name="downloads_selected_count">%1$d ang napili</string>
     <string name="settings_audio_buffer_ahead">Paunang buffer ng audio</string>
+    <string name="cast_play_on">I-play sa</string>
+    <string name="cast_this_device">Device na ito</string>
+    <string name="cast_searching">Naghahanap ng mga speaker…</string>
+    <string name="cast_discovery_unavailable">Hindi magagamit ang paghahanap ng speaker. Maaari ka pa ring mag-play sa device na ito.</string>
 </resources>

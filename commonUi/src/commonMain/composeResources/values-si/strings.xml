@@ -625,4 +625,8 @@
     <string name="downloads_select">තෝරන්න</string>
     <string name="downloads_selected_count">%1$dක් තෝරා ඇත</string>
     <string name="settings_audio_buffer_ahead">කලින් ශ්‍රව්‍ය බෆරය</string>
+    <string name="cast_play_on">මෙහි වාදනය කරන්න</string>
+    <string name="cast_this_device">මෙම උපාංගය</string>
+    <string name="cast_searching">ස්පීකර සොයමින්…</string>
+    <string name="cast_discovery_unavailable">ස්පීකර සෙවීම ලබාගත නොහැක. ඔබට මෙම උපාංගයේ වාදනය කළ හැක.</string>
 </resources>

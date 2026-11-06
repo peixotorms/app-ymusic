@@ -633,4 +633,8 @@
     <string name="downloads_select">Selecciona</string>
     <string name="downloads_selected_count">%1$d seleccionats</string>
     <string name="settings_audio_buffer_ahead">Memòria intermèdia d’àudio anticipada</string>
+    <string name="cast_play_on">Reprodueix a</string>
+    <string name="cast_this_device">Aquest dispositiu</string>
+    <string name="cast_searching">S’estan cercant altaveus…</string>
+    <string name="cast_discovery_unavailable">La cerca d’altaveus no està disponible. Pots continuar reproduint en aquest dispositiu.</string>
 </resources>

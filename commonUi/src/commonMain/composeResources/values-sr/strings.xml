@@ -633,4 +633,8 @@
     <string name="downloads_select">Изабери</string>
     <string name="downloads_selected_count">Изабрано: %1$d</string>
     <string name="settings_audio_buffer_ahead">Бафер звука унапред</string>
+    <string name="cast_play_on">Репродукуј на</string>
+    <string name="cast_this_device">Овај уређај</string>
+    <string name="cast_searching">Траже се звучници…</string>
+    <string name="cast_discovery_unavailable">Претрага звучника није доступна. И даље можете да репродукујете на овом уређају.</string>
 </resources>

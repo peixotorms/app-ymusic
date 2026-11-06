@@ -633,4 +633,8 @@
     <string name="downloads_select">Odaberi</string>
     <string name="downloads_selected_count">Odabrano: %1$d</string>
     <string name="settings_audio_buffer_ahead">Međuspremnik zvuka unaprijed</string>
+    <string name="cast_play_on">Reproduciraj na</string>
+    <string name="cast_this_device">Ovaj uređaj</string>
+    <string name="cast_searching">Traženje zvučnika…</string>
+    <string name="cast_discovery_unavailable">Pretraživanje zvučnika nije dostupno. I dalje možete reproducirati na ovom uređaju.</string>
 </resources>

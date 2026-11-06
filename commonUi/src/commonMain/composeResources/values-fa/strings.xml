@@ -625,4 +625,8 @@
     <string name="downloads_select">انتخاب</string>
     <string name="downloads_selected_count">%1$d مورد انتخاب‌شده</string>
     <string name="settings_audio_buffer_ahead">بافر پیشاپیش صدا</string>
+    <string name="cast_play_on">پخش در</string>
+    <string name="cast_this_device">این دستگاه</string>
+    <string name="cast_searching">در حال جستجوی بلندگوها…</string>
+    <string name="cast_discovery_unavailable">جستجوی بلندگو در دسترس نیست. همچنان می‌توانید در این دستگاه پخش کنید.</string>
 </resources>

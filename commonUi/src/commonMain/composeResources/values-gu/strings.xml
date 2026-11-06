@@ -625,4 +625,8 @@
     <string name="downloads_select">પસંદ કરો</string>
     <string name="downloads_selected_count">%1$d પસંદ કર્યાં</string>
     <string name="settings_audio_buffer_ahead">અગાઉથી ઑડિયો બફર</string>
+    <string name="cast_play_on">આના પર વગાડો</string>
+    <string name="cast_this_device">આ ઉપકરણ</string>
+    <string name="cast_searching">સ્પીકર શોધી રહ્યું છે…</string>
+    <string name="cast_discovery_unavailable">સ્પીકર શોધ ઉપલબ્ધ નથી. તમે આ ઉપકરણ પર વગાડી શકો છો.</string>
 </resources>

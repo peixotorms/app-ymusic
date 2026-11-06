@@ -625,4 +625,8 @@
     <string name="downloads_select">Избери</string>
     <string name="downloads_selected_count">%1$d избрани</string>
     <string name="settings_audio_buffer_ahead">Предварително буфериране на аудио</string>
+    <string name="cast_play_on">Възпроизвеждане на</string>
+    <string name="cast_this_device">Това устройство</string>
+    <string name="cast_searching">Търсене на високоговорители…</string>
+    <string name="cast_discovery_unavailable">Търсенето на високоговорители е недостъпно. Можете да възпроизвеждате на това устройство.</string>
 </resources>

@@ -633,4 +633,8 @@
     <string name="downloads_select">Selectează</string>
     <string name="downloads_selected_count">%1$d selectate</string>
     <string name="settings_audio_buffer_ahead">Buffer audio în avans</string>
+    <string name="cast_play_on">Redă pe</string>
+    <string name="cast_this_device">Acest dispozitiv</string>
+    <string name="cast_searching">Se caută difuzoare…</string>
+    <string name="cast_discovery_unavailable">Căutarea difuzoarelor nu este disponibilă. Puteți reda în continuare pe acest dispozitiv.</string>
 </resources>

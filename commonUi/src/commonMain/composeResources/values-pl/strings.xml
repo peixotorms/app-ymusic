@@ -641,4 +641,8 @@
     <string name="downloads_select">Wybierz</string>
     <string name="downloads_selected_count">Wybrano: %1$d</string>
     <string name="settings_audio_buffer_ahead">Buforowanie dźwięku z wyprzedzeniem</string>
+    <string name="cast_play_on">Odtwarzaj na</string>
+    <string name="cast_this_device">To urządzenie</string>
+    <string name="cast_searching">Wyszukiwanie głośników…</string>
+    <string name="cast_discovery_unavailable">Wyszukiwanie głośników jest niedostępne. Nadal można odtwarzać na tym urządzeniu.</string>
 </resources>

@@ -633,4 +633,8 @@
     <string name="downloads_select">Sélectionner</string>
     <string name="downloads_selected_count">%1$d sélectionnés</string>
     <string name="settings_audio_buffer_ahead">Mise en mémoire tampon audio anticipée</string>
+    <string name="cast_play_on">Lire sur</string>
+    <string name="cast_this_device">Cet appareil</string>
+    <string name="cast_searching">Recherche d’enceintes…</string>
+    <string name="cast_discovery_unavailable">La recherche d’enceintes est indisponible. Vous pouvez toujours lire sur cet appareil.</string>
 </resources>

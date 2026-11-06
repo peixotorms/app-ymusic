@@ -625,4 +625,8 @@
     <string name="downloads_select">Dooro</string>
     <string name="downloads_selected_count">%1$d la doortay</string>
     <string name="settings_audio_buffer_ahead">Kaydinta codka hore</string>
+    <string name="cast_play_on">Ku daar</string>
+    <string name="cast_this_device">Qalabkan</string>
+    <string name="cast_searching">Raadinaya sameecado…</string>
+    <string name="cast_discovery_unavailable">Raadinta sameecadaha lama heli karo. Waxaad weli ku daari kartaa qalabkan.</string>
 </resources>

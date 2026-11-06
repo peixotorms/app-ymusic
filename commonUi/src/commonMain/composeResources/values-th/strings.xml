@@ -617,4 +617,8 @@
     <string name="downloads_select">เลือก</string>
     <string name="downloads_selected_count">เลือกแล้ว %1$d รายการ</string>
     <string name="settings_audio_buffer_ahead">บัฟเฟอร์เสียงล่วงหน้า</string>
+    <string name="cast_play_on">เล่นบน</string>
+    <string name="cast_this_device">อุปกรณ์นี้</string>
+    <string name="cast_searching">กำลังค้นหาลำโพง…</string>
+    <string name="cast_discovery_unavailable">ไม่สามารถค้นหาลำโพงได้ คุณยังเล่นบนอุปกรณ์นี้ได้</string>
 </resources>

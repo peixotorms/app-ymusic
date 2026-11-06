@@ -617,4 +617,8 @@
     <string name="downloads_select">選択</string>
     <string name="downloads_selected_count">%1$d件を選択中</string>
     <string name="settings_audio_buffer_ahead">音声の先読みバッファ</string>
+    <string name="cast_play_on">再生先</string>
+    <string name="cast_this_device">このデバイス</string>
+    <string name="cast_searching">スピーカーを検索中…</string>
+    <string name="cast_discovery_unavailable">スピーカーを検索できません。このデバイスで再生できます。</string>
 </resources>

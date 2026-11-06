@@ -625,4 +625,8 @@
     <string name="downloads_select">Kijelölés</string>
     <string name="downloads_selected_count">%1$d kijelölve</string>
     <string name="settings_audio_buffer_ahead">Hang előzetes pufferelése</string>
+    <string name="cast_play_on">Lejátszás ezen</string>
+    <string name="cast_this_device">Ez az eszköz</string>
+    <string name="cast_searching">Hangszórók keresése…</string>
+    <string name="cast_discovery_unavailable">A hangszórók keresése nem érhető el. Ezen az eszközön továbbra is lejátszhat zenét.</string>
 </resources>

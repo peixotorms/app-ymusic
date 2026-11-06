@@ -617,4 +617,8 @@
     <string name="downloads_select">選取</string>
     <string name="downloads_selected_count">已選取 %1$d 項</string>
     <string name="settings_audio_buffer_ahead">音訊預先緩衝</string>
+    <string name="cast_play_on">播放裝置</string>
+    <string name="cast_this_device">此裝置</string>
+    <string name="cast_searching">正在尋找喇叭…</string>
+    <string name="cast_discovery_unavailable">無法尋找喇叭。仍可在此裝置上播放。</string>
 </resources>

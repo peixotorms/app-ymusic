@@ -625,4 +625,8 @@
     <string name="downloads_select">Auswählen</string>
     <string name="downloads_selected_count">%1$d ausgewählt</string>
     <string name="settings_audio_buffer_ahead">Audio im Voraus puffern</string>
+    <string name="cast_play_on">Wiedergabe auf</string>
+    <string name="cast_this_device">Dieses Gerät</string>
+    <string name="cast_searching">Lautsprecher werden gesucht…</string>
+    <string name="cast_discovery_unavailable">Die Lautsprechersuche ist nicht verfügbar. Die Wiedergabe auf diesem Gerät ist weiterhin möglich.</string>
 </resources>

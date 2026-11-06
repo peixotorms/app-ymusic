@@ -625,4 +625,8 @@
     <string name="downloads_select">Selecteren</string>
     <string name="downloads_selected_count">%1$d geselecteerd</string>
     <string name="settings_audio_buffer_ahead">Audio vooruit bufferen</string>
+    <string name="cast_play_on">Afspelen op</string>
+    <string name="cast_this_device">Dit apparaat</string>
+    <string name="cast_searching">Zoeken naar luidsprekers…</string>
+    <string name="cast_discovery_unavailable">Luidsprekers zoeken is niet beschikbaar. U kunt nog steeds op dit apparaat afspelen.</string>
 </resources>

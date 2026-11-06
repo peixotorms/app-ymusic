@@ -641,4 +641,8 @@
     <string name="downloads_select">Vybrat</string>
     <string name="downloads_selected_count">Vybráno: %1$d</string>
     <string name="settings_audio_buffer_ahead">Zvuková vyrovnávací paměť dopředu</string>
+    <string name="cast_play_on">Přehrát na</string>
+    <string name="cast_this_device">Toto zařízení</string>
+    <string name="cast_searching">Hledání reproduktorů…</string>
+    <string name="cast_discovery_unavailable">Vyhledávání reproduktorů není dostupné. Stále můžete přehrávat na tomto zařízení.</string>
 </resources>

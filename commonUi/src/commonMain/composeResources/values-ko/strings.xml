@@ -617,4 +617,8 @@
     <string name="downloads_select">선택</string>
     <string name="downloads_selected_count">%1$d개 선택됨</string>
     <string name="settings_audio_buffer_ahead">오디오 미리 버퍼링</string>
+    <string name="cast_play_on">재생 기기</string>
+    <string name="cast_this_device">이 기기</string>
+    <string name="cast_searching">스피커 찾는 중…</string>
+    <string name="cast_discovery_unavailable">스피커를 찾을 수 없습니다. 이 기기에서 계속 재생할 수 있습니다.</string>
 </resources>

@@ -625,4 +625,8 @@
     <string name="downloads_select">Επιλογή</string>
     <string name="downloads_selected_count">%1$d επιλεγμένα</string>
     <string name="settings_audio_buffer_ahead">Προσωρινή αποθήκευση ήχου εκ των προτέρων</string>
+    <string name="cast_play_on">Αναπαραγωγή σε</string>
+    <string name="cast_this_device">Αυτή η συσκευή</string>
+    <string name="cast_searching">Αναζήτηση ηχείων…</string>
+    <string name="cast_discovery_unavailable">Η αναζήτηση ηχείων δεν είναι διαθέσιμη. Μπορείτε να συνεχίσετε την αναπαραγωγή σε αυτή τη συσκευή.</string>
 </resources>

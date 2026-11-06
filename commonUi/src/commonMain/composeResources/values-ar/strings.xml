@@ -790,4 +790,8 @@
     <string name="downloads_select">تحديد</string>
     <string name="downloads_selected_count">تم تحديد %1$d</string>
     <string name="settings_audio_buffer_ahead">التخزين المؤقت للصوت مسبقًا</string>
+    <string name="cast_play_on">التشغيل على</string>
+    <string name="cast_this_device">هذا الجهاز</string>
+    <string name="cast_searching">جارٍ البحث عن مكبرات الصوت…</string>
+    <string name="cast_discovery_unavailable">البحث عن مكبرات الصوت غير متاح. لا يزال بإمكانك التشغيل على هذا الجهاز.</string>
 </resources>

@@ -625,4 +625,8 @@
     <string name="downloads_select">തിരഞ്ഞെടുക്കുക</string>
     <string name="downloads_selected_count">%1$d തിരഞ്ഞെടുത്തു</string>
     <string name="settings_audio_buffer_ahead">മുൻകൂട്ടിയുള്ള ഓഡിയോ ബഫർ</string>
+    <string name="cast_play_on">ഇതിൽ പ്ലേ ചെയ്യുക</string>
+    <string name="cast_this_device">ഈ ഉപകരണം</string>
+    <string name="cast_searching">സ്പീക്കറുകൾ തിരയുന്നു…</string>
+    <string name="cast_discovery_unavailable">സ്പീക്കർ തിരയൽ ലഭ്യമല്ല. ഈ ഉപകരണത്തിൽ പ്ലേ ചെയ്യാം.</string>
 </resources>

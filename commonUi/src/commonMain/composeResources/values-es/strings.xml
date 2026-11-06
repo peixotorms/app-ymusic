@@ -633,4 +633,8 @@
     <string name="downloads_select">Seleccionar</string>
     <string name="downloads_selected_count">%1$d seleccionados</string>
     <string name="settings_audio_buffer_ahead">Búfer de audio anticipado</string>
+    <string name="cast_play_on">Reproducir en</string>
+    <string name="cast_this_device">Este dispositivo</string>
+    <string name="cast_searching">Buscando altavoces…</string>
+    <string name="cast_discovery_unavailable">La búsqueda de altavoces no está disponible. Puedes seguir reproduciendo en este dispositivo.</string>
 </resources>

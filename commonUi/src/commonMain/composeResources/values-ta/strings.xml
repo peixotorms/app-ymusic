@@ -625,4 +625,8 @@
     <string name="downloads_select">தேர்ந்தெடு</string>
     <string name="downloads_selected_count">%1$d தேர்ந்தெடுக்கப்பட்டன</string>
     <string name="settings_audio_buffer_ahead">முன்கூட்டிய ஆடியோ இடையகம்</string>
+    <string name="cast_play_on">இதில் இயக்கு</string>
+    <string name="cast_this_device">இந்தச் சாதனம்</string>
+    <string name="cast_searching">ஒலிபெருக்கிகளைத் தேடுகிறது…</string>
+    <string name="cast_discovery_unavailable">ஒலிபெருக்கிகளைத் தேட முடியவில்லை. இந்தச் சாதனத்தில் தொடர்ந்து இயக்கலாம்.</string>
 </resources>

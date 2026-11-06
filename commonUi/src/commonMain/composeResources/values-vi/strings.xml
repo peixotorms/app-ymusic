@@ -739,4 +739,8 @@
     <string name="downloads_select">Chọn</string>
     <string name="downloads_selected_count">Đã chọn %1$d</string>
     <string name="settings_audio_buffer_ahead">Bộ đệm âm thanh trước</string>
+    <string name="cast_play_on">Phát trên</string>
+    <string name="cast_this_device">Thiết bị này</string>
+    <string name="cast_searching">Đang tìm loa…</string>
+    <string name="cast_discovery_unavailable">Không thể tìm loa. Bạn vẫn có thể phát trên thiết bị này.</string>
 </resources>

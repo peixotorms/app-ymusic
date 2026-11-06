@@ -641,4 +641,8 @@
     <string name="downloads_select">Выбрать</string>
     <string name="downloads_selected_count">Выбрано: %1$d</string>
     <string name="settings_audio_buffer_ahead">Предварительная буферизация аудио</string>
+    <string name="cast_play_on">Воспроизводить на</string>
+    <string name="cast_this_device">Это устройство</string>
+    <string name="cast_searching">Поиск колонок…</string>
+    <string name="cast_discovery_unavailable">Поиск колонок недоступен. Можно продолжить воспроизведение на этом устройстве.</string>
 </resources>

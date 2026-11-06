@@ -617,4 +617,8 @@
     <string name="downloads_select">Pilih</string>
     <string name="downloads_selected_count">%1$d dipilih</string>
     <string name="settings_audio_buffer_ahead">Buffer audio di muka</string>
+    <string name="cast_play_on">Putar di</string>
+    <string name="cast_this_device">Perangkat ini</string>
+    <string name="cast_searching">Mencari speaker…</string>
+    <string name="cast_discovery_unavailable">Pencarian speaker tidak tersedia. Anda masih dapat memutar di perangkat ini.</string>
 </resources>

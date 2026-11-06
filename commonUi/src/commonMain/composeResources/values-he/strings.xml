@@ -633,4 +633,8 @@
     <string name="downloads_select">בחירה</string>
     <string name="downloads_selected_count">%1$d נבחרו</string>
     <string name="settings_audio_buffer_ahead">אגירת שמע מראש</string>
+    <string name="cast_play_on">השמעה ב־</string>
+    <string name="cast_this_device">המכשיר הזה</string>
+    <string name="cast_searching">חיפוש רמקולים…</string>
+    <string name="cast_discovery_unavailable">חיפוש רמקולים אינו זמין. אפשר להמשיך להשמיע במכשיר הזה.</string>
 </resources>

@@ -625,4 +625,8 @@
     <string name="downloads_select">निवडा</string>
     <string name="downloads_selected_count">%1$d निवडले</string>
     <string name="settings_audio_buffer_ahead">आगाऊ ऑडिओ बफर</string>
+    <string name="cast_play_on">यावर प्ले करा</string>
+    <string name="cast_this_device">हे डिव्हाइस</string>
+    <string name="cast_searching">स्पीकर शोधत आहे…</string>
+    <string name="cast_discovery_unavailable">स्पीकर शोध उपलब्ध नाही. तुम्ही या डिव्हाइसवर प्ले करू शकता.</string>
 </resources>

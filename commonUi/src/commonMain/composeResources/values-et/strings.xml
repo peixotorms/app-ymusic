@@ -625,4 +625,8 @@
     <string name="downloads_select">Vali</string>
     <string name="downloads_selected_count">Valitud: %1$d</string>
     <string name="settings_audio_buffer_ahead">Heli eelpuhver</string>
+    <string name="cast_play_on">Esita seadmes</string>
+    <string name="cast_this_device">See seade</string>
+    <string name="cast_searching">Kõlarite otsimine…</string>
+    <string name="cast_discovery_unavailable">Kõlarite otsing pole saadaval. Saate jätkata esitamist selles seadmes.</string>
 </resources>
