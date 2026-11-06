@@ -1,7 +1,6 @@
 package io.ymusic.android.cast
 
 import android.content.Context
-import android.view.ContextThemeWrapper
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
@@ -62,7 +61,7 @@ internal class CastController(
         AndroidView(
             modifier = modifier,
             factory = { viewContext ->
-                MediaRouteButton(ContextThemeWrapper(viewContext, androidx.appcompat.R.style.Theme_AppCompat_DayNight)).apply {
+                MediaRouteButton(viewContext).apply {
                     try {
                         initialize()
                         CastButtonFactory.setUpMediaRouteButton(viewContext, this)

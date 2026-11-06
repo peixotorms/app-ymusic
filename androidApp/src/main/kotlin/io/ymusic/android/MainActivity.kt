@@ -17,6 +17,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.background
@@ -39,7 +40,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import io.ymusic.player.PlayableItem
 import io.ymusic.player.VideoSize
@@ -75,7 +75,7 @@ import org.jetbrains.compose.resources.stringResource as resString
  * (see [YMusicApplication] — playback outlives this Activity in the [PlaybackService]). The
  * Activity contributes only what needs one: the SAF folder pick and the notification permission.
  */
-class MainActivity : FragmentActivity() {
+class MainActivity : AppCompatActivity() {
     /** A section requested by a platform surface (download notification tap), consumed by the
      *  composition once the graph is up — survives arriving before the app finishes booting. */
     private val pendingSection = mutableStateOf<AppSection?>(null)
