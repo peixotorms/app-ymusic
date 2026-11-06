@@ -142,7 +142,7 @@ class MediaBrowseTree(private val context: Context, private val graph: AppGraph)
             parentId == DISC_TRENDING -> feedChildren(graph.engines.extractTrendingMusicFeed())
             parentId == DISC_HOME -> feedChildren(graph.engines.extractHomeFeed())
             parentId == YTM_HOME -> {
-                val page = graph.engines.extractMusicHome()
+                val page = io.ymusic.ui.expandedMusicHome { graph.engines.extractMusicHome(it) }
                 feedChildren(page.copy(sections = io.ymusic.ui.musicHomeSections(page.sections, getString(Res.string.library_tab_playlists))))
             }
             parentId == YTM_EXPLORE -> feedChildren(graph.engines.extractMusicExplore())

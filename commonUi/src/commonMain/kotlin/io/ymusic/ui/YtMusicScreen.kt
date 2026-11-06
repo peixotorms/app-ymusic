@@ -141,7 +141,7 @@ fun YtMusicScreen(
                                 if (current == YtMusicTab.Home) musicHomeSections(sections, playlistsTitle) else sections
                             },
                             reloadFetch = if (current == YtMusicTab.Home) {
-                                { continuation -> graph.engines.extractMusicHome(continuation, log, refresh = true) }
+                                { continuation -> expandedMusicHome(continuation, log) { graph.engines.extractMusicHome(it, log, refresh = true) } }
                             } else {
                                 null
                             },
@@ -151,7 +151,7 @@ fun YtMusicScreen(
                                 YtMusicTab.NewReleases -> graph.engines.extractMusicNewReleases(continuation, log)
                                 YtMusicTab.Charts -> graph.engines.extractMusicCharts(continuation, log)
                                 YtMusicTab.Library -> graph.engines.extractMusicLibrary(continuation, log)
-                                else -> graph.engines.extractMusicHome(continuation, log)
+                                else -> expandedMusicHome(continuation, log) { graph.engines.extractMusicHome(it, log) }
                             }
                         }.also { it.pager.refresh() }
                     }

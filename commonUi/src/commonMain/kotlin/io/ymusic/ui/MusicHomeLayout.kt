@@ -1,7 +1,38 @@
 package io.ymusic.ui
 
 import io.ymusic.dynamicengine.yt.YtFeedItem
+import io.ymusic.dynamicengine.yt.YtFeedPage
 import io.ymusic.dynamicengine.yt.YtSection
+import kmpcommon.log.Logger
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.withTimeout
+import projectcommon.error.errorCode
+
+suspend fun expandedMusicHome(
+    continuation: String? = null,
+    logger: Logger? = null,
+    fetch: suspend (String?) -> YtFeedPage,
+): YtFeedPage {
+    val first = fetch(continuation)
+    val token = first.continuation ?: return first
+    if (continuation != null) return first
+    return try {
+        val second = withTimeout(5_000) { fetch(token) }
+        first.copy(
+            sections = appendFeedSections(first.sections, second.sections),
+            continuation = second.continuation,
+            partialErrorCode = second.partialErrorCode ?: first.partialErrorCode,
+        )
+    } catch (error: Exception) {
+        if (error is TimeoutCancellationException) currentCoroutineContext().ensureActive()
+        else if (error is CancellationException) throw error
+        logger?.log(Logger.Level.WARN, "Music Home expansion failed", error)
+        first.copy(partialErrorCode = error.errorCode() ?: if (error is TimeoutCancellationException) Pager.TIMEOUT_CODE else "E20032")
+    }
+}
 
 private enum class MusicHomeGroup {
     Fresh,
