@@ -180,11 +180,10 @@ internal class VideoDetailsState(
     fun load(includeComments: Boolean = true) {
         commentsRequested = commentsRequested || includeComments
         detailsErrorCode = null
+        rating.ensureLoaded()
         scope.launch {
-            val readRevision = rating.revision
             try {
                 val loaded = graph.engines.extractVideoDetails(videoId, log)
-                rating.acceptDetails(loaded, readRevision)
                 details = loaded
                 if (commentsRequested) loaded.commentsContinuation?.let { reloadComments(it) }
             } catch (error: CancellationException) {

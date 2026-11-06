@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import io.ymusic.dynamicengine.DynamicEngineManager
-import io.ymusic.dynamicengine.yt.extractVideoDetails
+import io.ymusic.dynamicengine.yt.extractMusicVideoRating
 import io.ymusic.dynamicengine.yt.handleWebViewPlayNext
-import io.ymusic.dynamicengine.yt.rateVideo
+import io.ymusic.dynamicengine.yt.rateMusicVideo
 import io.ymusic.imageloader.ImageLoader
 import io.ymusic.mediastore.BetterMediaStore
 import io.ymusic.player.LoopMode
@@ -285,8 +285,8 @@ class AppGraph(
     val videoRatings by lazy {
         VideoRatings(
             processScope,
-            fetch = { engines.extractVideoDetails(it, logger) },
-            write = { id, status, token -> engines.rateVideo(id, status, token, logger) },
+            fetch = { engines.extractMusicVideoRating(it, logger) },
+            write = { id, status -> engines.rateMusicVideo(id, status, logger) },
             currentVideoId = { (player.queue.value.currentItem as? PlayableItem.YtMedia)?.videoId },
             logger = logger,
         ).also { ratings ->

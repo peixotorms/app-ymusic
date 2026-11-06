@@ -1,5 +1,6 @@
 package io.ymusic.ui
 
+import io.ymusic.dynamicengine.yt.YtMusicRating
 import io.ymusic.dynamicengine.yt.YtVideoDetails
 import kmpcommon.log.Logger
 import kotlinx.coroutines.CancellationException
@@ -28,15 +29,19 @@ data class VideoRatingSnapshot(
 /** Main-thread entry points; requests outlive individual screens. */
 class VideoRatings internal constructor(
     private val scope: CoroutineScope,
-    private val fetch: suspend (String) -> YtVideoDetails,
-    private val write: suspend (String, String, String) -> Unit,
+    private val fetch: suspend (String) -> YtMusicRating,
+    private val write: suspend (String, String) -> Unit,
     private val currentVideoId: () -> String?,
     private val logger: Logger?,
 ) {
     private val entries = LinkedHashMap<String, VideoRating>()
+    private val mutableLibraryRevision = MutableStateFlow(0L)
+    val libraryRevision: StateFlow<Long> = mutableLibraryRevision.asStateFlow()
 
     fun forVideo(videoId: String): VideoRating {
-        val entry = entries.remove(videoId) ?: VideoRating(videoId, scope, fetch, write, logger)
+        val entry = entries.remove(videoId) ?: VideoRating(videoId, scope, fetch, write, logger) {
+            mutableLibraryRevision.value++
+        }
         entries[videoId] = entry
         while (entries.size > 32) {
             val oldest = entries.entries.firstOrNull {
@@ -53,9 +58,10 @@ class VideoRatings internal constructor(
 class VideoRating internal constructor(
     val videoId: String,
     private val scope: CoroutineScope,
-    private val fetch: suspend (String) -> YtVideoDetails,
-    private val write: suspend (String, String, String) -> Unit,
+    private val fetch: suspend (String) -> YtMusicRating,
+    private val write: suspend (String, String) -> Unit,
     parentLog: Logger?,
+    private val onChanged: () -> Unit = {},
 ) {
     private val log = parentLog?.fork("video-rating", mapOf("videoId" to videoId))
     private val mutableState = MutableStateFlow(VideoRatingSnapshot(videoId))
@@ -63,13 +69,11 @@ class VideoRating internal constructor(
     internal val observed: Boolean get() = mutableState.subscriptionCount.value > 0
     internal var revision = 0L
         private set
-    private var tokens = emptyMap<String, String>()
     private var loadJob: Job? = null
 
-    internal fun acceptDetails(details: YtVideoDetails, readRevision: Long) {
+    internal fun acceptRating(details: YtMusicRating, readRevision: Long) {
         if (revision != readRevision || state.value.pending) return
-        tokens = details.rateTokens
-        mutableState.value = VideoRatingSnapshot(videoId, details.likeStatus, loaded = true, available = tokens.isNotEmpty())
+        mutableState.value = VideoRatingSnapshot(videoId, details.likeStatus, loaded = true, available = details.canRate)
     }
 
     fun ensureLoaded(): Job? {
@@ -79,7 +83,7 @@ class VideoRating internal constructor(
         val readRevision = revision
         return scope.launch {
             try {
-                acceptDetails(fetch(videoId), readRevision)
+                acceptRating(fetch(videoId), readRevision)
             } catch (error: CancellationException) {
                 throw error
             } catch (error: Throwable) {
@@ -102,12 +106,13 @@ class VideoRating internal constructor(
         val previous = state.value
         if (previous.pending) return@withContext false
         val status = target(previous.status)
-        val token = tokens[status] ?: return@withContext false
+        if (!previous.available) return@withContext false
         if (status == previous.status) return@withContext true
         val writeRevision = ++revision
         mutableState.value = previous.copy(status = status, pending = true, errorCode = null)
         try {
-            write(videoId, status, token)
+            write(videoId, status)
+            if (revision == writeRevision) onChanged()
             true
         } catch (error: Throwable) {
             if (revision == writeRevision) mutableState.value = previous
@@ -121,7 +126,6 @@ class VideoRating internal constructor(
         revision++
         loadJob?.cancel()
         loadJob = null
-        tokens = emptyMap()
         mutableState.value = VideoRatingSnapshot(videoId)
         if (observed) ensureLoaded()
     }

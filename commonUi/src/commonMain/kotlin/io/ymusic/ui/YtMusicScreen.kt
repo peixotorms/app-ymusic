@@ -136,6 +136,7 @@ fun YtMusicScreen(
                         FeedSession(
                             scope,
                             log,
+                            invalidations = graph.videoRatings.libraryRevision,
                             arrangeSections = { sections ->
                                 if (current == YtMusicTab.Home) musicHomeSections(sections, playlistsTitle) else sections
                             },
@@ -196,7 +197,7 @@ class MusicBrowseSession(
     parentLog: Logger?,
 ) {
     internal val log = parentLog?.fork("MusicBrowse", mapOf("url" to url))
-    val feed = FeedSession(scope, log) { continuation ->
+    val feed = FeedSession(scope, log, invalidations = graph.videoRatings.libraryRevision) { continuation ->
         graph.engines.extractMusicBrowse(url, continuation = continuation, logger = log)
     }
 

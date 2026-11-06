@@ -156,6 +156,12 @@ class Pager(
     private val _state = MutableStateFlow<State>(State.Loading)
     private var sourceSections: List<YtSection> = emptyList()
     val state: StateFlow<State> = _state.asStateFlow()
+    private val mutableInvalidated = MutableStateFlow(false)
+    val invalidated: StateFlow<Boolean> = mutableInvalidated.asStateFlow()
+
+    fun invalidate() {
+        mutableInvalidated.value = true
+    }
 
     /** Error codes from a keep-content [reload] (the list stays put) or a page's failed part — the UI shows a snackbar. */
     private val _errors = kotlinx.coroutines.flow.MutableSharedFlow<String>(extraBufferCapacity = 1)
@@ -171,6 +177,7 @@ class Pager(
         source: suspend (continuation: String?) -> io.ymusic.dynamicengine.yt.YtFeedPage,
     ) {
         job?.cancel()
+        mutableInvalidated.value = false
         // A CHIP-CLICKED page often carries no chip row/filters of its own — keep the ones we came
         // from. A plain refresh is a new surface (a channel tab switch): stale chips must NOT leak
         // into it, or a Playlists tab shows the Videos tab's sort chips and replays their tokens.
@@ -206,6 +213,7 @@ class Pager(
         val source = reloadFetch ?: fetch
         val current = _state.value as? State.Ready ?: return load(chipToken, source)
         if (current.refreshing) return
+        mutableInvalidated.value = false
         job?.cancel()
         val carryOver = chipToken != null
         val previousChips = if (carryOver) current.chips else emptyList()
@@ -285,7 +293,7 @@ class Pager(
         job = scope.launch {
             _state.value = try {
                 val page = withTimeout(fetchTimeoutMs) { fetch(token) }
-                sourceSections = appendSections(sourceSections, page.sections)
+                sourceSections = appendFeedSections(sourceSections, page.sections)
                 current.copy(
                     sections = arrangeSections(sourceSections),
                     continuation = page.continuation,
@@ -312,15 +320,13 @@ class Pager(
         /** The watchdog's error code — the retry page for a hung (not failed) fetch. */
         const val TIMEOUT_CODE = "E20031"
     }
+}
 
-    private fun appendSections(current: List<YtSection>, more: List<YtSection>): List<YtSection> {
-        // A continuation usually keeps feeding the run it left off in — an incoming section with
-        // the tail's header (none, or the same one re-sent) continues it rather than starting a break.
-        val last = current.lastOrNull()
-        val first = more.firstOrNull()
-        if (last == null || first == null || last.header != first.header) return current + more
-        return current.dropLast(1) + last.copy(items = last.items + first.items) + more.drop(1)
-    }
+internal fun appendFeedSections(current: List<YtSection>, more: List<YtSection>): List<YtSection> {
+    val last = current.lastOrNull()
+    val first = more.firstOrNull()
+    if (last == null || first == null || last.header != first.header) return current + more
+    return current.dropLast(1) + last.copy(items = last.items + first.items) + more.drop(1)
 }
 
 /**
@@ -333,12 +339,18 @@ class FeedSession(
     logger: Logger? = null,
     reloadFetch: (suspend (continuation: String?) -> io.ymusic.dynamicengine.yt.YtFeedPage)? = null,
     arrangeSections: (List<YtSection>) -> List<YtSection> = { it },
+    invalidations: StateFlow<Long>? = null,
     fetch: suspend (continuation: String?) -> io.ymusic.dynamicengine.yt.YtFeedPage,
 ) {
     val pager = Pager(scope, logger = logger, reloadFetch = reloadFetch, arrangeSections = arrangeSections, fetch = fetch)
     val listState = LazyListState()
+    private val invalidationWatch = invalidations?.let { revisions ->
+        val initial = revisions.value
+        scope.launch { revisions.collect { if (it != initial) pager.invalidate() } }
+    }
 
     fun close() {
+        invalidationWatch?.cancel()
         pager.close()
     }
 }
@@ -365,6 +377,13 @@ fun FeedList(
     onDeeplink: ((link: String, title: String?) -> Unit)? = null,
 ) {
     val state by pager.state.collectAsState()
+    val invalidated by pager.invalidated.collectAsState()
+    val ready = state as? Pager.State.Ready
+    LaunchedEffect(pager, invalidated, ready?.refreshing, ready?.loadingMore) {
+        if (invalidated && ready != null && !ready.refreshing && !ready.loadingMore) {
+            pager.reload(ready.selectedChipToken)
+        }
+    }
     // Pull-to-refresh / F5 reloads the surface from the top: drop any chip filter and take the
     // server's default first response, keeping the current list on screen until the new page lands.
     val reload = { pager.reload() }
