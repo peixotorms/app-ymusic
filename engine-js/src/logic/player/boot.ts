@@ -40,6 +40,8 @@ import {
 import { playerStorageReady } from "./storage";
 import { applyViewport, viewportHeight, viewportWidth } from "./viewport";
 
+import { playbackBuffer } from "./buffering";
+
 const ORIGIN = "https://www.youtube.com";
 
 function asRec(v: unknown): Record<string, unknown> | null {
@@ -736,11 +738,13 @@ export interface PlayerLoadOptions {
   speed: number;
   pitch: number;
   loop: boolean;
+  audioBufferSeconds?: number;
 }
 
 class Player {
   private player: YtApp | null = null;
   private speed = 1;
+  private pendingBufferPreload = "";
   private tempo = 1;
   private pitch = 1;
   /** The live seek bar's 0, in media ms, as last reported: a bar position is relative to it. */
@@ -1029,6 +1033,9 @@ class Player {
       "step": "loadVideoById",
     };
     this.ensureCreated(out);
+    this.pendingBufferPreload = "";
+    playbackBuffer.load(videoId, ao, options.audioBufferSeconds);
+    out["buffering"] = playbackBuffer.enabled;
     /* Chrome /player uses watch URL as originalUrl / currentUrl / graftUrl. */
     setLocation(ORIGIN + "/watch?v=" + videoId, "/watch", "?v=" + videoId);
     this.setQuality(q || "auto", ao);
@@ -1055,7 +1062,14 @@ class Player {
     return out;
   }
 
-  async preload(videoId: string): Promise<Record<string, unknown>> {
+  async preload(videoId: string, managed = false): Promise<Record<string, unknown>> {
+    if (managed) {
+      playbackBuffer.prepare(videoId);
+      if (!playbackBuffer.canPrepare(videoId)) {
+        this.pendingBufferPreload = videoId;
+        return { "ok": true, "step": "preload-wait" };
+      }
+    } else playbackBuffer.metadata(videoId);
     const initOut = await this.init();
     const out: Record<string, unknown> = {
       "videoId": videoId,
@@ -1159,6 +1173,7 @@ class Player {
   }
 
   seek(t: number): void {
+    playbackBuffer.seek();
     const player = moviePlayer();
     if (!player) return;
     const el = activeHtmlMedia();
@@ -1188,6 +1203,7 @@ class Player {
   }
 
   stop(): void {
+    playbackBuffer.stop();
     const player = moviePlayer();
     if (!player) throw new JsEngineErrorImpl("player not created", "E20084");
     player["stopVideo"]();
@@ -1277,8 +1293,26 @@ class Player {
     let progressLabel: string | null = null;
     if (live) progressLabel = atHead ? null : "-" + fmtProgressClock(behind);
     else if (barDur > 0 || progress > 0) progressLabel = fmtProgressClock(progress);
+    const currentId = this.currentVideoId();
+    const state = moviePlayer()?.["getPlayerState"]();
+    playbackBuffer.observe({
+      videoId: currentId,
+      positionMs: posMs,
+      durationMs: durationMs,
+      bufferedMs: isFinite(loaded) ? loaded * 1000 : 0,
+      playing: state === 1,
+      live: live,
+    });
+    const pending = this.pendingBufferPreload;
+    if (pending && !playbackBuffer.isNext(pending)) this.pendingBufferPreload = "";
+    else if (pending && playbackBuffer.canPrepare(pending)) {
+      this.pendingBufferPreload = "";
+      this.preload(pending, true).catch((error: unknown) =>
+        console.warn("Deferred preload failed", error),
+      );
+    }
     return {
-      "videoId": this.currentVideoId(),
+      "videoId": currentId,
       "progress": progress,
       "progressLabel": progressLabel,
       "duration": barDur,
@@ -1567,8 +1601,8 @@ export function loadPlayer(
   return ytPlayer.load(videoId, options);
 }
 
-export function preloadPlayer(videoId: string): Promise<Record<string, unknown>> {
-  return ytPlayer.preload(videoId);
+export function preloadPlayer(videoId: string, managed = false): Promise<Record<string, unknown>> {
+  return ytPlayer.preload(videoId, managed);
 }
 
 export function setPlayerQuality(quality: string, audioOnly: boolean): void {

@@ -4,6 +4,9 @@
 import { utf8ByteLength } from "../../protocol/http/util";
 import { addInterceptor } from "../../protocol/http/intercept";
 import type { HttpChain, HttpReq } from "../../protocol/http/intercept";
+import { bufferBackoff, bufferPolicyPart } from "../player/buffer_sabr";
+import { playbackBuffer } from "../player/buffering";
+import { videoIdForSabrUrl } from "../player/player_res";
 import { noteSabrPlaybackUrl } from "../player/player_res";
 import { fakeUmpAfter, transformRequestBody } from "./sabr_abr";
 import type { SabrRequestState } from "./sabr_abr";
@@ -50,6 +53,7 @@ function wrapSabrStream(
   state: SabrRequestState | null,
   url: string,
   status: number,
+  retire: () => void,
 ): HttpBodyStream {
   const tee = createSabrTee();
   let extra: Uint8Array[] | null = null;
@@ -62,6 +66,7 @@ function wrapSabrStream(
     if (finished) return;
     finished = true;
     tee.finish(url, status);
+    retire();
   }
   function readExtra(buffer: Uint8Array, offset: number, len: number): number {
     if (!extra) return -1;
@@ -92,7 +97,13 @@ function wrapSabrStream(
         if (n > 0) return n;
       }
       if (!innerEof) {
-        const n = await inner.read(buffer, offset, len);
+        let n: number;
+        try {
+          n = await inner.read(buffer, offset, len);
+        } catch (error) {
+          retire();
+          throw error;
+        }
         if (n > 0) {
           tee.push(buffer.slice(offset, offset + n));
           return n;
@@ -102,8 +113,10 @@ function wrapSabrStream(
       }
       if (!fakeSent) {
         fakeSent = true;
-        const fake = fakeUmpAfter(state, tee.maxHid());
-        if (fake && fake.length) {
+        const fake = (fakeUmpAfter(state, tee.maxHid()) || []).concat(
+          bufferPolicyPart(url, tee.policy()),
+        );
+        if (fake.length) {
           extra = fake;
           extraI = 0;
           extraOff = 0;
@@ -127,8 +140,15 @@ class SabrResponse implements HttpResponse {
   private _inner: HttpResponse;
   private _state: SabrRequestState | null;
   private _reqUrl: string;
+  private _retire: () => void;
 
-  constructor(inner: HttpResponse, state: SabrRequestState | null, reqUrl: string) {
+  constructor(
+    inner: HttpResponse,
+    state: SabrRequestState | null,
+    reqUrl: string,
+    retire: () => void,
+  ) {
+    this._retire = retire;
     this._inner = inner;
     this._state = state;
     this._reqUrl = reqUrl;
@@ -149,19 +169,35 @@ class SabrResponse implements HttpResponse {
     return this._inner.text();
   }
   async bytes(): Promise<Uint8Array> {
-    const u8 = await this._inner.bytes();
+    let u8: Uint8Array;
+    try {
+      u8 = await this._inner.bytes();
+    } catch (error) {
+      this._retire();
+      throw error;
+    }
     const tee = createSabrTee();
     tee.push(u8);
-    const fake = fakeUmpAfter(this._state, tee.maxHid());
+    const fake = (fakeUmpAfter(this._state, tee.maxHid()) || []).concat(
+      bufferPolicyPart(this._reqUrl, tee.policy()),
+    );
     if (fake && fake.length) tee.consume(fake);
     tee.finish(this._reqUrl, this.status);
+    this._retire();
     if (!fake || !fake.length) return u8;
     return concatHead(u8, fake);
   }
   stream(): HttpBodyStream {
-    return wrapSabrStream(this._inner.stream(), this._state, this._reqUrl, this.status);
+    return wrapSabrStream(
+      this._inner.stream(),
+      this._state,
+      this._reqUrl,
+      this.status,
+      this._retire,
+    );
   }
   cancel(): void {
+    this._retire();
     this._inner.cancel();
   }
   close(): void {
@@ -174,9 +210,17 @@ async function sabrIntercept(chain: HttpChain): Promise<HttpResponse> {
   if (!isSabrUrl(req0.url)) return chain.proceed();
   noteSabrPlaybackUrl(req0.url);
   const rewritten = rewriteReq(req0);
-  const res = await chain.proceed(rewritten.req);
-  logSabrRequest(req0.url, rewritten.req.body, res.status);
-  return new SabrResponse(res, rewritten.state, req0.url);
+  const held = bufferBackoff(req0.url, rewritten.req.body);
+  if (held) return held;
+  const retire = playbackBuffer.track(videoIdForSabrUrl(req0.url), req0.cancel);
+  try {
+    const res = await chain.proceed(rewritten.req);
+    logSabrRequest(req0.url, rewritten.req.body, res.status);
+    return new SabrResponse(res, rewritten.state, req0.url, retire);
+  } catch (error) {
+    retire();
+    throw error;
+  }
 }
 
 let installed = false;

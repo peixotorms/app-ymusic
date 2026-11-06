@@ -87,3 +87,14 @@ Module detail for the one-line summary in the root [`AGENTS.md`](../AGENTS.md) �
   `getVideoPlaybackQuality` / `webkit*FrameCount` from its frame counts (`__mseVideoQuality`) — installed after
   the BotGuard snapshot, so the snapshot sees the same env on every host. A host without the natives or without a
   table (an Android player whose MediaCodecList walk had not finished by `player/init`) keeps the env it had before.
+
+- **Playback buffer policy** — `logic/player/buffering.ts` manages the current and next VOD track.
+  The optional `player/load.audioBufferSeconds` argument enables it; an absent argument preserves
+  the original behavior for older hosts. The load result advertises `buffering: true` so the host
+  can send `player/preload {cancel:true}` safely. Playback time, excluding pauses and seeks,
+  gates expansion after five seconds. `buffer_sabr.ts` reads contiguous buffered ranges from SABR
+  requests and returns a local NEXT_REQUEST_POLICY while full. Real responses retain their cookies,
+  server backoff, and unknown fields; an appended policy updates only readahead targets. Media
+  payloads remain streamed. Request cancellation is internal to HTTP interceptors; the host HTTP
+  wire and native surface are unchanged. Target durations are approximate because YouTube sends
+  media in segments; an in-flight segment can extend past the target.

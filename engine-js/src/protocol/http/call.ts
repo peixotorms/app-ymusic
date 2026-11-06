@@ -88,6 +88,7 @@ export class HttpCallImpl implements HttpCall {
         body: this._body,
         opts: this._opts,
         log: this._log,
+        cancel: () => this.cancel(),
       },
       function (req) {
         return self._send(req);
@@ -96,6 +97,7 @@ export class HttpCallImpl implements HttpCall {
   }
 
   private async _send(req: HttpReq): Promise<HttpResponse> {
+    if (this._cancelled) throw new Error("request cancelled");
     const self = this;
     this._url = req.url;
     this._headers = req.headers;

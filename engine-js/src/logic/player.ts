@@ -24,6 +24,7 @@ import {
   statusPlayer,
   stopPlayer,
 } from "./player/boot";
+import { playbackBuffer } from "./player/buffering";
 import { applyViewport } from "./player/viewport";
 import { runCatalogSession, listenPlayerStatus } from "./player/push";
 import { listCaptionTracks, runCaptionSession, setCaptionPreference } from "./player/captions";
@@ -61,6 +62,9 @@ onAccept(
       speed: Number.isFinite(speed) ? speed : 1,
       pitch: Number.isFinite(pitch) ? pitch : 1,
       loop: a["loop"] === true,
+      ...(typeof a["audioBufferSeconds"] === "number"
+        ? { audioBufferSeconds: a["audioBufferSeconds"] as number }
+        : {}),
     });
     const p = out.writeObjectAsJson(result);
     if (p) await p;
@@ -72,8 +76,14 @@ onAccept(
   commandHandler(async (src, out) => {
     const a = await src.readJsonObject();
     const id = String(a["videoId"] ?? "");
+    if (a["cancel"] === true) {
+      playbackBuffer.prepare(null);
+      const pending = out.writeObjectAsJson({ "ok": true });
+      if (pending) await pending;
+      return;
+    }
     if (!id) throw new JsEngineErrorImpl("player/preload missing videoId", "E20091");
-    const result = await preloadPlayer(id);
+    const result = await preloadPlayer(id, true);
     const p = out.writeObjectAsJson(result);
     if (p) await p;
   }),
@@ -186,6 +196,7 @@ onAccept(
     const a = await src.readJsonObject();
     const quality = String(a["quality"] ?? "");
     const audioOnly = a["audioOnly"] === true;
+    playbackBuffer.configure(audioOnly, a["audioBufferSeconds"]);
     setPlayerQuality(quality, audioOnly);
     const p = out.writeObjectAsJson({ "ok": true, "quality": quality, "audioOnly": audioOnly });
     if (p) await p;

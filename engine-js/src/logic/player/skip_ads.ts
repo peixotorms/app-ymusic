@@ -8,6 +8,7 @@ import { BufferedResponse } from "../../protocol/http/intercept";
 import { ingestPlayerCaptions } from "./captions";
 import { is144pItag, recordFake144 } from "./itag_144";
 import type { Fake144Row } from "./itag_144";
+import { configurePlayerBuffer } from "./buffering";
 import { notePlayerResponse } from "./player_res";
 
 function asRec(v: unknown): Record<string, unknown> | null {
@@ -108,6 +109,7 @@ export function transformPlayerResponse(rec: Record<string, unknown>): Record<st
   const pc = asRec(rec["playerConfig"]);
   const dai = pc ? asRec(pc["daiConfig"]) : null;
   if (dai) dai["sendSsdaiMissingAdBreakReasons"] = false;
+  configurePlayerBuffer(rec);
   record144pFormats(rec);
   notePlayerResponse(rec);
   ingestPlayerCaptions(rec);

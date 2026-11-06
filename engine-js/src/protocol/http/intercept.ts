@@ -12,6 +12,7 @@ export type HttpReq = {
   body: HttpBody | null;
   opts: RequestOpts | null;
   log: JsLogger | null;
+  cancel?: () => void;
 };
 
 export type HttpChain = {

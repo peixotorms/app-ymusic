@@ -56,9 +56,9 @@ function writeVarint(v: number): number[] {
   return out;
 }
 
-type Field = { field: number; wire: number; value: number | Uint8Array };
+export type Field = { field: number; wire: number; value: number | Uint8Array };
 
-function readFields(buf: Uint8Array): Field[] | null {
+export function readFields(buf: Uint8Array): Field[] | null {
   const out: Field[] = [];
   let i = 0;
   while (i < buf.length) {
@@ -92,7 +92,7 @@ function readFields(buf: Uint8Array): Field[] | null {
   return out;
 }
 
-function writeFields(fs: Field[]): Uint8Array {
+export function writeFields(fs: Field[]): Uint8Array {
   const bytes: number[] = [];
   for (let i = 0; i < fs.length; i++) {
     const f = fs[i]!;
@@ -132,7 +132,7 @@ function formatItag(msg: Uint8Array): number | null {
   return id ? id.itag : null;
 }
 
-function parseBufferedRange(
+export function parseBufferedRange(
   msg: Uint8Array,
 ): { itag: number; lmt: number; startMs: number; durationMs: number } | null {
   const fs = readFields(msg);
@@ -199,7 +199,7 @@ function writeUmpVarint(v: number): number[] {
   return [0xf0, v & 0xff, (v >>> 8) & 0xff, (v >>> 16) & 0xff, (v >>> 24) & 0xff];
 }
 
-function umpPart(id: number, payload: Uint8Array): Uint8Array {
+export function umpPart(id: number, payload: Uint8Array): Uint8Array {
   const hid = writeUmpVarint(id);
   const sz = writeUmpVarint(payload.length);
   const out = new Uint8Array(hid.length + sz.length + payload.length);

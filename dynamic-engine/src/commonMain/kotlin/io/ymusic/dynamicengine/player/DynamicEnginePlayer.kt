@@ -28,6 +28,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.JsonObject
 import projectcommon.error.CodedError
+import projectcommon.json.boolOrNull
 import projectcommon.json.intOrNull
 import projectcommon.json.objects
 import projectcommon.json.stringOrNull
@@ -41,6 +42,8 @@ class DynamicEnginePlayer private constructor(
     private val nativeMse: NativeMseHost?,
     private val jsEventBridge: (String) -> Unit,
 ) {
+    private var bufferingSupported = false
+
     /** [freshConfig]: take the player config from a new homepage scrape, not the held session. */
     suspend fun init(
         logger: Logger? = null,
@@ -72,8 +75,9 @@ class DynamicEnginePlayer private constructor(
         speed: Float = 1f,
         pitch: Float = 1f,
         loop: Boolean = false,
+        audioBufferSeconds: Int? = null,
     ): JsonObject {
-        return engine.jsonCommand(
+        val response = engine.jsonCommand(
             "player/load",
             { writer ->
                 writer.name("videoId").value(videoId)
@@ -86,9 +90,12 @@ class DynamicEnginePlayer private constructor(
                 writer.name("speed").value(speed.toString())
                 writer.name("pitch").value(pitch.toString())
                 writer.name("loop").value(loop)
+                audioBufferSeconds?.let { writer.name("audioBufferSeconds").value(it) }
             },
             logger?.fork("load", mapOf("videoId" to videoId, "audioOnly" to audioOnly)),
         ) { it.readObject() }
+        bufferingSupported = response.boolOrNull("buffering") == true
+        return response
     }
 
     /** Display hole size in CSS pixels. YouTube ABR uses this as the viewport. Default 640×360. */
@@ -104,21 +111,23 @@ class DynamicEnginePlayer private constructor(
     }
 
     /** Cue the next video without interrupting current playback. */
-    suspend fun preload(videoId: String, logger: Logger? = null): JsonObject {
+    suspend fun preload(videoId: String?, logger: Logger? = null): JsonObject {
+        if (videoId == null && !bufferingSupported) return JsonObject(emptyMap())
         return engine.jsonCommand(
             "player/preload",
-            { w -> w.name("videoId").value(videoId) },
-            logger?.fork("preload", mapOf("videoId" to videoId)),
+            { w -> if (videoId == null) w.name("cancel").value(true) else w.name("videoId").value(videoId) },
+            logger?.fork("preload", mapOf("videoId" to videoId.orEmpty())),
         ) { it.readObject() }
     }
 
     /** YouTube quality token (`auto`, `hd720`, …) and audio-only, applied together. */
-    suspend fun setQuality(quality: String, audioOnly: Boolean, logger: Logger? = null) {
+    suspend fun setQuality(quality: String, audioOnly: Boolean, logger: Logger? = null, audioBufferSeconds: Int? = null) {
         engine.jsonCommand(
             "player/setQuality",
             { w ->
                 w.name("quality").value(quality)
                 w.name("audioOnly").value(audioOnly)
+                audioBufferSeconds?.let { w.name("audioBufferSeconds").value(it) }
             },
             logger,
         ) { it.skipValue() }

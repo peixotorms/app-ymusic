@@ -451,6 +451,7 @@ export interface SabrTee {
   push(chunk: Uint8Array): void;
   consume(parts: Uint8Array[]): void;
   maxHid(): number;
+  policy(): Uint8Array | null;
   finish(url: string, status: number): void;
 }
 
@@ -465,6 +466,7 @@ export function createSabrTee(): SabrTee {
   let payN = 0;
   let maxHid = -1;
   let sps = -1;
+  let policy: Uint8Array | null = null;
   let media = 0;
   let bodyN = 0;
   let err = "";
@@ -475,6 +477,7 @@ export function createSabrTee(): SabrTee {
     const payload = needPayload && payN ? joinU8(pay, payN) : null;
     pay = [];
     payN = 0;
+    if (partId === 35 && payload) policy = payload;
     if (partId === 58 && payload) {
       const v = protoVarint(payload, 1);
       sps = v != null ? v : -1;
@@ -567,6 +570,7 @@ export function createSabrTee(): SabrTee {
         partRemain = sz.v;
         i = sz.i;
         needPayload =
+          partId === 35 ||
           partId === 58 ||
           partId === 44 ||
           partId === 42 ||
@@ -626,6 +630,7 @@ export function createSabrTee(): SabrTee {
     consume: function (parts) {
       for (let i = 0; i < parts.length; i++) push(parts[i]!);
     },
+    policy: () => policy,
     maxHid: function () {
       return maxHid;
     },
