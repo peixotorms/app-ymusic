@@ -1,4 +1,4 @@
-# Personal releases: Android, Windows, and Linux. Publishing requires a private repository.
+# Personal releases: Android, Windows, and Linux.
 name: release
 'on':
   push:
@@ -15,14 +15,11 @@ env:
   FFMPEG_BUILD_REF: d0a89492c442dbca24dfabd044b866299f0a97b1
   NDK_VERSION: 28.2.13676358
 jobs:
-  private-repository:
+  release-tag:
     runs-on: ubuntu-24.04
     steps:
-    - name: Require a private repository and release tag
-      env:
-        REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+    - name: Require a release tag
       run: |
-        test "$REPOSITORY_PRIVATE" = true
         case "$GITHUB_REF" in refs/tags/release-v*) ;; *) echo "Choose a release-v tag"; exit 1 ;; esac
   ffmpeg:
     name: ffmpeg ${{ matrix.slug }}
@@ -115,7 +112,7 @@ jobs:
           done
           exit 1
         }
-    needs: private-repository
+    needs: release-tag
   android:
     needs: ffmpeg
     runs-on: ubuntu-24.04
@@ -378,7 +375,7 @@ jobs:
         if-no-files-found: error
     - id: tags
       run: echo "tags=$(compat/tags.sh --json)" >> "$GITHUB_OUTPUT"
-    needs: private-repository
+    needs: release-tag
   compat:
     needs: compat-bundles
     if: needs.compat-bundles.outputs.tags != '[]'
@@ -473,7 +470,6 @@ jobs:
         TAG: ${{ github.ref_name }}
       run: |
         set -euo pipefail
-        test "$(gh api "repos/$GITHUB_REPOSITORY" --jq .private)" = true
         notes="$RUNNER_TEMP/release-notes.md"
         draft="$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft -q .isDraft 2>/dev/null || true)"
         case "$draft" in

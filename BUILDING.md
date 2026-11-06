@@ -54,8 +54,8 @@ The iOS app builds from `iosApp/iosApp.xcodeproj` in Xcode; its Kotlin framework
 ## Personal releases
 
 The release workflow builds Android APKs, Windows installers, and Linux Debian packages.
-macOS packaging is disabled. It runs only for a `release-v…` tag in a private repository,
-and checks repository privacy again before creating a draft in GitHub Releases.
+macOS packaging is disabled. It runs for a `release-v…` tag and creates a draft
+in this repository’s GitHub Releases.
 
 Android uses a separate signing identity. Set these repository Actions secrets before
 running the workflow: `ANDROID_KEYSTORE_BASE64`, `ANDROID_STORE_PASSWORD`,
