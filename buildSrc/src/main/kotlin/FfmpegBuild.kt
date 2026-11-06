@@ -26,8 +26,16 @@ import java.io.File
  * the staged host CLI via `-Dio.ymusic.ffmpeg`.
  */
 object FfmpegBuild {
-    /** The ABIs the apk and the device tests ship; every Android native (quickjs, mse, ffmpeg) is built for each. */
-    val ANDROID_ABIS = listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+    private val supportedAndroidAbis = setOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+
+    fun androidAbis(project: Project): List<String> {
+        val abis = project.providers.gradleProperty("ymusic.androidAbis").orElse("arm64-v8a").get()
+            .split(',').map(String::trim).filter(String::isNotEmpty).distinct()
+        require(abis.isNotEmpty() && abis.all { it in supportedAndroidAbis }) {
+            "ymusic.androidAbis must contain supported Android ABIs: $supportedAndroidAbis"
+        }
+        return abis
+    }
 
     fun root(project: Project): File = project.rootProject.projectDir.parentFile.resolve("ffmpeg-build")
 

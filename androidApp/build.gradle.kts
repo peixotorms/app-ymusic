@@ -42,7 +42,7 @@ base { archivesName.set("YMusic-$appVersionName") }
 
 // The ABIs every native the app needs — quickjs, mse, ffmpeg — is built for. A device on any other
 // ABI could install an APK carrying only some of them and crash at the first engine call.
-val appAbis = FfmpegBuild.ANDROID_ABIS
+val appAbis = FfmpegBuild.androidAbis(project)
 
 android {
     namespace = "io.ymusic.android"
@@ -81,7 +81,7 @@ android {
         buildConfig = true
     }
 
-    // One APK per ABI, no universal one. All share the versionCode: they are the same release.
+    // One APK for each selected ABI.
     splits {
         abi {
             isEnable = true

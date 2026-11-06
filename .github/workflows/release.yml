@@ -1,4 +1,4 @@
-# Personal releases: Android, Windows, and Linux.
+# Releases contain one Android ARM64 APK, Windows x64 EXE, and Linux x64 DEB.
 name: release
 'on':
   push:
@@ -35,28 +35,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - slug: android-armeabi-v7a
-          runner: ubuntu-24.04
         - slug: android-arm64-v8a
-          runner: ubuntu-24.04
-        - slug: android-x86
-          runner: ubuntu-24.04
-        - slug: android-x86_64
           runner: ubuntu-24.04
         - slug: linux-x86_64
           runner: ubuntu-24.04
-        - slug: linux-arm64
-          runner: ubuntu-24.04-arm
         - slug: windows-x86_64
           runner: windows-2022
           msystem: MINGW64
           cc: gcc
           packages: mingw-w64-x86_64-toolchain mingw-w64-x86_64-nasm mingw-w64-x86_64-pkgconf mingw-w64-x86_64-meson mingw-w64-x86_64-ninja mingw-w64-x86_64-zlib
-        - slug: windows-arm64
-          runner: windows-11-arm
-          msystem: CLANGARM64
-          cc: clang
-          packages: mingw-w64-clang-aarch64-toolchain mingw-w64-clang-aarch64-pkgconf mingw-w64-clang-aarch64-meson mingw-w64-clang-aarch64-ninja mingw-w64-clang-aarch64-zlib
     steps:
     - if: startsWith(matrix.slug, 'windows-')
       run: git config --global core.autocrlf false
@@ -128,29 +115,11 @@ jobs:
       with:
         ref: ${{ inputs.tag || github.ref }}
         path: YMusicV4
-    - name: Restore ffmpeg android-armeabi-v7a
-      uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
-      with:
-        path: ffmpeg-build/out/android-armeabi-v7a
-        key: ffmpeg-android-armeabi-v7a-${{ env.FFMPEG_BUILD_REF }}-ndk${{ env.NDK_VERSION }}
-        fail-on-cache-miss: true
     - name: Restore ffmpeg android-arm64-v8a
       uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
       with:
         path: ffmpeg-build/out/android-arm64-v8a
         key: ffmpeg-android-arm64-v8a-${{ env.FFMPEG_BUILD_REF }}-ndk${{ env.NDK_VERSION }}
-        fail-on-cache-miss: true
-    - name: Restore ffmpeg android-x86
-      uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
-      with:
-        path: ffmpeg-build/out/android-x86
-        key: ffmpeg-android-x86-${{ env.FFMPEG_BUILD_REF }}-ndk${{ env.NDK_VERSION }}
-        fail-on-cache-miss: true
-    - name: Restore ffmpeg android-x86_64
-      uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
-      with:
-        path: ffmpeg-build/out/android-x86_64
-        key: ffmpeg-android-x86_64-${{ env.FFMPEG_BUILD_REF }}-ndk${{ env.NDK_VERSION }}
         fail-on-cache-miss: true
     - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3
       with:
@@ -171,13 +140,13 @@ jobs:
         test -n "$KEYSTORE_BASE64" || { echo 'ANDROID_KEYSTORE_BASE64 is required'; exit 1; }
         printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/ymusic-release.p12"
         chmod 600 "$RUNNER_TEMP/ymusic-release.p12"
-    - name: Assemble release APKs
+    - name: Assemble Android ARM64 APK
       working-directory: YMusicV4
       run: |
         test -n "$YMUSIC_ANDROID_STORE_PASSWORD"
         test -n "$YMUSIC_ANDROID_KEY_ALIAS"
         test -n "$YMUSIC_ANDROID_KEY_PASSWORD"
-        ./gradlew -Pproduction=true :androidApp:assembleRelease :engine-js:closureJs :engine-js:closurePlayerJs spotlessCheck
+        ./gradlew -Pproduction=true -Pymusic.androidAbis=arm64-v8a :androidApp:assembleRelease spotlessCheck
       env:
         YMUSIC_ANDROID_STORE_FILE: ${{ runner.temp }}/ymusic-release.p12
         YMUSIC_ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
@@ -190,25 +159,6 @@ jobs:
       with:
         name: android-apks
         path: YMusicV4/androidApp/build/outputs/apk/release/*.apk
-        if-no-files-found: error
-    - name: Name the JS bundles by version
-      working-directory: YMusicV4
-      run: |
-        set -euo pipefail
-        version() {
-          v="$(sed -n "s/.*const val $1 = \([0-9][0-9]*\)L.*/\1/p" buildSrc/src/main/kotlin/Dependencies.kt)"
-          [ -n "$v" ] || { echo "$1 not found in buildSrc Dependencies.kt" >&2; exit 1; }
-          echo "$v"
-        }
-        engine="$(version engineJsVersion)"
-        player="$(version playerJsVersion)"
-        mkdir -p "$RUNNER_TEMP/js-bundles"
-        cp engine-js/build/dist/engine.js "$RUNNER_TEMP/js-bundles/engine.$engine.js"
-        cp engine-js/build/dist/player.js "$RUNNER_TEMP/js-bundles/player.$player.js"
-    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-      with:
-        name: js-bundles
-        path: ${{ runner.temp }}/js-bundles/*.js
         if-no-files-found: error
   windows:
     name: windows ${{ matrix.slug }}
@@ -223,11 +173,6 @@ jobs:
           msystem: MINGW64
           prefix: mingw64
           packages: mingw-w64-x86_64-toolchain mingw-w64-x86_64-make
-        - slug: windows-arm64
-          runner: windows-11-arm
-          msystem: CLANGARM64
-          prefix: clangarm64
-          packages: mingw-w64-clang-aarch64-toolchain mingw-w64-clang-aarch64-make
     steps:
     - run: git config --global core.autocrlf false
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -296,8 +241,6 @@ jobs:
         include:
         - slug: linux-x86_64
           runner: ubuntu-24.04
-        - slug: linux-arm64
-          runner: ubuntu-24.04-arm
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       with:
@@ -355,9 +298,7 @@ jobs:
         node-version: 22
     - uses: gradle/actions/setup-gradle@0b6dd653ba04f4f93bf581ec31e66cbd7dcb644d
     - working-directory: YMusicV4
-      run: xvfb-run -a ./gradlew --continue -Pci=true :commonUi:jvmTest :desktopApp:jvmTest :download:jvmTest :dynamic-engine:jvmTest :image-loader:jvmTest :kmpCommon:jvmTest
-        :kmpFfmpeg:jvmTest :kmpHttp:core:jvmTest :kmpHttp:json:jvmTest :media-scanner:jvmTest :media-store:jvmTest :player:jvmTest :projectCommon:jvmTest :quickjs:jvmTest
-        :remote-config:jvmTest :settings:jvmTest :telemetry:jvmTest :yt-media:jvmTest
+      run: xvfb-run -a ./gradlew --continue -Pci=true :commonUi:jvmTest :desktopApp:jvmTest :download:jvmTest :dynamic-engine:jvmTest :image-loader:jvmTest :kmpCommon:jvmTest :kmpFfmpeg:jvmTest :kmpHttp:core:jvmTest :kmpHttp:json:jvmTest :media-scanner:jvmTest :media-store:jvmTest :player:jvmTest :projectCommon:jvmTest :quickjs:jvmTest :remote-config:jvmTest :settings:jvmTest :telemetry:jvmTest :yt-media:jvmTest
     - if: always()
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
@@ -455,16 +396,9 @@ jobs:
         version="$(sed -n 's/^ymusic\.versionName=//p' YMusicV4/gradle.properties | tr -d '[:space:]')"
         [ -n "$version" ] || { echo "ymusic.versionName not found" >&2; exit 1; }
         one() { set -- $1; [ $# -eq 1 ] && [ -f "$1" ] || { echo "expected one file for: $*" >&2; exit 1; }; echo "$1"; }
-        cp "$(one 'artifacts/android-apks/*-armeabi-v7a-release.apk')" "release/YMusic-$version-android-armv7.apk"
         cp "$(one 'artifacts/android-apks/*-arm64-v8a-release.apk')" "release/YMusic-$version-android-arm64.apk"
-        cp "$(one 'artifacts/android-apks/*-x86-release.apk')" "release/YMusic-$version-android-x86.apk"
-        cp "$(one 'artifacts/android-apks/*-x86_64-release.apk')" "release/YMusic-$version-android-x86_64.apk"
         cp "$(one 'artifacts/windows-x86_64-setup/*.exe')" "release/YMusic-$version-windows-x64-setup.exe"
-        cp "$(one 'artifacts/windows-arm64-setup/*.exe')" "release/YMusic-$version-windows-arm64-setup.exe"
         cp "$(one 'artifacts/linux-x86_64-deb/*.deb')" "release/YMusic-$version-linux-x86_64.deb"
-        cp "$(one 'artifacts/linux-arm64-deb/*.deb')" "release/YMusic-$version-linux-arm64.deb"
-        cp "$(one 'artifacts/js-bundles/engine.*.js')" "$(one 'artifacts/js-bundles/player.*.js')" release/
-        (cd release && sha256sum * > SHA256SUMS)
         ls -l release
     - name: Build the release notes
       env:
@@ -481,21 +415,27 @@ jobs:
         ' YMusicV4/CHANGELOG.md > "$notes"
         test -s "$notes" || { echo "CHANGELOG.md has no section for $version" >&2; exit 1; }
         cat "$notes" >> "$GITHUB_STEP_SUMMARY"
-    - name: Create the draft release
+    - name: Publish the three installers
       env:
         GH_TOKEN: ${{ github.token }}
         TAG: ${{ inputs.tag || github.ref_name }}
       run: |
         set -euo pipefail
         notes="$RUNNER_TEMP/release-notes.md"
-        draft="$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft -q .isDraft 2>/dev/null || true)"
-        case "$draft" in
-          "")    gh release create "$TAG" release/* --repo "$GITHUB_REPOSITORY" --draft \
-                   --title "$TAG" --notes-file "$notes" ;;
-          # A re-run of the tag refreshes its draft's files and notes.
-          true)  gh release upload "$TAG" release/* --repo "$GITHUB_REPOSITORY" --clobber
-                 gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TAG" --notes-file "$notes" ;;
-          *)     echo "release $TAG is already published; not touching it" >&2; exit 1 ;;
-        esac
-    if: ${{ always() && needs.android.result == 'success' && needs.windows.result == 'success' && needs.linux.result == 'success' && needs.test.result == 'success'
-      && (needs.compat.result == 'success' || needs.compat.result == 'skipped') }}
+        release_id="$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" --jq .id 2>/dev/null || true)"
+        if [ -z "$release_id" ]; then
+          gh release create "$TAG" release/* --repo "$GITHUB_REPOSITORY" --title "$TAG" --notes-file "$notes"
+          release_id="$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" --jq .id)"
+        else
+          gh release upload "$TAG" release/* --repo "$GITHUB_REPOSITORY" --clobber
+          gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft=false --title "$TAG" --notes-file "$notes"
+        fi
+        version="${TAG#release-v}"
+        gh api "repos/$GITHUB_REPOSITORY/releases/$release_id/assets" --paginate --jq '.[] | [.id, .name] | @tsv' |
+        while IFS=$'\t' read -r asset_id asset_name; do
+          case "$asset_name" in
+            "YMusic-$version-android-arm64.apk"|"YMusic-$version-windows-x64-setup.exe"|"YMusic-$version-linux-x86_64.deb") ;;
+            *) gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id" ;;
+          esac
+        done
+    if: ${{ always() && needs.android.result == 'success' && needs.windows.result == 'success' && needs.linux.result == 'success' && needs.test.result == 'success' && (needs.compat.result == 'success' || needs.compat.result == 'skipped') }}

@@ -294,7 +294,7 @@ kotlin.sourceSets.getByName("jvmMain").resources.srcDir(files(mseJniResourcesDir
 
 // Android NDK: same C as the host, linked against ffmpeg-build out/android-<abi>.
 val ffmpegBuildDir = (rootProject.projectDir.parentFile.resolve("ffmpeg-build")).takeIf { it.isDirectory }
-val mseAndroidAbis = FfmpegBuild.ANDROID_ABIS
+val mseAndroidAbis = FfmpegBuild.androidAbis(project)
 // ANDROID_NDK_ROOT pins the NDK (CI matches the one its ffmpeg packs were built with); otherwise the
 // newest NDK installed in the SDK.
 val ndkDir: File? = System.getenv("ANDROID_NDK_ROOT")?.let(::File)?.takeIf { it.isDirectory } ?: run {
@@ -306,6 +306,7 @@ val ndkDir: File? = System.getenv("ANDROID_NDK_ROOT")?.let(::File)?.takeIf { it.
 val stageAndroidJni by tasks.registering {
     val jniLibsDir = projectDir.resolve("src/androidMain/jniLibs")
     inputs.dir(mseNativeSrc)
+    inputs.property("abis", mseAndroidAbis)
     inputs.property("production", productionC)
     outputs.dir(jniLibsDir)
     onlyIf {

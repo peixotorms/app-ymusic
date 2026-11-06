@@ -79,3 +79,5 @@ hides its update check and automatic-download controls when no updater is suppli
 
 Use the same application ID and signing certificate for subsequent APKs. Remote engine/player bundle
 configuration is separate from app installation; it cannot replace the APK.
+
+- **Release target** — one `arm64-v8a` APK. `FfmpegBuild.androidAbis(project)` keeps APK splits and every native dependency aligned; `-Pymusic.androidAbis=x86_64` is available for development emulators.

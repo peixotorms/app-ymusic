@@ -67,7 +67,7 @@ val stageFfmpegDeviceTestJni = tasks.register<Copy>("stageFfmpegDeviceTestJni") 
     dependsOn(rootProject.tasks.named("syncFfmpegAndroid"))
     description = "Stage prebuilt android ffmpeg pack into the androidDeviceTest jniLibs convention dir."
     into(layout.projectDirectory.dir("src/androidDeviceTest/jniLibs"))
-    FfmpegBuild.ANDROID_ABIS.forEach { abi ->
+    FfmpegBuild.androidAbis(project).forEach { abi ->
         from(FfmpegBuild.androidPackDir(project, abi)) { into(abi) }
     }
 }

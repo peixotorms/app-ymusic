@@ -53,7 +53,7 @@ The iOS app builds from `iosApp/iosApp.xcodeproj` in Xcode; its Kotlin framework
 
 ## Personal releases
 
-The release workflow builds Android APKs, Windows installers, and Linux Debian packages.
+The release workflow builds one Android ARM64 APK, one Windows x64 EXE installer, and one Linux x64 Debian package. It does not publish separate JavaScript bundles, checksums, or other architectures.
 macOS packaging is disabled. It runs for a `release-v…` tag and creates a draft
 in this repository’s GitHub Releases.
 
@@ -71,3 +71,5 @@ For reusable build caches, run the workflow from `master` and fill in its `tag` 
 with the release tag. App sources are checked out at that exact tag. GitHub isolates
 caches between tags, while tagged builds can reuse caches saved on the default branch:
 [cache scope documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching#restrictions-for-accessing-a-cache).
+
+Android defaults to `arm64-v8a` throughout the APK, QuickJS, MSE, and FFmpeg stages. For a development emulator, override all of them together with `-Pymusic.androidAbis=x86_64`. Release builds retain ARM64 only.
