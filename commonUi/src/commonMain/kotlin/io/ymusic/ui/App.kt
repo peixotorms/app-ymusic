@@ -9,15 +9,19 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Chat
@@ -851,6 +855,8 @@ private fun AppRoot(
         val needsSurface = queue.currentItem is PlayableItem.YtMedia ||
             (queue.currentItem != null && showsVideo(playbackConfig, quality))
 
+        val topLayer = layers.lastOrNull()
+        val artworkPage = topLayer is AppLayer.Playlist || (topLayer is AppLayer.MusicBrowse && !topLayer.session.url.contains("id=FEmusic"))
         val holeOpen = desktopLayoutHole && nowPlayingOpen
         Box(
             Modifier.fillMaxSize()
@@ -859,7 +865,7 @@ private fun AppRoot(
                 .drawerEdgeGestureExclusion(!drawer.isOpen && !nowPlayingOpen && layers.isEmpty()),
         ) {
             BoxWithConstraints(
-                Modifier.fillMaxSize().safeDrawingPadding(),
+                Modifier.fillMaxSize().then(if (artworkPage) Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)) else Modifier.safeDrawingPadding()),
             ) {
                 // design/final/home.html: landscape (or any window this wide) puts the tab row inline in the app bar.
                 val wide = maxWidth > maxHeight && maxWidth >= 600.dp || maxWidth >= 650.dp

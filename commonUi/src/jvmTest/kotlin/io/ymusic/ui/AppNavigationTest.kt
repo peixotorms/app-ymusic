@@ -64,8 +64,6 @@ class AppNavigationTest {
                 waitUntilAtLeastOneExists(hasText("Mix - Sơn Tùng M-TP", substring = true), 20_000)
                 onNodeWithText("Mix - Sơn Tùng M-TP", substring = true).performClick()
 
-                // The detail page is on screen right away — its bar title and the /next panel header.
-                waitUntilAtLeastOneExists(hasText("Playlist"), 10_000)
                 waitUntilAtLeastOneExists(hasText("Mix - Adele - Rolling in the Deep (Official Music Video)"), 20_000)
 
                 // Back pops the detail onto the still-loaded SEARCH RESULTS (not Home): the
@@ -114,7 +112,7 @@ class AppNavigationTest {
                 onNodeWithText("son tung mtp").performClick()
                 waitUntilAtLeastOneExists(hasText("Mix - Sơn Tùng M-TP", substring = true), 20_000)
                 onNodeWithText("Mix - Sơn Tùng M-TP", substring = true).performClick()
-                waitUntilAtLeastOneExists(hasText("Playlist"), 10_000)
+                waitUntilAtLeastOneExists(hasText("Mix - Adele - Rolling in the Deep (Official Music Video)"), 20_000)
 
                 // The detail bar's search icon raises the EXISTING results layer (SINGLE_TOP):
                 // the submitted query and its loaded results are right there — no blank input.
@@ -124,7 +122,7 @@ class AppNavigationTest {
 
                 // The stack reordered (not grew): back lands on the detail page, then Home.
                 onNodeWithActionLabel("Back").performClick()
-                waitUntilAtLeastOneExists(hasText("Playlist"), 10_000)
+                waitUntilAtLeastOneExists(hasText("Mix - Adele - Rolling in the Deep (Official Music Video)"), 20_000)
                 onNodeWithActionLabel("Back").performClick()
                 waitUntilAtLeastOneExists(hasText("Trending music"), 10_000)
             }

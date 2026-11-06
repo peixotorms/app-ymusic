@@ -19,6 +19,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -241,66 +242,77 @@ fun MusicDetailScreen(
         creatingLocal?.let { title -> LocalPlaylistFromDownloadsDialog(store, title, session.feed.pager) { creatingLocal = null } }
     }
 
-    Column(Modifier.fillMaxSize()) {
-        DetailAppBar(
-            if (isFeed) (ready?.pageHeader?.title ?: session.item.title) else stringResource(Res.string.detail_playlist),
-            onBack,
-            onSearch,
-        )
-        FeedList(
-            session.feed.pager,
-            coordinator,
-            onPlayItem = if (isFeed) {
-                null
-            } else {
-                { tapped ->
-                    coordinator.playAll(
-                        videos,
-                        startIndex = videos.indexOfFirst { it.id == tapped.id }.coerceAtLeast(0),
-                        source = ready.queueSource(coordinator.graph.engines, session.url, videos, session.log),
-                    )
-                }
-            },
-            topContent = if (isFeed) {
-                if (videos.isEmpty()) {
-                    null
-                } else {
-                    {
-                        PlayAllBar(
-                            onPlayAll = { coordinator.playAll(videos, shuffle = false) },
-                            onShuffleAll = { coordinator.playAll(videos, startIndex = videos.indices.random(), shuffle = true) },
-                        )
-                    }
-                }
-            } else {
-                {
-                    val title = ready?.pageHeader?.title ?: session.item.title
-                    PlaylistHeader(
-                        title = title,
-                        meta = ready?.pageHeader?.subtitleLine1 ?: session.item.subtitleLine1,
-                        onShare = sharePlaylist(session.item, ready?.pageHeader),
-                        onShuffle = if (videos.isEmpty()) {
+    val art = ready?.pageHeader?.thumbs?.largestThumbUrl() ?: session.item.thumbs.largestThumbUrl() ?: videos.firstOrNull()?.thumbs?.largestThumbUrl()
+    val content: @Composable () -> Unit = {
+        CompositionLocalProvider(LocalCompactMusicRows provides !isFeed) {
+            Column(Modifier.fillMaxSize()) {
+                if (isFeed) DetailAppBar(
+                    if (isFeed) (ready?.pageHeader?.title ?: session.item.title) else stringResource(Res.string.detail_playlist),
+                    onBack,
+                    onSearch,
+                )
+                FeedList(
+                    session.feed.pager,
+                    coordinator,
+                    onPlayItem = if (isFeed) {
+                        null
+                    } else {
+                        { tapped ->
+                            coordinator.playAll(
+                                videos,
+                                startIndex = videos.indexOfFirst { it.id == tapped.id }.coerceAtLeast(0),
+                                source = ready.queueSource(coordinator.graph.engines, session.url, videos, session.log),
+                            )
+                        }
+                    },
+                    topContent = if (isFeed) {
+                        if (videos.isEmpty()) {
                             null
                         } else {
                             {
-                                coordinator.playAll(
-                                    videos,
-                                    startIndex = videos.indices.random(),
-                                    shuffle = true,
-                                    source = ready.queueSource(coordinator.graph.engines, session.url, videos, session.log),
+                                PlayAllBar(
+                                    onPlayAll = { coordinator.playAll(videos, shuffle = false) },
+                                    onShuffleAll = { coordinator.playAll(videos, startIndex = videos.indices.random(), shuffle = true) },
                                 )
                             }
-                        },
-                        onDownload = onDownload?.let { open -> { open(title, session.feed.pager) } },
-                        onCreateLocal = store?.let { { creatingLocal = title } },
-                    )
-                }
-            },
-            onOpen = onOpen,
-            listState = session.feed.listState,
-            onDeeplink = onDeeplink,
-        )
+                        }
+                    } else {
+                        {
+                            val title = ready?.pageHeader?.title ?: session.item.title
+                            PlaylistHeader(
+                                artUrl = art,
+                                onBack = onBack,
+                                onSearch = onSearch,
+                                castButton = coordinator.graph.castButton,
+                                onPlay = if (videos.isEmpty()) null else { { coordinator.playAll(videos, shuffle = false, source = ready.queueSource(coordinator.graph.engines, session.url, videos, session.log)) } },
+                                title = title,
+                                meta = ready?.pageHeader?.subtitleLine1 ?: session.item.subtitleLine1,
+                                onShare = sharePlaylist(session.item, ready?.pageHeader),
+                                onShuffle = if (videos.isEmpty()) {
+                                    null
+                                } else {
+                                    {
+                                        coordinator.playAll(
+                                            videos,
+                                            startIndex = videos.indices.random(),
+                                            shuffle = true,
+                                            source = ready.queueSource(coordinator.graph.engines, session.url, videos, session.log),
+                                        )
+                                    }
+                                },
+                                onDownload = onDownload?.let { open -> { open(title, session.feed.pager) } },
+                                onCreateLocal = store?.let { { creatingLocal = title } },
+                            )
+                        }
+                    },
+                    onOpen = onOpen,
+                    listState = session.feed.listState,
+                    onDeeplink = onDeeplink,
+                )
+            }
+        }
     }
+    if (isFeed) content() else ArtworkTheme(art, gradient = false, content = content)
 }
 
 @Composable

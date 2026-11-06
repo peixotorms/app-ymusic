@@ -600,7 +600,7 @@ private fun FeedSections(
     BoxWithConstraints(modifier.fillMaxSize()) {
         val metrics = gridMetricsFor(maxWidth)
         val layout = feedLayoutFor(maxWidth)
-        val columns = if (layout != FeedLayout.Grid) 1 else gridColumnsFor(maxWidth)
+        val columns = if (LocalCompactMusicRows.current || layout != FeedLayout.Grid) 1 else gridColumnsFor(maxWidth)
         val wide = layout == FeedLayout.WideList
         val compactTitle = feedCompactTitleFor(maxWidth)
         val listState = hoistedListState ?: rememberLazyListState()

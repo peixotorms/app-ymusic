@@ -4,11 +4,11 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.test.waitUntilAtLeastOneExists
 import io.ymusic.dynamicengine.DynamicEngineManager
@@ -86,8 +86,7 @@ class DetailScreensTest {
                     }
                 }
 
-                // Bar title + the response header replace the fallback item metadata.
-                onNodeWithText("Playlist").assertExists()
+                onNodeWithActionLabel("Back").assertExists()
                 waitUntilAtLeastOneExists(hasText("Những ca khúc hay nhất của Sơn Tùng M-TP"), 20_000)
                 onNodeWithText("Playlist · 31 videos · 1,007,162 views").assertExists()
                 assertTrue(bodies.first().contains("VLPLL6O4RnjOZCVbxKNDznzuBYtI9cQfFmkY"), bodies.first())
@@ -101,7 +100,7 @@ class DetailScreensTest {
                 assertTrue(queue.all { it is PlayableItem.YtMedia }, "$queue")
 
                 // The FAB shuffles the whole playlist, starting anywhere in it.
-                onNodeWithText("Shuffle").performClick()
+                onNodeWithActionLabel("Shuffle").performClick()
                 assertEquals(true, player.lastShuffle)
                 assertTrue(player.lastPlayIndex in 0..3, "${player.lastPlayIndex}")
             }
@@ -153,10 +152,13 @@ class DetailScreensTest {
 
                 // The infinite mix pages: Show more slides the window and appends ONLY the fresh
                 // items (the overlap video is not duplicated). The token is the engine's own.
+                onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Show more"))
                 onNodeWithText("Show more").performClick()
                 waitUntilAtLeastOneExists(hasText("Rihanna - Diamonds", substring = true), 20_000)
+                onNode(hasScrollToIndexAction()).performScrollToNode(hasText("OneRepublic - Counting Stars", substring = true))
                 onNodeWithText("OneRepublic - Counting Stars", substring = true).assertExists()
-                onAllNodesWithText("Adele - Hello", substring = true).assertCountEquals(1)
+                val loaded = (session.feed.pager.state.value as Pager.State.Ready).sections.flatMap { it.items }
+                assertEquals(1, loaded.count { it.title.contains("Adele - Hello") })
                 val window2Body = bodies.first { it.contains("YQHsXMglC9A") }
                 assertTrue(window2Body.contains(""""playlistIndex":4"""), window2Body)
             }

@@ -77,7 +77,6 @@ class DeeplinkTest {
                 onNodeWithActionLabel("View all").performClick()
 
                 // Playlist detail opens, seeded with the shelf title, then loads via VL browse.
-                waitUntilAtLeastOneExists(hasText("Playlist"), 10_000)
                 waitUntilAtLeastOneExists(hasText("Những ca khúc hay nhất", substring = true), 20_000)
                 assertTrue(
                     bodies.any { it.contains(""""browseId":"VLPLBcAa442MLArUZuKY29nwsXj39mt3FL5W"""") },

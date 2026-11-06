@@ -5,18 +5,25 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.automirrored.filled.PlaylistAddCheck
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.Image
@@ -25,7 +32,6 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -40,9 +46,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,14 +65,16 @@ import io.ymusic.dynamicengine.yt.removeFromPlaylist
 import io.ymusic.dynamicengine.yt.savePlaylist
 import io.ymusic.dynamicengine.yt.subscribeChannel
 import io.ymusic.ui.resources.Res
+import io.ymusic.ui.resources.cd_back
 import io.ymusic.ui.resources.cd_download
 import io.ymusic.ui.resources.cd_remove_playlist_from_library
 import io.ymusic.ui.resources.cd_save_playlist
+import io.ymusic.ui.resources.cd_search
 import io.ymusic.ui.resources.cd_share
 import io.ymusic.ui.resources.cd_shuffle
 import io.ymusic.ui.resources.channel_sign_in_to_subscribe
-import io.ymusic.ui.resources.detail_playlist
 import io.ymusic.ui.resources.local_playlist_create
+import io.ymusic.ui.resources.play_all
 import io.ymusic.ui.resources.playlist_removed
 import io.ymusic.ui.resources.playlist_saved
 import io.ymusic.ui.resources.playlist_sign_in_to_save
@@ -206,9 +217,9 @@ fun PlaylistDetailScreen(
         creatingLocal?.let { title -> LocalPlaylistFromDownloadsDialog(store, title, s.feed.pager) { creatingLocal = null } }
     }
 
-    Column(Modifier.fillMaxSize()) {
-        DetailAppBar(stringResource(Res.string.detail_playlist), onBack, onSearch)
-        CompositionLocalProvider(LocalRemoveFromYtPlaylist provides { s.removeVideo(it) }) {
+    val art = ready?.pageHeader?.thumbs?.largestThumbUrl() ?: item.thumbs.largestThumbUrl() ?: videos.firstOrNull()?.thumbs?.largestThumbUrl()
+    ArtworkTheme(art, gradient = false) {
+        CompositionLocalProvider(LocalRemoveFromYtPlaylist provides { s.removeVideo(it) }, LocalCompactMusicRows provides true) {
             FeedList(
                 s.feed.pager,
                 coordinator,
@@ -222,6 +233,11 @@ fun PlaylistDetailScreen(
                 topContent = {
                     val title = ready?.pageHeader?.title ?: item.title
                     PlaylistHeader(
+                        artUrl = art,
+                        onBack = onBack,
+                        onSearch = onSearch,
+                        castButton = coordinator.graph.castButton,
+                        onPlay = if (videos.isEmpty()) null else { { coordinator.playAll(videos, shuffle = false, source = ready.queueSource(coordinator.graph.engines, s.url, videos, s.log)) } },
                         title = title,
                         meta = ready?.pageHeader?.subtitleLine1 ?: item.subtitleLine1,
                         onShuffle = if (videos.isEmpty()) {
@@ -260,10 +276,7 @@ internal fun sharePlaylist(item: YtFeedItem, header: YtPageHeader?): (() -> Unit
     return { share(YtFeedItem.KIND_PLAYLIST, playlistId) }
 }
 
-/** Title + meta, the actions row and the
- *  shuffle FAB, closed by the 16dp-inset divider. Shared by the WEB playlist detail and the YT Music
- *  album/playlist detail so both read identically. [save] (the save-to-library toggle) leads the
- *  row only when the playlist can be saved. */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun PlaylistHeader(
     title: String,
@@ -273,43 +286,42 @@ internal fun PlaylistHeader(
     onCreateLocal: (() -> Unit)? = null,
     save: (@Composable () -> Unit)? = null,
     onShare: (() -> Unit)? = null,
+    artUrl: String? = null,
+    onBack: (() -> Unit)? = null,
+    onSearch: (() -> Unit)? = null,
+    castButton: (@Composable (Modifier) -> Unit)? = null,
+    onPlay: (() -> Unit)? = null,
 ) {
     Column(Modifier.fillMaxWidth()) {
-        Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 8.dp)) {
-            Text(
-                title,
-                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = DesignColors.Ink, lineHeight = 25.sp),
-            )
-            meta?.let {
-                Text(
-                    it,
-                    style = TextStyle(fontSize = 12.sp, color = DesignColors.InkSecondary),
-                    modifier = Modifier.padding(top = 4.dp),
-                )
+        BoxWithConstraints(Modifier.fillMaxWidth()) {
+            val heroHeight = maxWidth.coerceAtMost(440.dp)
+            Box(Modifier.fillMaxWidth().height(heroHeight)) {
+                ArtImage(artUrl, RectangleShape) { ThumbPlaceholder(Icons.Outlined.Image, 64.dp, DesignColors.SurfaceDim) }
+                Box(Modifier.matchParentSize().background(Brush.verticalGradient(0f to Color.Black.copy(alpha = 0.60f), 0.4f to Color.Transparent, 1f to Color.Black)))
+                Row(Modifier.fillMaxWidth().statusBarsPadding().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                    if (onBack != null) ActionIcon(Icons.AutoMirrored.Default.ArrowBack, stringResource(Res.string.cd_back), modifier = Modifier.background(Color.Black.copy(alpha = 0.45f), CircleShape), hitSize = 48.dp, tint = Color.White, onClick = onBack)
+                    Box(Modifier.weight(1f))
+                    if (onSearch != null) ActionIcon(Icons.Default.Search, stringResource(Res.string.cd_search), modifier = Modifier.background(Color.Black.copy(alpha = 0.45f), CircleShape), hitSize = 48.dp, tint = Color.White, onClick = onSearch)
+                    castButton?.invoke(Modifier.padding(start = 8.dp).size(48.dp).background(Color.Black.copy(alpha = 0.65f), CircleShape))
+                }
+                Text(title, maxLines = 3, overflow = TextOverflow.Ellipsis, style = TextStyle(fontSize = 30.sp, lineHeight = 36.sp, fontWeight = FontWeight.Bold, color = DesignColors.InkStrong), textAlign = TextAlign.Center, modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 12.dp))
             }
         }
-        Row(
-            Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        meta?.takeIf { it.isNotBlank() }?.let {
+            Text(it, style = TextStyle(fontSize = 13.sp, lineHeight = 19.sp, color = DesignColors.InkSecondary), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 4.dp))
+        }
+        FlowRow(
+            Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             save?.invoke()
-            ActionIcon(Icons.Outlined.Share, stringResource(Res.string.cd_share), enabled = onShare != null, onClick = { onShare?.invoke() })
-            ActionIcon(Icons.Outlined.FileDownload, stringResource(Res.string.cd_download), enabled = onDownload != null, onClick = { onDownload?.invoke() })
-            if (onCreateLocal != null) ActionIcon(Icons.Outlined.LibraryAdd, stringResource(Res.string.local_playlist_create), onClick = onCreateLocal)
-            Box(Modifier.weight(1f))
-            Box(
-                Modifier.size(46.dp).clip(CircleShape).background(DesignColors.InkStrong)
-                    .clickable(enabled = onShuffle != null, role = Role.Button, onClick = { onShuffle?.invoke() })
-                    .a11yActionLabel(stringResource(Res.string.cd_shuffle)),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(Icons.Default.Shuffle, null, Modifier.size(20.dp), tint = DesignColors.OnInk)
-            }
+            if (onShare != null) ActionIcon(Icons.Outlined.Share, stringResource(Res.string.cd_share), hitSize = 48.dp, onClick = onShare)
+            if (onDownload != null) ActionIcon(Icons.Outlined.FileDownload, stringResource(Res.string.cd_download), hitSize = 48.dp, onClick = onDownload)
+            if (onCreateLocal != null) ActionIcon(Icons.Outlined.LibraryAdd, stringResource(Res.string.local_playlist_create), hitSize = 48.dp, onClick = onCreateLocal)
+            ActionIcon(Icons.Default.Shuffle, stringResource(Res.string.cd_shuffle), hitSize = 48.dp, enabled = onShuffle != null, onClick = { onShuffle?.invoke() })
+            ActionIcon(Icons.Default.PlayArrow, stringResource(Res.string.play_all), modifier = Modifier.background(DesignColors.Accent, CircleShape), iconSize = 30.dp, hitSize = 56.dp, tint = DesignColors.OnAccent, enabled = onPlay != null, onClick = { onPlay?.invoke() })
         }
-        // 8dp under the divider + the first row's own 8dp = the list's 16dp item rhythm; without
-        // it the first video hugs the divider at half the spacing of every following row.
-        HorizontalDivider(color = DesignColors.StackNear, modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp))
     }
 }
 

@@ -46,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -247,6 +248,8 @@ private val SectionCtaPaddingV = 6.dp
 
 /** video / playlist / channel — list form, one row size per band: 92dp square thumb, or 16:9
  *  160×90 when [wide] (the [FeedLayout.WideList] band). [compactTitle] on narrow screens ([feedCompactTitleFor]). */
+internal val LocalCompactMusicRows = staticCompositionLocalOf { false }
+
 @Composable
 fun FeedListItem(
     item: YtFeedItem,
@@ -256,6 +259,7 @@ fun FeedListItem(
     wide: Boolean = false,
     compactTitle: Boolean = false,
 ) {
+    val music = LocalCompactMusicRows.current && item.kind == YtFeedItem.KIND_VIDEO
     Row(
         modifier
             .fillMaxWidth()
@@ -269,9 +273,13 @@ fun FeedListItem(
                 top = DesignSpacing.ListRowVertical,
                 bottom = DesignSpacing.ListRowVertical,
             ),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = if (music) Alignment.CenterVertically else Alignment.Top,
     ) {
         when {
+            music -> Box(Modifier.size(52.dp).clip(RoundedCornerShape(8.dp))) {
+                ThumbImage(item.thumbs, RoundedCornerShape(8.dp)) { ThumbPlaceholder(Icons.Outlined.Image, 22.dp) }
+                if (isAvailableOffline(item)) AvailableOfflineMark(Modifier.align(Alignment.BottomEnd))
+            }
             item.kind == YtFeedItem.KIND_CHANNEL -> CircleThumb(item, 74.dp, Modifier.clearAndSetSemantics {})
             wide -> RectThumb(item, width = 160.dp, height = 90.dp, Modifier.clearAndSetSemantics {})
             else -> RectThumb(item, width = 92.dp, height = 92.dp, Modifier.clearAndSetSemantics {})
@@ -283,20 +291,21 @@ fun FeedListItem(
         Column(Modifier.weight(1f).padding(end = if (bare) 12.dp else 0.dp).clearAndSetSemantics {}) {
             Text(
                 item.title,
-                style = if (compactTitle) ListTitleCompactStyle else ListTitleStyle,
-                maxLines = if (wide) 3 else 2,
+                style = if (music || compactTitle) ListTitleCompactStyle else ListTitleStyle,
+                maxLines = if (music) 1 else if (wide) 3 else 2,
                 overflow = TextOverflow.Ellipsis,
             )
-            val sub = listOfNotNull(item.subtitleLine1, item.subtitleLine2).joinToString(" · ")
+            val sub = (if (music) listOfNotNull(item.subtitleLine1) else listOfNotNull(item.subtitleLine1, item.subtitleLine2)).joinToString(" · ")
             if (sub.isNotEmpty()) {
-                Text(sub, style = ListSubStyle, maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 4.dp))
+                Text(sub, style = ListSubStyle, maxLines = if (music) 1 else 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 4.dp))
             }
         }
+        if (music) item.duration?.let { Text(it, style = ListSubStyle, modifier = Modifier.padding(start = 8.dp)) }
         when {
             // A pill has no touch padding to absorb the gap or the row's trailing inset, so it carries both;
             // the ⋮'s own hit padding is its gap from the title.
             item.ctaText != null -> CtaPill(item.ctaText!!, modifier = Modifier.padding(start = DesignSpacing.Space16, end = 12.dp))
-            actions.entries.isNotEmpty() -> MoreMenu(actions, Modifier.align(Alignment.Top).padding(top = 2.dp))
+            actions.entries.isNotEmpty() -> MoreMenu(actions, Modifier.align(if (music) Alignment.CenterVertically else Alignment.Top).padding(top = 2.dp))
         }
     }
 }
