@@ -1,5 +1,12 @@
 package io.ymusic.ui
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -7,6 +14,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -28,6 +36,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -36,7 +47,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import io.ymusic.player.SkipSegment
+import kotlin.math.PI
 import kotlin.math.roundToInt
+import kotlin.math.sin
 
 /** Amber marks on the seek track — contrast against the orange fill, like the legacy skip overlay. */
 val DefaultSkipSegmentColor = Color(0xFFFFC107)
@@ -89,11 +102,18 @@ fun SlimSeekBar(
     skipFractions: List<Pair<Float, Float>> = emptyList(),
     skipColor: Color = DefaultSkipSegmentColor,
     a11y: SliderA11y? = null,
+    wave: Boolean = false,
+    playing: Boolean = false,
 ) {
     var widthPx by remember { mutableStateOf(0) }
     var dragging by remember { mutableStateOf<Float?>(null) }
     val shown = (dragging ?: fraction).coerceIn(0f, 1f)
     val buffered = bufferedFraction.coerceIn(0f, 1f)
+    val phase = if (wave && playing && windowVisible()) {
+        val transition = rememberInfiniteTransition()
+        val offset by transition.animateFloat(0f, (2 * PI).toFloat(), infiniteRepeatable(tween(1600, easing = LinearEasing), RepeatMode.Restart))
+        offset
+    } else 0f
     val seek = rememberUpdatedState(onSeek)
     val scrub = rememberUpdatedState(onScrub)
     val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
@@ -146,7 +166,30 @@ fun SlimSeekBar(
             },
         contentAlignment = Alignment.CenterStart,
     ) {
-        Box(
+        if (wave) {
+            Canvas(Modifier.fillMaxSize()) {
+                val y = size.height / 2
+                val end = size.width * shown
+                fun x(value: Float) = if (rtl) size.width - value else value
+                drawLine(trackColor, Offset(x(end), y), Offset(x(size.width), y), strokeWidth = trackHeight.toPx(), cap = StrokeCap.Round)
+                if (buffered > shown) drawLine(bufferedColor, Offset(x(end), y), Offset(x(size.width * buffered), y), strokeWidth = trackHeight.toPx(), cap = StrokeCap.Round)
+                val path = Path()
+                val wavelength = 22.dp.toPx()
+                val amplitude = if (playing) 3.dp.toPx() else 0f
+                var position = 0f
+                while (position <= end) {
+                    val taper = minOf(position / 8.dp.toPx(), (end - position) / 8.dp.toPx(), 1f).coerceAtLeast(0f)
+                    val pointY = y + sin(position / wavelength * (2 * PI).toFloat() - phase) * amplitude * taper
+                    if (position == 0f) path.moveTo(x(position), pointY) else path.lineTo(x(position), pointY)
+                    position += 1.dp.toPx()
+                }
+                path.lineTo(x(end), y)
+                drawPath(path, fillColor, style = Stroke(width = trackHeight.toPx(), cap = StrokeCap.Round))
+                skipFractions.forEach { (begin, finish) ->
+                    drawLine(skipColor, Offset(x(size.width * begin), y + 7.dp.toPx()), Offset(x(size.width * finish), y + 7.dp.toPx()), strokeWidth = 2.dp.toPx(), cap = StrokeCap.Round)
+                }
+            }
+        } else Box(
             Modifier
                 .fillMaxWidth()
                 .height(trackHeight)

@@ -144,6 +144,8 @@ internal class VideoDetailsState(
     var postErrorCode by mutableStateOf<String?>(null)
     var likeStatus by mutableStateOf(YtVideoDetails.INDIFFERENT)
     var ratingPending by mutableStateOf(false)
+    var ratingLoaded by mutableStateOf(false)
+    var ratingErrorCode by mutableStateOf<String?>(null)
     var canRate by mutableStateOf(false)
     private var commentsRequested = false
 
@@ -172,6 +174,8 @@ internal class VideoDetailsState(
             rating.state.collect {
                 likeStatus = it.status
                 ratingPending = it.pending
+                ratingLoaded = it.loaded
+                ratingErrorCode = it.errorCode
                 canRate = it.available
             }
         }
