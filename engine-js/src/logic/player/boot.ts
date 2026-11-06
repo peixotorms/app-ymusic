@@ -1045,7 +1045,8 @@ class Player {
       // After the load: base.js clears loop for every new video.
       this.setLoop(options.loop);
       /* Same JS turn as loadVideoById: no frame plays before the pause lands. */
-      if (!options.playWhenReady) this.pause();
+      if (options.playWhenReady) this.play();
+      else this.pause();
     } catch (e) {
       throw new JsEngineErrorImpl(
         "loadVideoById: " + (e instanceof Error ? e.message : String(e)),

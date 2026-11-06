@@ -98,3 +98,5 @@ Module detail for the one-line summary in the root [`AGENTS.md`](../AGENTS.md) â
   payloads remain streamed. Request cancellation is internal to HTTP interceptors; the host HTTP
   wire and native surface are unchanged. Target durations are approximate because YouTube sends
   media in segments; an in-flight segment can extend past the target.
+
+  `player/load` explicitly applies play or pause after loading, including when YouTube reuses a prepared item. This keeps the requested playback intent across queue handoffs without changing command arguments or response fields.
