@@ -545,6 +545,7 @@
     <string name="video_details_post">Հրապարակել</string>
     <string name="video_details_posted">Մեկնաբանությունը հրապարակվեց</string>
     <string name="video_details_like">Հավանել</string>
+    <string name="video_details_unlike">Հեռացնել հավանումը</string>
     <string name="video_details_dislike">Չհավանել</string>
     <string name="video_details_sign_in_to_rate">Մուտք գործեք՝ այս տեսանյութը գնահատելու համար</string>
     <string name="video_details_reply">Պատասխանել</string>

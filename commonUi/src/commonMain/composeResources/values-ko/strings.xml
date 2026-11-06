@@ -537,6 +537,7 @@
     <string name="video_details_post">게시</string>
     <string name="video_details_posted">댓글을 게시했습니다</string>
     <string name="video_details_like">좋아요</string>
+    <string name="video_details_unlike">좋아요 취소</string>
     <string name="video_details_dislike">싫어요</string>
     <string name="video_details_sign_in_to_rate">이 동영상을 평가하려면 로그인하세요</string>
     <string name="video_details_reply">답글</string>

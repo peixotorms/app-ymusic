@@ -545,6 +545,7 @@
     <string name="video_details_post">Објави</string>
     <string name="video_details_posted">Коментарот е објавен</string>
     <string name="video_details_like">Ми се допаѓа</string>
+    <string name="video_details_unlike">Отстрани допаѓање</string>
     <string name="video_details_dislike">Не ми се допаѓа</string>
     <string name="video_details_sign_in_to_rate">Најавете се за да го оцените видеото</string>
     <string name="video_details_reply">Одговори</string>

@@ -561,6 +561,7 @@
     <string name="video_details_post">Odeslat</string>
     <string name="video_details_posted">Komentář zveřejněn</string>
     <string name="video_details_like">Líbí se mi</string>
+    <string name="video_details_unlike">Zrušit označení To se mi líbí</string>
     <string name="video_details_dislike">Nelíbí se mi</string>
     <string name="video_details_sign_in_to_rate">Přihlaste se a ohodnoťte toto video</string>
     <string name="video_details_reply">Odpovědět</string>

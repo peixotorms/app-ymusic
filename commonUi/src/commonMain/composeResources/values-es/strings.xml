@@ -553,6 +553,7 @@
     <string name="video_details_post">Publicar</string>
     <string name="video_details_posted">Comentario publicado</string>
     <string name="video_details_like">Me gusta</string>
+    <string name="video_details_unlike">Quitar Me gusta</string>
     <string name="video_details_dislike">No me gusta</string>
     <string name="video_details_sign_in_to_rate">Inicia sesión para valorar este vídeo</string>
     <string name="video_details_reply">Responder</string>

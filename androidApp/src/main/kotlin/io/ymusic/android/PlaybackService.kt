@@ -39,6 +39,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import com.google.common.util.concurrent.SettableFuture
+import io.ymusic.dynamicengine.yt.YtVideoDetails
 import io.ymusic.player.LoopMode
 import io.ymusic.player.PlayableItem
 import io.ymusic.player.PlaybackState
@@ -48,6 +49,8 @@ import io.ymusic.player.isPlaying
 import io.ymusic.player.media3.Media3PlayerAdapter
 import io.ymusic.ui.AppGraph
 import io.ymusic.ui.SearchFocus
+import io.ymusic.ui.VideoRating
+import io.ymusic.ui.VideoRatingSnapshot
 import io.ymusic.ui.playFromSearch
 import io.ymusic.ui.playerErrorMessage
 import io.ymusic.ui.playhistory.PlayAgainStore
@@ -56,6 +59,10 @@ import io.ymusic.ui.resources.cd_repeat_all
 import io.ymusic.ui.resources.cd_repeat_off
 import io.ymusic.ui.resources.cd_repeat_one
 import io.ymusic.ui.resources.cd_shuffle
+import io.ymusic.ui.resources.video_details_like
+import io.ymusic.ui.resources.video_details_sign_in_to_rate
+import io.ymusic.ui.resources.video_details_unlike
+import io.ymusic.ui.videoRatingErrorMessage
 import io.ymusic.ui.youtubeThumbUrl
 import kmpcommon.log.Logger
 import kmpcommon.log.debug
@@ -69,13 +76,16 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import org.jetbrains.compose.resources.getString
+import projectcommon.error.errorCode
 import projectcommon.error.runSuspendCatching
 import androidx.media3.session.R as Media3R
 
@@ -100,6 +110,8 @@ class PlaybackService : MediaLibraryService() {
     private var tree: MediaBrowseTree? = null
     private var coordinator: io.ymusic.ui.PlaybackCoordinator? = null
     private var playAgain: PlayAgainStore? = null
+    private var currentRating: VideoRating? = null
+    private val ratingState = MutableStateFlow(VideoRatingSnapshot())
     private val ready = CompletableDeferred<Unit>()
     /** [ready] for Guava callers (the deferred bitmap loader). */
     private val readyFuture = SettableFuture.create<Unit>()
@@ -195,10 +207,23 @@ class PlaybackService : MediaLibraryService() {
             }
         }
         serviceScope.launch {
-            combine(player.status, player.queue) { status, queue ->
-                Triple(queue.shuffle, queue.loopMode, isPlaying(status, queue))
-            }.distinctUntilChanged().collect { (shuffle, loop, playing) ->
-                session?.setMediaButtonPreferences(customButtons(shuffle, loop, playing))
+            player.queue.map { (it.currentItem as? PlayableItem.YtMedia)?.videoId }.distinctUntilChanged().collectLatest { id ->
+                val rating = id?.let { graph.videoRatings.forVideo(it) }
+                currentRating = rating
+                ratingState.value = rating?.state?.value ?: VideoRatingSnapshot()
+                if (rating != null) {
+                    rating.ensureLoaded()
+                    rating.state.collect { ratingState.value = it }
+                }
+            }
+        }
+        serviceScope.launch {
+            combine(player.status, player.queue, ratingState) { status, queue, rating ->
+                customButtons(queue.shuffle, queue.loopMode, isPlaying(status, queue), rating.takeIf {
+                    it.videoId == (queue.currentItem as? PlayableItem.YtMedia)?.videoId
+                })
+            }.distinctUntilChanged().collect { buttons ->
+                session?.setMediaButtonPreferences(buttons)
             }
         }
         serviceScope.launch {
@@ -219,7 +244,25 @@ class PlaybackService : MediaLibraryService() {
 
     /** Auto shows custom actions only (a legacy controller sees no shuffle/repeat otherwise). Android 13+
      *  media controls show two custom actions, so a paused session trades repeat for close. */
-    private suspend fun customButtons(shuffle: Boolean, loop: LoopMode, playing: Boolean): ImmutableList<CommandButton> {
+    private suspend fun customButtons(shuffle: Boolean, loop: LoopMode, playing: Boolean, rating: VideoRatingSnapshot?): ImmutableList<CommandButton> {
+        val buttons = ImmutableList.builder<CommandButton>()
+        if (rating != null) {
+            val liked = rating.status == YtVideoDetails.LIKE
+            val extras = Bundle().apply { putString(RATING_VIDEO_ID, rating.videoId) }
+            val command = if (liked) COMMAND_UNLIKE else COMMAND_LIKE
+            buttons.add(
+                CommandButton.Builder(if (liked && !rating.pending && !rating.loading) CommandButton.ICON_THUMB_UP_FILLED else CommandButton.ICON_THUMB_UP_UNFILLED)
+                    .setDisplayName(getString(when {
+                        rating.loaded && !rating.available -> Res.string.video_details_sign_in_to_rate
+                        liked -> Res.string.video_details_unlike
+                        else -> Res.string.video_details_like
+                    }))
+                    .setSessionCommand(SessionCommand(command.customAction, extras))
+                    .setExtras(extras)
+                    .setEnabled(!rating.loaded || rating.available)
+                    .build(),
+            )
+        }
         val shuffleButton = CommandButton.Builder(if (shuffle) CommandButton.ICON_SHUFFLE_ON else CommandButton.ICON_SHUFFLE_OFF)
             .setDisplayName(getString(Res.string.cd_shuffle))
             .setSessionCommand(COMMAND_SHUFFLE)
@@ -230,9 +273,9 @@ class PlaybackService : MediaLibraryService() {
                 .setDisplayName(getString(R.string.notification_close))
                 .setSessionCommand(COMMAND_CLOSE)
                 .build()
-            return ImmutableList.of(shuffleButton, closeButton)
+            return buttons.add(shuffleButton).add(closeButton).build()
         }
-        return ImmutableList.of(
+        return buttons.add(
             shuffleButton,
             CommandButton.Builder(
                 when (loop) {
@@ -252,7 +295,7 @@ class PlaybackService : MediaLibraryService() {
                 )
                 .setSessionCommand(COMMAND_REPEAT)
                 .build(),
-        )
+        ).build()
     }
 
     /** [playOrResume] once the graph exists. Single-flight: one play press reaches both
@@ -422,6 +465,8 @@ class PlaybackService : MediaLibraryService() {
                         .add(COMMAND_SHUFFLE)
                         .add(COMMAND_REPEAT)
                         .add(COMMAND_CLOSE)
+                        .add(COMMAND_LIKE)
+                        .add(COMMAND_UNLIKE)
                         .build(),
                 )
                 .build(),
@@ -446,6 +491,27 @@ class PlaybackService : MediaLibraryService() {
                     },
                 )
                 COMMAND_CLOSE.customAction -> dismiss()
+                COMMAND_LIKE.customAction, COMMAND_UNLIKE.customAction -> {
+                    val id = args.getString(RATING_VIDEO_ID) ?: customCommand.customExtras.getString(RATING_VIDEO_ID)
+                    val rating = currentRating?.takeIf { it.videoId == id && (queue.currentItem as? PlayableItem.YtMedia)?.videoId == id }
+                        ?: return Futures.immediateFuture(SessionResult(SessionError.ERROR_BAD_VALUE))
+                    if (rating.state.value.pending) return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
+                    val target = if (customCommand.customAction == COMMAND_LIKE.customAction) YtVideoDetails.LIKE else YtVideoDetails.INDIFFERENT
+                    return future {
+                        try {
+                            val (success, state) = withContext(Dispatchers.Main.immediate) { rating.setRating(target) to rating.state.value }
+                            if (success || state.pending) SessionResult(SessionResult.RESULT_SUCCESS)
+                            else state.errorCode?.let { code ->
+                                SessionResult(SessionError(SessionError.ERROR_IO, videoRatingErrorMessage(code)))
+                            } ?: SessionResult(SessionError(SessionError.ERROR_SESSION_AUTHENTICATION_EXPIRED, getString(Res.string.video_details_sign_in_to_rate)))
+                        } catch (error: CancellationException) {
+                            throw error
+                        } catch (error: Throwable) {
+                            log?.log(Logger.Level.WARN, "car rating failed", error)
+                            SessionResult(SessionError(SessionError.ERROR_IO, videoRatingErrorMessage(error.errorCode() ?: "E20097")))
+                        }
+                    }
+                }
                 else -> return super.onCustomCommand(session, controller, customCommand, args)
             }
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
@@ -906,6 +972,9 @@ class PlaybackService : MediaLibraryService() {
         val COMMAND_SHUFFLE = SessionCommand("io.ymusic.android.playback.SHUFFLE", Bundle.EMPTY)
         val COMMAND_REPEAT = SessionCommand("io.ymusic.android.playback.REPEAT", Bundle.EMPTY)
         val COMMAND_CLOSE = SessionCommand("io.ymusic.android.playback.CLOSE", Bundle.EMPTY)
+        val COMMAND_LIKE = SessionCommand("io.ymusic.android.playback.LIKE", Bundle.EMPTY)
+        val COMMAND_UNLIKE = SessionCommand("io.ymusic.android.playback.UNLIKE", Bundle.EMPTY)
+        const val RATING_VIDEO_ID = "io.ymusic.android.playback.VIDEO_ID"
         const val DISMISS_REQUEST_CODE = 100
         const val LOCK_RELEASE_GRACE_MS = 60_000L
         const val HEADSET_CLICK_WINDOW_MS = 300L

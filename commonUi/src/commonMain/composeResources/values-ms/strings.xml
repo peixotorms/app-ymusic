@@ -537,6 +537,7 @@
     <string name="video_details_post">Siarkan</string>
     <string name="video_details_posted">Ulasan disiarkan</string>
     <string name="video_details_like">Suka</string>
+    <string name="video_details_unlike">Batal suka</string>
     <string name="video_details_dislike">Tidak suka</string>
     <string name="video_details_sign_in_to_rate">Log masuk untuk menilai video ini</string>
     <string name="video_details_reply">Balas</string>

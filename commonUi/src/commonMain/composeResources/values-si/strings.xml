@@ -545,6 +545,7 @@
     <string name="video_details_post">පළ කරන්න</string>
     <string name="video_details_posted">අදහස පළ කරන ලදී</string>
     <string name="video_details_like">කැමතියි</string>
+    <string name="video_details_unlike">කැමැත්ත ඉවත් කරන්න</string>
     <string name="video_details_dislike">අකමැතියි</string>
     <string name="video_details_sign_in_to_rate">මෙම වීඩියෝව ශ්‍රේණිගත කිරීමට පුරන්න</string>
     <string name="video_details_reply">පිළිතුරු දෙන්න</string>

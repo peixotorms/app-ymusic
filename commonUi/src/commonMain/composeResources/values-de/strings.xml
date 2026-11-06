@@ -545,6 +545,7 @@
     <string name="video_details_post">Posten</string>
     <string name="video_details_posted">Kommentar gepostet</string>
     <string name="video_details_like">Mag ich</string>
+    <string name="video_details_unlike">Gefällt mir entfernen</string>
     <string name="video_details_dislike">Mag ich nicht</string>
     <string name="video_details_sign_in_to_rate">Melde dich an, um dieses Video zu bewerten</string>
     <string name="video_details_reply">Antworten</string>

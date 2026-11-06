@@ -617,6 +617,7 @@
     <string name="video_details_post">Đăng</string>
     <string name="video_details_posted">Đã đăng bình luận</string>
     <string name="video_details_like">Thích</string>
+    <string name="video_details_unlike">Bỏ thích</string>
     <string name="video_details_dislike">Không thích</string>
     <string name="video_details_sign_in_to_rate">Đăng nhập để đánh giá video này</string>
     <string name="video_details_reply">Phản hồi</string>

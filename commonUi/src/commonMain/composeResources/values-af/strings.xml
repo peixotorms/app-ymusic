@@ -545,6 +545,7 @@
     <string name="video_details_post">Plaas</string>
     <string name="video_details_posted">Kommentaar geplaas</string>
     <string name="video_details_like">Hou van</string>
+    <string name="video_details_unlike">Verwyder hou van</string>
     <string name="video_details_dislike">Hou nie van nie</string>
     <string name="video_details_sign_in_to_rate">Meld aan om hierdie video te gradeer</string>
     <string name="video_details_reply">Antwoord</string>

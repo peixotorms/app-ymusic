@@ -545,6 +545,7 @@
     <string name="video_details_post">Közzététel</string>
     <string name="video_details_posted">Hozzászólás közzétéve</string>
     <string name="video_details_like">Tetszik</string>
+    <string name="video_details_unlike">Kedvelés visszavonása</string>
     <string name="video_details_dislike">Nem tetszik</string>
     <string name="video_details_sign_in_to_rate">Jelentkezz be a videó értékeléséhez</string>
     <string name="video_details_reply">Válasz</string>

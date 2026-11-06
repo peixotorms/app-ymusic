@@ -545,6 +545,7 @@
     <string name="video_details_post">Paylaş</string>
     <string name="video_details_posted">Şərh paylaşıldı</string>
     <string name="video_details_like">Bəyən</string>
+    <string name="video_details_unlike">Bəyənməni ləğv et</string>
     <string name="video_details_dislike">Bəyənmə</string>
     <string name="video_details_sign_in_to_rate">Bu videonu qiymətləndirmək üçün daxil olun</string>
     <string name="video_details_reply">Cavab ver</string>

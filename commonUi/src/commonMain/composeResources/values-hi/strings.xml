@@ -545,6 +545,7 @@
     <string name="video_details_post">पोस्ट करें</string>
     <string name="video_details_posted">टिप्पणी पोस्ट हो गई</string>
     <string name="video_details_like">लाइक</string>
+    <string name="video_details_unlike">पसंद हटाएँ</string>
     <string name="video_details_dislike">डिसलाइक</string>
     <string name="video_details_sign_in_to_rate">इस वीडियो को रेट करने के लिए साइन इन करें</string>
     <string name="video_details_reply">जवाब दें</string>

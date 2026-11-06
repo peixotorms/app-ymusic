@@ -561,6 +561,7 @@
     <string name="video_details_post">Uverejniť</string>
     <string name="video_details_posted">Komentár uverejnený</string>
     <string name="video_details_like">Páči sa mi to</string>
+    <string name="video_details_unlike">Zrušiť označenie Páči sa mi</string>
     <string name="video_details_dislike">Nepáči sa mi to</string>
     <string name="video_details_sign_in_to_rate">Prihláste sa a ohodnoťte toto video</string>
     <string name="video_details_reply">Odpovedať</string>

@@ -545,6 +545,7 @@
     <string name="video_details_post">Yayınla</string>
     <string name="video_details_posted">Yorum yayınlandı</string>
     <string name="video_details_like">Beğen</string>
+    <string name="video_details_unlike">Beğeniyi kaldır</string>
     <string name="video_details_dislike">Beğenme</string>
     <string name="video_details_sign_in_to_rate">Bu videoyu değerlendirmek için giriş yapın</string>
     <string name="video_details_reply">Yanıtla</string>

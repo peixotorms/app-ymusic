@@ -561,6 +561,7 @@
     <string name="video_details_post">Опубликовать</string>
     <string name="video_details_posted">Комментарий опубликован</string>
     <string name="video_details_like">Нравится</string>
+    <string name="video_details_unlike">Убрать отметку «Нравится»</string>
     <string name="video_details_dislike">Не нравится</string>
     <string name="video_details_sign_in_to_rate">Войдите, чтобы оценить видео</string>
     <string name="video_details_reply">Ответить</string>

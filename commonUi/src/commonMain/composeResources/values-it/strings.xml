@@ -553,6 +553,7 @@
     <string name="video_details_post">Pubblica</string>
     <string name="video_details_posted">Commento pubblicato</string>
     <string name="video_details_like">Mi piace</string>
+    <string name="video_details_unlike">Rimuovi Mi piace</string>
     <string name="video_details_dislike">Non mi piace</string>
     <string name="video_details_sign_in_to_rate">Accedi per valutare questo video</string>
     <string name="video_details_reply">Rispondi</string>

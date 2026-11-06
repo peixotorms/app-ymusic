@@ -545,6 +545,7 @@
     <string name="video_details_post">पोस्ट गर्नुहोस्</string>
     <string name="video_details_posted">टिप्पणी पोस्ट भयो</string>
     <string name="video_details_like">लाइक</string>
+    <string name="video_details_unlike">मन पराएको हटाउनुहोस्</string>
     <string name="video_details_dislike">डिसलाइक</string>
     <string name="video_details_sign_in_to_rate">यो भिडियोलाई रेटिङ दिन साइन इन गर्नुहोस्</string>
     <string name="video_details_reply">जवाफ दिनुहोस्</string>

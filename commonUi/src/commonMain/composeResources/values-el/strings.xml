@@ -545,6 +545,7 @@
     <string name="video_details_post">Δημοσίευση</string>
     <string name="video_details_posted">Το σχόλιο δημοσιεύτηκε</string>
     <string name="video_details_like">Μου αρέσει</string>
+    <string name="video_details_unlike">Κατάργηση επισήμανσης Μου αρέσει</string>
     <string name="video_details_dislike">Δεν μου αρέσει</string>
     <string name="video_details_sign_in_to_rate">Συνδεθείτε για να αξιολογήσετε αυτό το βίντεο</string>
     <string name="video_details_reply">Απάντηση</string>

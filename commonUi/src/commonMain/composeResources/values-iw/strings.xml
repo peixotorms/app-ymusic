@@ -553,6 +553,7 @@
     <string name="video_details_post">פרסום</string>
     <string name="video_details_posted">התגובה פורסמה</string>
     <string name="video_details_like">אהבתי</string>
+    <string name="video_details_unlike">ביטול לייק</string>
     <string name="video_details_dislike">לא אהבתי</string>
     <string name="video_details_sign_in_to_rate">היכנס לחשבון כדי לדרג את הסרטון</string>
     <string name="video_details_reply">תשובה</string>

@@ -553,6 +553,7 @@
     <string name="video_details_post">Publică</string>
     <string name="video_details_posted">Comentariu publicat</string>
     <string name="video_details_like">Apreciez</string>
+    <string name="video_details_unlike">Nu-mi mai place</string>
     <string name="video_details_dislike">Nu apreciez</string>
     <string name="video_details_sign_in_to_rate">Conectează-te pentru a evalua acest videoclip</string>
     <string name="video_details_reply">Răspunde</string>

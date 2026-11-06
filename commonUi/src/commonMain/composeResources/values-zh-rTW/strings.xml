@@ -537,6 +537,7 @@
     <string name="video_details_post">發布</string>
     <string name="video_details_posted">已發布留言</string>
     <string name="video_details_like">喜歡</string>
+    <string name="video_details_unlike">取消喜歡</string>
     <string name="video_details_dislike">不喜歡</string>
     <string name="video_details_sign_in_to_rate">登入即可評價這部影片</string>
     <string name="video_details_reply">回覆</string>

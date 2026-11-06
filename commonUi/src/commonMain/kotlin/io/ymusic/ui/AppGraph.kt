@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import io.ymusic.dynamicengine.DynamicEngineManager
+import io.ymusic.dynamicengine.yt.extractVideoDetails
 import io.ymusic.dynamicengine.yt.handleWebViewPlayNext
+import io.ymusic.dynamicengine.yt.rateVideo
 import io.ymusic.imageloader.ImageLoader
 import io.ymusic.mediastore.BetterMediaStore
 import io.ymusic.player.LoopMode
@@ -39,6 +41,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -278,6 +281,18 @@ class AppGraph(
 
     /** Sign-in state, one per process; probes the login on first use. */
     internal val account by lazy { AccountController(this, processScope) }
+
+    val videoRatings by lazy {
+        VideoRatings(
+            processScope,
+            fetch = { engines.extractVideoDetails(it, logger) },
+            write = { id, status, token -> engines.rateVideo(id, status, token, logger) },
+            currentVideoId = { (player.queue.value.currentItem as? PlayableItem.YtMedia)?.videoId },
+            logger = logger,
+        ).also { ratings ->
+            processScope.launch { account.loginEpoch.drop(1).collect { ratings.invalidate() } }
+        }
+    }
 
     /** Library scans, one per process so a scan outlives the screen and the activity that started it. */
     internal val scans by lazy { ScanController(processScope, logger?.fork("library-scan")) }

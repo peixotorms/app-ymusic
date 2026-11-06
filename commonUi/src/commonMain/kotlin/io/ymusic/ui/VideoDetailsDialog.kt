@@ -77,7 +77,6 @@ import io.ymusic.dynamicengine.yt.createComment
 import io.ymusic.dynamicengine.yt.editComment
 import io.ymusic.dynamicengine.yt.extractComments
 import io.ymusic.dynamicengine.yt.extractVideoDetails
-import io.ymusic.dynamicengine.yt.rateVideo
 import io.ymusic.dynamicengine.yt.replyToComment
 import io.ymusic.ui.resources.Res
 import io.ymusic.ui.resources.cd_close
@@ -132,6 +131,7 @@ internal class VideoDetailsState(
     parentLog: Logger?,
 ) {
     private val log = parentLog?.fork("VideoDetails", mapOf("videoId" to videoId))
+    private val rating = graph.videoRatings.forVideo(videoId)
 
     var details by mutableStateOf<YtVideoDetails?>(null)
     var detailsErrorCode by mutableStateOf<String?>(null)
@@ -144,6 +144,7 @@ internal class VideoDetailsState(
     var postErrorCode by mutableStateOf<String?>(null)
     var likeStatus by mutableStateOf(YtVideoDetails.INDIFFERENT)
     var ratingPending by mutableStateOf(false)
+    var canRate by mutableStateOf(false)
     private var commentsRequested = false
 
     /** A failed rate / comment rating / delete, for the UI to surface once. */
@@ -166,13 +167,24 @@ internal class VideoDetailsState(
     var replyPosting by mutableStateOf(false)
     var replyErrorCode by mutableStateOf<String?>(null)
 
+    init {
+        scope.launch {
+            rating.state.collect {
+                likeStatus = it.status
+                ratingPending = it.pending
+                canRate = it.available
+            }
+        }
+    }
+
     fun load(includeComments: Boolean = true) {
         commentsRequested = commentsRequested || includeComments
         detailsErrorCode = null
         scope.launch {
+            val readRevision = rating.revision
             try {
                 val loaded = graph.engines.extractVideoDetails(videoId, log)
-                likeStatus = loaded.likeStatus
+                rating.acceptDetails(loaded, readRevision)
                 details = loaded
                 if (commentsRequested) loaded.commentsContinuation?.let { reloadComments(it) }
             } catch (error: CancellationException) {
@@ -229,22 +241,14 @@ internal class VideoDetailsState(
     /** Toggle [status] (LIKE / DISLIKE) optimistically; a failure restores the previous rating. */
     fun toggleRating(status: String) {
         if (ratingPending) return
-        val target = if (likeStatus == status) YtVideoDetails.INDIFFERENT else status
-        val token = details?.rateTokens?.get(target) ?: return
-        val previous = likeStatus
-        ratingPending = true
-        likeStatus = target
-        scope.launch {
+        graph.processScope.launch {
             try {
-                graph.engines.rateVideo(videoId, target, token, log)
+                rating.toggleRating(status)
             } catch (error: CancellationException) {
                 throw error
             } catch (error: Throwable) {
                 log?.log(Logger.Level.WARN, "rate video failed", error)
-                if (likeStatus == target) likeStatus = previous
                 actionErrorCode = error.errorCode() ?: "E20097"
-            } finally {
-                ratingPending = false
             }
         }
     }
@@ -522,7 +526,7 @@ private fun DetailsHeader(state: VideoDetailsState, details: YtVideoDetails, onO
 internal fun RatingPill(state: VideoDetailsState, details: YtVideoDetails) {
     val snackbar = LocalSnackbar.current
     val signIn = stringResource(Res.string.video_details_sign_in_to_rate)
-    val canRate = details.rateTokens.isNotEmpty()
+    val canRate = state.canRate
     val tap = { status: String -> if (canRate) state.toggleRating(status) else snackbar(signIn) }
     val liked = state.likeStatus == YtVideoDetails.LIKE
     val disliked = state.likeStatus == YtVideoDetails.DISLIKE

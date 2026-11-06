@@ -561,6 +561,7 @@
     <string name="video_details_post">Opublikuj</string>
     <string name="video_details_posted">Opublikowano komentarz</string>
     <string name="video_details_like">Podoba mi się</string>
+    <string name="video_details_unlike">Usuń polubienie</string>
     <string name="video_details_dislike">Nie podoba mi się</string>
     <string name="video_details_sign_in_to_rate">Zaloguj się, aby ocenić ten film</string>
     <string name="video_details_reply">Odpowiedz</string>

@@ -545,6 +545,7 @@
     <string name="video_details_post">I-post</string>
     <string name="video_details_posted">Na-post ang komento</string>
     <string name="video_details_like">I-like</string>
+    <string name="video_details_unlike">Hindi na gusto</string>
     <string name="video_details_dislike">I-dislike</string>
     <string name="video_details_sign_in_to_rate">Mag-sign in para i-rate ang video na ito</string>
     <string name="video_details_reply">Sumagot</string>

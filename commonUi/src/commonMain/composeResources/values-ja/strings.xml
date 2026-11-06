@@ -537,6 +537,7 @@
     <string name="video_details_post">投稿</string>
     <string name="video_details_posted">コメントを投稿しました</string>
     <string name="video_details_like">高評価</string>
+    <string name="video_details_unlike">高評価を取り消す</string>
     <string name="video_details_dislike">低評価</string>
     <string name="video_details_sign_in_to_rate">この動画を評価するにはサインインしてください</string>
     <string name="video_details_reply">返信</string>

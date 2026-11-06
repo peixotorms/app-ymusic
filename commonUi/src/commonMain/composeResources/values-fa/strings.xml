@@ -545,6 +545,7 @@
     <string name="video_details_post">ارسال</string>
     <string name="video_details_posted">نظر ارسال شد</string>
     <string name="video_details_like">پسندیدن</string>
+    <string name="video_details_unlike">لغو پسندیدن</string>
     <string name="video_details_dislike">نپسندیدن</string>
     <string name="video_details_sign_in_to_rate">برای امتیاز دادن به این ویدیو وارد شوید</string>
     <string name="video_details_reply">پاسخ</string>

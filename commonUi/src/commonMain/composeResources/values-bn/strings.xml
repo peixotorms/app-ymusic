@@ -545,6 +545,7 @@
     <string name="video_details_post">পোস্ট করুন</string>
     <string name="video_details_posted">মন্তব্য পোস্ট হয়েছে</string>
     <string name="video_details_like">লাইক</string>
+    <string name="video_details_unlike">লাইক সরান</string>
     <string name="video_details_dislike">ডিসলাইক</string>
     <string name="video_details_sign_in_to_rate">এই ভিডিও রেট করতে সাইন ইন করুন</string>
     <string name="video_details_reply">উত্তর দিন</string>

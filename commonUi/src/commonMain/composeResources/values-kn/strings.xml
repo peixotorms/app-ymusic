@@ -545,6 +545,7 @@
     <string name="video_details_post">ಪೋಸ್ಟ್ ಮಾಡಿ</string>
     <string name="video_details_posted">ಕಾಮೆಂಟ್ ಪೋಸ್ಟ್ ಆಗಿದೆ</string>
     <string name="video_details_like">ಲೈಕ್</string>
+    <string name="video_details_unlike">ಇಷ್ಟವನ್ನು ತೆಗೆದುಹಾಕಿ</string>
     <string name="video_details_dislike">ಡಿಸ್‌ಲೈಕ್</string>
     <string name="video_details_sign_in_to_rate">ಈ ವೀಡಿಯೊವನ್ನು ರೇಟ್ ಮಾಡಲು ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
     <string name="video_details_reply">ಪ್ರತ್ಯುತ್ತರಿಸಿ</string>

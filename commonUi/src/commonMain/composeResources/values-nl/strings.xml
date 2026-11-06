@@ -545,6 +545,7 @@
     <string name="video_details_post">Plaatsen</string>
     <string name="video_details_posted">Reactie geplaatst</string>
     <string name="video_details_like">Leuk</string>
+    <string name="video_details_unlike">Vind-ik-leuk verwijderen</string>
     <string name="video_details_dislike">Niet leuk</string>
     <string name="video_details_sign_in_to_rate">Log in om deze video te beoordelen</string>
     <string name="video_details_reply">Beantwoorden</string>

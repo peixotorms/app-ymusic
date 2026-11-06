@@ -553,6 +553,7 @@
     <string name="video_details_post">Objavi</string>
     <string name="video_details_posted">Komentar objavljen</string>
     <string name="video_details_like">Sviđa mi se</string>
+    <string name="video_details_unlike">Ukloni oznaku sviđa mi se</string>
     <string name="video_details_dislike">Ne sviđa mi se</string>
     <string name="video_details_sign_in_to_rate">Prijavite se da biste ocijenili ovaj videozapis</string>
     <string name="video_details_reply">Odgovori</string>

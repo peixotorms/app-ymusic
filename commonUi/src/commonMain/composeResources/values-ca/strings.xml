@@ -553,6 +553,7 @@
     <string name="video_details_post">Publica</string>
     <string name="video_details_posted">Comentari publicat</string>
     <string name="video_details_like">M'agrada</string>
+    <string name="video_details_unlike">Deixa d\'agradar</string>
     <string name="video_details_dislike">No m'agrada</string>
     <string name="video_details_sign_in_to_rate">Inicia la sessió per valorar aquest vídeo</string>
     <string name="video_details_reply">Respon</string>

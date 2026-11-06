@@ -654,6 +654,7 @@
     <string name="video_details_post">Post</string>
     <string name="video_details_posted">Comment posted</string>
     <string name="video_details_like">Like</string>
+    <string name="video_details_unlike">Unlike</string>
     <string name="video_details_dislike">Dislike</string>
     <string name="video_details_sign_in_to_rate">Sign in to rate this video</string>
     <string name="video_details_reply">Reply</string>

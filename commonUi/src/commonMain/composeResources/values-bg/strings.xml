@@ -545,6 +545,7 @@
     <string name="video_details_post">Публикувай</string>
     <string name="video_details_posted">Коментарът е публикуван</string>
     <string name="video_details_like">Харесва ми</string>
+    <string name="video_details_unlike">Премахване на харесването</string>
     <string name="video_details_dislike">Не ми харесва</string>
     <string name="video_details_sign_in_to_rate">Влезте, за да оцените това видео</string>
     <string name="video_details_reply">Отговор</string>

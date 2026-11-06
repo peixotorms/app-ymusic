@@ -537,6 +537,7 @@
     <string name="video_details_post">โพสต์</string>
     <string name="video_details_posted">โพสต์ความคิดเห็นแล้ว</string>
     <string name="video_details_like">ชอบ</string>
+    <string name="video_details_unlike">เลิกชอบ</string>
     <string name="video_details_dislike">ไม่ชอบ</string>
     <string name="video_details_sign_in_to_rate">ลงชื่อเข้าใช้เพื่อให้คะแนนวิดีโอนี้</string>
     <string name="video_details_reply">ตอบกลับ</string>

@@ -545,6 +545,7 @@
     <string name="video_details_post">Postita</string>
     <string name="video_details_posted">Kommentaar postitatud</string>
     <string name="video_details_like">Meeldib</string>
+    <string name="video_details_unlike">Eemalda meeldimine</string>
     <string name="video_details_dislike">Ei meeldi</string>
     <string name="video_details_sign_in_to_rate">Selle video hindamiseks logi sisse</string>
     <string name="video_details_reply">Vasta</string>

@@ -537,6 +537,7 @@
     <string name="video_details_post">发布</string>
     <string name="video_details_posted">评论已发布</string>
     <string name="video_details_like">顶</string>
+    <string name="video_details_unlike">取消赞</string>
     <string name="video_details_dislike">踩</string>
     <string name="video_details_sign_in_to_rate">登录后即可评价此视频</string>
     <string name="video_details_reply">回复</string>

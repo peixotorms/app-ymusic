@@ -545,6 +545,7 @@
     <string name="video_details_post">Dhig</string>
     <string name="video_details_posted">Faallada waa la dhigay</string>
     <string name="video_details_like">Ka hel</string>
+    <string name="video_details_unlike">Ka noqo jeclaysiga</string>
     <string name="video_details_dislike">Ha ka helin</string>
     <string name="video_details_sign_in_to_rate">Gal si aad u qiimayso muuqaalkan</string>
     <string name="video_details_reply">Ka jawaab</string>

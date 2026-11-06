@@ -545,6 +545,7 @@
     <string name="video_details_post">Chapisha</string>
     <string name="video_details_posted">Maoni yamechapishwa</string>
     <string name="video_details_like">Penda</string>
+    <string name="video_details_unlike">Ondoa alama ya kupenda</string>
     <string name="video_details_dislike">Sipendi</string>
     <string name="video_details_sign_in_to_rate">Ingia katika akaunti ili ukadirie video hii</string>
     <string name="video_details_reply">Jibu</string>

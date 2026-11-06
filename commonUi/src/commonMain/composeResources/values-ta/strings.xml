@@ -545,6 +545,7 @@
     <string name="video_details_post">இடுகையிடு</string>
     <string name="video_details_posted">கருத்து இடுகையிடப்பட்டது</string>
     <string name="video_details_like">லைக்</string>
+    <string name="video_details_unlike">விருப்பத்தை அகற்று</string>
     <string name="video_details_dislike">டிஸ்லைக்</string>
     <string name="video_details_sign_in_to_rate">இந்த வீடியோவை மதிப்பிட உள்நுழையவும்</string>
     <string name="video_details_reply">பதிலளி</string>
