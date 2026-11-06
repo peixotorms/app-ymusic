@@ -6,6 +6,8 @@ Based on upstream YMusic 4.0.16. Builds target Android, Windows, and Linux.
 
 ### 2026-11-06
 
+- Fixed a crash when canceled work finishes after the player’s engine has closed.
+
 - Added an audio buffer setting: 30 seconds, one minute, or two minutes ahead.
   Playback starts normally, then fills toward the selected target after five
   seconds of listening. Video targets 30 seconds.
