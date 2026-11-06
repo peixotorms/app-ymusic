@@ -2,31 +2,21 @@
 
 ## 4.0.17
 
-Based on upstream YMusic 4.0.16. Builds target Android, Windows, and Linux.
+### 2026-11-06
 
-- **2026-11-06 — Audio buffering:** choose 30 seconds, one minute, or two minutes
-  ahead. Playback starts normally and expands the buffer after five seconds of
-  listening. Video targets 30 seconds.
-- **2026-11-06 — Next song:** prepare about 15 seconds of the next queued song once
-  the current song is buffered through its end and has at most one minute left.
-  Skips, seeks, and queue changes cancel obsolete fetching.
-- **2026-11-06 — SponsorBlock:** use the public service first, with YMusic as a
-  fallback if the lookup fails. Existing category controls still apply.
-- **2026-11-06 — Stability:** fixed a crash when canceled work finishes after the
-  player’s engine has closed.
-- **2026-11-05 — Ratings:** like, dislike, or remove a rating directly from Now
-  Playing using the signed-in YouTube account.
-- **2026-11-05 — Casting:** added Google Cast audio support on Android for
-  compatible speakers and groups.
-- **2026-11-05 — Downloads:** select multiple downloads to remove entries or delete
-  completed files. Up to three downloads run at once.
-- **2026-11-05 — Updates:** removed app update checks and installer downloads.
-  New builds are installed manually.
-- **2026-11-05 — Android Auto:** documented sideload discovery and checked the
-  media-browser service in an emulator. Support was already present upstream.
+Based on upstream YMusic 4.0.16. Builds target Android ARM64, Windows x64, and Linux x64.
 
-Car controls, Google Nest stereo-pair playback, and signed-in rating synchronization
-still need testing on the actual devices and account.
+- **Audio buffering:** choose 30 seconds, one minute, or two minutes ahead. Playback starts normally and expands the buffer after five seconds of listening. Video targets 30 seconds.
+- **Next song:** prepare about 15 seconds of the next queued song once the current song is buffered through its end and has at most one minute left. Skips, seeks, and queue changes cancel obsolete fetching.
+- **SponsorBlock:** use the public service first, with YMusic as a fallback if the lookup fails. Existing category controls still apply.
+- **Stability:** fixed a crash when canceled work finishes after the player’s engine has closed.
+- **Ratings:** like, dislike, or remove a rating directly from Now Playing using the signed-in YouTube account.
+- **Casting:** added Google Cast audio support on Android for compatible speakers and groups.
+- **Downloads:** select multiple downloads to remove entries or delete completed files. Up to three downloads run at once.
+- **Manual updates:** removed app update checks and installer downloads. New builds are installed manually.
+- **Android Auto:** documented sideload discovery and checked the media-browser service in an emulator. Support was already present upstream.
+
+Car controls, Google Nest stereo-pair playback, and signed-in rating synchronization still need testing on the actual devices and account.
 
 ## 4.0.16
 

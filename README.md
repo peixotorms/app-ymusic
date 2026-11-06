@@ -19,8 +19,11 @@ on version 4.0.16.
 
 ## Install and update
 
-Download the build for your device from [Releases](https://github.com/peixotorms/app-ymusic/releases):
-Android APKs, Windows installers, or Linux Debian packages.
+Download from [release-v4.0.17](https://github.com/peixotorms/app-ymusic/releases/tag/release-v4.0.17):
+
+- [Android APK — ARM64](https://github.com/peixotorms/app-ymusic/releases/download/release-v4.0.17/YMusic-4.0.17-android-arm64.apk)
+- [Windows installer — x64 EXE](https://github.com/peixotorms/app-ymusic/releases/download/release-v4.0.17/YMusic-4.0.17-windows-x64-setup.exe)
+- [Linux package — x64 DEB](https://github.com/peixotorms/app-ymusic/releases/download/release-v4.0.17/YMusic-4.0.17-linux-x86_64.deb)
 
 Updates are installed manually. The app does not check for or download app updates.
 
