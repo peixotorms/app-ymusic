@@ -1,19 +1,33 @@
 # Changelog
 
-## 4.0.17 — personal fork (2026-11-06)
+## 4.0.17 — personal fork
 
-- Choose 30 seconds, one minute, or two minutes of audio buffer ahead. Playback starts normally;
-  the larger target begins after five seconds of listening. Video targets 30 seconds.
-- Prepare about 15 seconds of the next queued song in the final minute, once the current song is
-  buffered through its end. Skips and queue changes cancel obsolete fetching.
-- SponsorBlock uses the public service first and falls back to YMusic on lookup failures.
-- Like, dislike, or remove a rating directly from Now Playing using the signed-in YouTube account.
-- Android: Google Cast audio support for compatible speakers and groups.
-- Select multiple downloads to remove entries or delete completed files. Download concurrency stays at three.
-- Removed app update checks and installer downloads; install new personal builds manually.
-- Release targets: Android, Windows, and Linux. macOS packaging is skipped.
-- Android Auto support is inherited from upstream. Sideload discovery and the media-browser service
-  were checked in an emulator; car, speaker, and signed-in account testing remain necessary.
+Based on upstream YMusic 4.0.16. Builds target Android, Windows, and Linux.
+
+### 2026-11-06
+
+- Added an audio buffer setting: 30 seconds, one minute, or two minutes ahead.
+  Playback starts normally, then fills toward the selected target after five
+  seconds of listening. Video targets 30 seconds.
+- Changed next-song preparation: when the current song is buffered through its end
+  and has at most one minute left, prepare about 15 seconds of the next queued song.
+  Skips, seeks, and queue changes cancel obsolete fetching.
+- Changed SponsorBlock lookups to use the public service first, with YMusic as a
+  fallback on lookup failures. Existing category controls still apply.
+
+### 2026-11-05
+
+- Added like, dislike, and remove-rating controls to Now Playing, using the signed-in
+  YouTube account.
+- Added Google Cast audio support on Android for compatible speakers and groups.
+- Added bulk download selection: remove entries or delete completed files.
+  Download concurrency remains three.
+- Removed app update checks and installer downloads. New builds are installed manually.
+- Documented Android Auto sideload discovery and checked the media-browser service
+  in an emulator. Android Auto was already supported upstream.
+
+Car controls, Google Nest stereo-pair playback, and signed-in rating synchronization
+still need testing on the actual devices and account.
 
 ## 4.0.16
 
