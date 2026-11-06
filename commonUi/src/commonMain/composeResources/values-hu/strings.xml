@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">A YMusic nyílt forráskódú, GNU GPL v3.0 licenc alatt. A következő összetevőket tartalmazza:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Írd meg, mi romlott el, vagy mit szeretnél látni, GitHubon vagy e-mailben. Csatold az alábbi anonim adataidat, hogy megtaláljuk a naplóidat és válaszolhassunk.</string>
     <string name="feedback_info_title">Névtelen adatok</string>
     <string name="feedback_copy">Másolás</string>
     <string name="feedback_copied">Másolva</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">Alkalmazás</string>
     <string name="feedback_engine">Motor</string>
     <string name="feedback_language">Nyelv</string>
-    <string name="feedback_info_note">Se név, se e-mail, se fiók — csak ezek az azonosítók és az alkalmazás naplói.</string>
     <string name="feedback_github_title">Hibajegy nyitása a GitHubon</string>
     <string name="feedback_github_hint">Nyilvános. Hibákhoz és ötletekhez a legjobb — mások is követhetik és kiegészíthetik.</string>
-    <string name="feedback_email_title">E-mail küldése ide: %1$s</string>
-    <string name="feedback_email_hint">Privát. Fiókkal kapcsolatos vagy személyes kérdésekhez a legjobb.</string>
-    <string name="feedback_email_subject">YMusic visszajelzés</string>
-    <string name="feedback_prefilled_note">Mindkettő a már kitöltött adatokkal nyílik meg. Ha hiányoznak, illeszd be őket — nélkülük nem tudunk segíteni.</string>
-    <string name="feedback_reports_off_title">A névtelen jelentések ki vannak kapcsolva</string>
-    <string name="feedback_reports_off_message">A probléma kivizsgálásához szükségünk van az alkalmazás naplóira. Koppints a Folytatás gombra, és a YMusic újra bekapcsolja a névtelen jelentéseket, majd elküldi a naplókat.</string>
-    <string name="feedback_reports_off_note">Nem küldünk nevet, e-mailt vagy fiókot. A jelentéseket a Beállításokban újra kikapcsolhatod.</string>
-    <string name="feedback_continue">Folytatás</string>
-    <string name="feedback_sentry_link">vagy Sentryn keresztül</string>
-    <string name="feedback_sentry_title">Küldés Sentryn keresztül</string>
-    <string name="feedback_sentry_label">Mi történt?</string>
-    <string name="feedback_sentry_note">Az anonim adataidat csatoltuk. Az innen küldött üzenetekre nem tudunk válaszolni, ezért ha választ szeretnél, használd a GitHubot vagy az e-mailt.</string>
-    <string name="feedback_sentry_send">Küldés</string>
-    <string name="feedback_sentry_sent">Elküldve Sentryn keresztül. Köszönjük!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menü</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Frissítések automatikus letöltése</string>
     <string name="settings_auto_update_hint">Az új verziók letöltése a háttérben és telepítése a következő indításkor.</string>
-    <string name="settings_crash_reports">Névtelen hibajelentések küldése</string>
-    <string name="settings_crash_reports_hint">Segíts a hibák javításában az összeomlások és hibák jelentésével. A jelentések egy véletlenszerű alkalmazásazonosítót tartalmaznak — fiókadatokat és hallgatási előzményeket nem.</string>
-    <string name="settings_stats">Névtelen statisztikák küldése</string>
-    <string name="settings_stats_hint">Névtelen használati adatok megosztása az alkalmazás fejlesztéséhez.</string>
     <string name="settings_enable_pip">Kép a képben</string>
     <string name="settings_enable_pip_hint">Ha a Most szól képernyőn vagy teljes képernyőn nézel videót, kis ablakban folytatódik, amikor elhagyod az alkalmazást. Ellenkező esetben a videó csak hangra vált, amíg vissza nem térsz.</string>
     <string name="settings_audio_focus">Hangfókusz</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">Lejátszás</string>
     <string name="settings_section_downloads">Letöltések</string>
     <string name="settings_section_devices">Eszközök</string>
-    <string name="settings_section_privacy">Adatvédelem</string>
     <string name="settings_section_about">Névjegy</string>
     <string name="settings_quick_download">Gyors letöltés</string>
     <string name="sound_bass">Basszus</string>

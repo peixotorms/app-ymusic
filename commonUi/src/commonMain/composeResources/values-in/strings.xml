@@ -256,7 +256,6 @@
     <string name="settings_licenses_intro">YMusic adalah open source di bawah GNU GPL v3.0. Aplikasi ini menyertakan komponen berikut:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Beri tahu kami apa yang bermasalah atau apa yang ingin kamu lihat, di GitHub atau lewat email. Sertakan info anonim di bawah agar kami bisa menemukan log-mu dan membalas.</string>
     <string name="feedback_info_title">Info anonim</string>
     <string name="feedback_copy">Salin</string>
     <string name="feedback_copied">Disalin</string>
@@ -264,23 +263,8 @@
     <string name="feedback_app">Aplikasi</string>
     <string name="feedback_engine">Mesin</string>
     <string name="feedback_language">Bahasa</string>
-    <string name="feedback_info_note">Tanpa nama, email, atau akun — hanya ID ini dan log aplikasi ini.</string>
     <string name="feedback_github_title">Buka issue di GitHub</string>
     <string name="feedback_github_hint">Publik. Paling cocok untuk bug dan ide — orang lain bisa mengikuti dan menambahkan.</string>
-    <string name="feedback_email_title">Email ke %1$s</string>
-    <string name="feedback_email_hint">Pribadi. Paling cocok untuk pertanyaan akun atau pribadi.</string>
-    <string name="feedback_email_subject">Masukan YMusic</string>
-    <string name="feedback_prefilled_note">Keduanya terbuka dengan info yang sudah terisi. Jika tidak ada, tempelkan — tanpanya kami tidak bisa membantu.</string>
-    <string name="feedback_reports_off_title">Laporan anonim nonaktif</string>
-    <string name="feedback_reports_off_message">Untuk memeriksa masalah Anda, kami membutuhkan log aplikasi ini. Ketuk Lanjutkan dan YMusic akan mengaktifkan kembali laporan anonim dan mengirim log.</string>
-    <string name="feedback_reports_off_note">Tidak ada nama, email, atau akun yang dikirim. Anda bisa menonaktifkan laporan lagi di Setelan.</string>
-    <string name="feedback_continue">Lanjutkan</string>
-    <string name="feedback_sentry_link">atau lewat Sentry</string>
-    <string name="feedback_sentry_title">Kirim lewat Sentry</string>
-    <string name="feedback_sentry_label">Apa yang terjadi?</string>
-    <string name="feedback_sentry_note">Info anonimmu dilampirkan. Kami tidak bisa membalas pesan yang dikirim dari sini, jadi gunakan GitHub atau email jika kamu ingin jawaban.</string>
-    <string name="feedback_sentry_send">Kirim</string>
-    <string name="feedback_sentry_sent">Terkirim lewat Sentry. Terima kasih!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menu</string>
@@ -397,10 +381,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Unduh pembaruan secara otomatis</string>
     <string name="settings_auto_update_hint">Ambil versi baru di latar belakang dan pasang saat aplikasi dibuka berikutnya.</string>
-    <string name="settings_crash_reports">Kirim laporan error anonim</string>
-    <string name="settings_crash_reports_hint">Bantu perbaiki bug dengan melaporkan crash dan error. Laporan hanya berisi ID aplikasi acak — tanpa data akun, tanpa riwayat mendengarkan.</string>
-    <string name="settings_stats">Kirim statistik anonim</string>
-    <string name="settings_stats_hint">Bagikan data penggunaan anonim untuk membantu meningkatkan aplikasi.</string>
     <string name="settings_enable_pip">Picture-in-picture</string>
     <string name="settings_enable_pip_hint">Saat menonton video di layar Sedang diputar atau layar penuh, lanjutkan di jendela kecil jika Anda keluar dari aplikasi. Jika tidak, video beralih ke audio saja sampai Anda kembali.</string>
     <string name="settings_audio_focus">Fokus audio</string>
@@ -532,7 +512,6 @@
     <string name="settings_section_playback">Pemutaran</string>
     <string name="settings_section_downloads">Unduhan</string>
     <string name="settings_section_devices">Perangkat</string>
-    <string name="settings_section_privacy">Privasi</string>
     <string name="settings_section_about">Tentang</string>
     <string name="settings_quick_download">Unduhan cepat</string>
     <string name="sound_bass">Bass</string>

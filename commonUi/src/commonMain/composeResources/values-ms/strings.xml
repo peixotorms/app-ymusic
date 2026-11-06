@@ -256,7 +256,6 @@
     <string name="settings_licenses_intro">YMusic ialah sumber terbuka di bawah GNU GPL v3.0. Ia mengandungi komponen berikut:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Beritahu kami apa yang tidak kena atau apa yang anda mahu lihat, di GitHub atau melalui e-mel. Sertakan maklumat tanpa nama anda di bawah supaya kami dapat mencari log anda dan membalas.</string>
     <string name="feedback_info_title">Maklumat tanpa nama</string>
     <string name="feedback_copy">Salin</string>
     <string name="feedback_copied">Disalin</string>
@@ -264,23 +263,8 @@
     <string name="feedback_app">Apl</string>
     <string name="feedback_engine">Enjin</string>
     <string name="feedback_language">Bahasa</string>
-    <string name="feedback_info_note">Tiada nama, e-mel atau akaun — hanya ID ini dan log apl ini.</string>
     <string name="feedback_github_title">Buka isu di GitHub</string>
     <string name="feedback_github_hint">Awam. Terbaik untuk pepijat dan idea — orang lain boleh mengikuti dan menambah.</string>
-    <string name="feedback_email_title">E-mel %1$s</string>
-    <string name="feedback_email_hint">Peribadi. Terbaik untuk soalan akaun atau peribadi.</string>
-    <string name="feedback_email_subject">Maklum balas YMusic</string>
-    <string name="feedback_prefilled_note">Kedua-duanya dibuka dengan maklumat sudah diisi. Jika tiada, tampalkannya — tanpanya kami tidak dapat membantu.</string>
-    <string name="feedback_reports_off_title">Laporan tanpa nama dimatikan</string>
-    <string name="feedback_reports_off_message">Untuk menyiasat masalah anda, kami memerlukan log apl ini. Ketik Teruskan dan YMusic akan menghidupkan semula laporan tanpa nama dan menghantar log.</string>
-    <string name="feedback_reports_off_note">Tiada nama, e-mel atau akaun dihantar. Anda boleh mematikan laporan semula dalam Tetapan.</string>
-    <string name="feedback_continue">Teruskan</string>
-    <string name="feedback_sentry_link">atau melalui Sentry</string>
-    <string name="feedback_sentry_title">Hantar melalui Sentry</string>
-    <string name="feedback_sentry_label">Apa yang berlaku?</string>
-    <string name="feedback_sentry_note">Maklumat tanpa nama anda dilampirkan. Kami tidak dapat membalas mesej yang dihantar dari sini, jadi gunakan GitHub atau e-mel jika anda mahukan jawapan.</string>
-    <string name="feedback_sentry_send">Hantar</string>
-    <string name="feedback_sentry_sent">Dihantar melalui Sentry. Terima kasih!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menu</string>
@@ -397,10 +381,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Muat turun kemas kini secara automatik</string>
     <string name="settings_auto_update_hint">Ambil versi baharu di latar belakang dan pasangnya pada permulaan seterusnya.</string>
-    <string name="settings_crash_reports">Hantar laporan ranap tanpa nama</string>
-    <string name="settings_crash_reports_hint">Bantu membetulkan pepijat dengan melaporkan ranap dan ralat. Laporan membawa ID apl rawak — tiada data akaun, tiada sejarah pendengaran.</string>
-    <string name="settings_stats">Hantar statistik tanpa nama</string>
-    <string name="settings_stats_hint">Kongsi isyarat penggunaan tanpa nama untuk membantu menambah baik apl.</string>
     <string name="settings_enable_pip">Gambar dalam gambar</string>
     <string name="settings_enable_pip_hint">Apabila menonton video dalam Sedang Dimainkan atau skrin penuh, teruskan dalam tetingkap kecil jika anda meninggalkan apl. Jika tidak, video bertukar kepada audio sahaja sehingga anda kembali.</string>
     <string name="settings_audio_focus">Fokus audio</string>
@@ -532,7 +512,6 @@
     <string name="settings_section_playback">Main balik</string>
     <string name="settings_section_downloads">Muat turun</string>
     <string name="settings_section_devices">Peranti</string>
-    <string name="settings_section_privacy">Privasi</string>
     <string name="settings_section_about">Perihal</string>
     <string name="settings_quick_download">Muat turun pantas</string>
     <string name="sound_bass">Bes</string>

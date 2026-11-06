@@ -24,7 +24,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import io.sentry.kotlin.multiplatform.Sentry
 import io.ymusic.download.DownloadChange
 import io.ymusic.download.DownloadFolderAccessException
 import io.ymusic.dynamicengine.CacheStore
@@ -70,21 +69,10 @@ import io.ymusic.remoteconfig.ApiService
 import io.ymusic.remoteconfig.HttpApiService
 import io.ymusic.remoteconfig.RemoteConfig
 import io.ymusic.remoteconfig.RunningBundles
-import io.ymusic.remoteconfig.StatUsage
 import io.ymusic.settings.AppSettings
 import io.ymusic.settings.anonymousDeviceId
 import io.ymusic.settings.flow
 import io.ymusic.settings.put
-import io.ymusic.telemetry.SentryLogger
-import io.ymusic.telemetry.applyYMusicTelemetry
-import io.ymusic.telemetry.bindCrashReporting
-import io.ymusic.telemetry.bindErrorPolicy
-import io.ymusic.telemetry.captureFeedbackReport
-import io.ymusic.telemetry.installErrorLogs
-import io.ymusic.telemetry.installSentryDeviceId
-import io.ymusic.telemetry.installSentryEngineVersion
-import io.ymusic.telemetry.installSentryPlayerVersion
-import io.ymusic.telemetry.shareLogTraceWithSentry
 import io.ymusic.ui.APP_HTTP_TIMEOUT
 import io.ymusic.ui.AppGraph
 import io.ymusic.ui.AppHttpClients
@@ -116,7 +104,6 @@ import kmpffmpeg.metadata.FfmpegMetadataGetter
 import kmphttp.KmpHttpClient
 import kmphttp.RedirectOptions
 import kmphttp.create
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -134,7 +121,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
 import okio.Path.Companion.toPath
@@ -164,7 +150,7 @@ class SharedServices(
     /** The MSE player bundle, upgraded between player sessions. */
     val playerJs: JsSourceProvider,
     val imageLoader: ImageLoader,
-    val stats: StatUsage,
+
     /** The YMusic service; null when this build has no service url. */
     val api: ApiService?,
     val remoteConfig: RemoteConfig,
@@ -196,12 +182,8 @@ class YMusicApplication : Application() {
     /** The app log (`logs.db`): feedback export and the lines an error event sends. Lazy: needs a Context. */
     val logStore: LogStore by lazy { LogStore(androidLogDatabaseDriver(this)) }
 
-    /** The app's root logger: the app log + Sentry events (no-op until Sentry.init), and logcat in debug builds only. */
     val rootLogger: Logger by lazy {
-        TeeLogger(
-            DbLogger(logStore),
-            if (BuildConfig.DEBUG) TeeLogger(SentryLogger(), LogcatLogger()) else SentryLogger(),
-        ).also { it.bindMseNativeLogs() }
+        (if (BuildConfig.DEBUG) TeeLogger(DbLogger(logStore), LogcatLogger()) else DbLogger(logStore)).also { it.bindMseNativeLogs() }
     }
 
     /** Escaped coroutine failures are still one job dying — capture, don't crash the process. */
@@ -302,33 +284,7 @@ class YMusicApplication : Application() {
             }
         }
         val deviceId = settings.anonymousDeviceId()
-        // Crash reporting is consent-gated and LIVE: init runs once (crash handlers install and
-        // stay), but nothing leaves the process unless the settings toggle says yes — default
-        // off, so nothing is ever sent before the user opted in.
-        if (BuildConfig.SENTRY_DSN.isNotEmpty()) {
-            bindCrashReporting(appScope, settings.flow(AppSettings.crashReports)) {
-                Sentry.initWithPlatformOptions {
-                    it.applyYMusicTelemetry()
-                    it.dsn = BuildConfig.SENTRY_DSN
-                    // The commit in the release traces an event to git history (no source upload).
-                    it.release = "${BuildConfig.APPLICATION_ID}@${BuildConfig.VERSION_NAME}+${BuildConfig.GIT_COMMIT}"
-                    // Explicit and persisted: without it, ANR/tombstone events replayed by the next
-                    // process take dist from the text after '+' in the release (the commit).
-                    it.dist = BuildConfig.VERSION_CODE.toString()
-                    it.environment = if (BuildConfig.DEBUG) "debug" else "production"
-                    // One trace per app open: no new trace per Activity, and no gesture listener on
-                    // every window (it cannot resolve Compose elements, so it only costs hooks).
-                    it.isEnableAutoTraceIdGeneration = false
-                    it.isEnableUserInteractionBreadcrumbs = false
-                }
-                installSentryDeviceId(deviceId)
-                shareLogTraceWithSentry()
-            }
-        }
 
-        // The one client of the YMusic service; null when this build has no service url. Its own
-        // client instance carries the API cookie jar (the activity watermark survives restarts) —
-        // the engine client stays jar-less on purpose, the engine JS owns YouTube cookies.
         val runningBundles = RunningBundles(
             engineFloor = maxOf(BuildConfig.ENGINE_JS_VERSION.toInt(), settings.flow(AppSettings.lastLoadedEngineJsVer).value),
             playerFloor = maxOf(EMBEDDED_PLAYER_JS_VERSION.toInt(), settings.flow(AppSettings.lastLoadedPlayerJsVer).value),
@@ -360,27 +316,12 @@ class YMusicApplication : Application() {
             now = { System.currentTimeMillis() },
             log = rootLogger.fork("remote-config"),
         ).also { it.checkUpdate() } // app open is itself a hotpoint
-        installErrorLogs(logStore, remoteConfig, BuildConfig.VERSION_CODE)
-        bindErrorPolicy(appScope, remoteConfig, rootLogger.fork("error-policy"))
         appScope.launch {
             // The cap waits for the loaded config: the store trims nothing until it has one.
             remoteConfig.awaitLoaded()
             remoteConfig.features.collect { logStore.setMaxLines(it.logLines) }
         }
-        // Anonymous usage stats — held by SharedServices so the graph (and any screen) can
-        // record events. The "Send anonymous stats" answer is read per event, so the Settings
-        // switch applies live, and a disabled gate costs nothing.
-        val stats = StatUsage(
-            api = api,
-            enabled = { settings.flow(AppSettings.stats).value },
-            queueFile = File(filesDir, "stat-queue.json").toOkioPath(),
-            fileSystem = FileSystem.SYSTEM,
-            scope = scope,
-            now = { System.currentTimeMillis() },
-            log = rootLogger.fork("stats"),
-        ).also { it.onAppStart() }
-        // First launch decides the app language (device if supported, else English) and persists
-        // it — BEFORE the engine starts: the engine pulls the same key as its content-language.
+
         ensureAppLanguage(settings)
         // The engine bundle: asset embed (no compiled-in constant) + file cache + the revision the
         // config service publishes, which the manager follows from start.
@@ -407,9 +348,7 @@ class YMusicApplication : Application() {
             settings = settings,
             // Debug builds crash on an engine-thread stall (StrictMode-style); release only logs.
             strictStints = BuildConfig.DEBUG && BuildConfig.STRICT_ENGINE_STINTS,
-            // Every Sentry event and service call names the engine-js bundle that was live (start + each swap).
             onBackendVersion = { version ->
-                installSentryEngineVersion(version)
                 runningBundles.engine = version
                 scope.launch { settings.put(AppSettings.lastLoadedEngineJsVer, version) }
             },
@@ -463,7 +402,7 @@ class YMusicApplication : Application() {
             logger = rootLogger,
             ioDispatcher = Dispatchers.IO,
         )
-        return SharedServices(http, cookies, settings, engines, cacheStore, mediaStore, playerJs, imageLoader, stats, api, remoteConfig, runningBundles)
+        return SharedServices(http, cookies, settings, engines, cacheStore, mediaStore, playerJs, imageLoader, api, remoteConfig, runningBundles)
     }
 
     private suspend fun buildGraph(): AppGraph {
@@ -608,7 +547,6 @@ class YMusicApplication : Application() {
                         mediaProxy = mediaProxy,
                         playerJs = shared.playerJs,
                         onPlayerJsVersion = { version ->
-                            installSentryPlayerVersion(version)
                             shared.runningBundles.player = version
                             scope.launch { shared.settings.put(AppSettings.lastLoadedPlayerJsVer, version) }
                         },
@@ -683,13 +621,8 @@ class YMusicApplication : Application() {
             playerCache = playerCache,
             systemAudioEffects = true,
             audioFocusSetting = true,
-            stats = shared.stats,
+
             premium = premium,
-            openDonation = {
-                resumedActivity?.get()?.let { activity ->
-                    SupportApp.openDonation(activity, shared.remoteConfig.config.value.features.donationUrl, rootLogger)
-                }
-            },
             shareText = { text ->
                 startShare(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text))
             },
@@ -750,7 +683,6 @@ class YMusicApplication : Application() {
                 fn(title, subtitle)
             },
             downloads = downloadService,
-            captureFeedbackReport = captureFeedbackReportAction.takeIf { BuildConfig.SENTRY_DSN.isNotEmpty() },
             platformInfo = listOfNotNull("Android ${android.os.Build.VERSION.RELEASE}", android.os.Build.SUPPORTED_ABIS.firstOrNull()).joinToString(" · "),
             createDocument = { name, mimeType ->
                 documentCreator?.invoke(name, mimeType)?.let { uri ->
@@ -791,27 +723,6 @@ class YMusicApplication : Application() {
                     if (showMse) mseTexture.bringToFront()
                 },
             )
-        }
-    }
-
-    /** Sends the app logs as one anonymous Sentry report for the Feedback screen. */
-    private val captureFeedbackReportAction: suspend (String, String?) -> Unit = { subject, message ->
-        withContext(Dispatchers.IO) {
-            val export = File(cacheDir, FEEDBACK_LOG_NAME)
-            // The report still goes without the log when the export fails or the log store is stuck.
-            val attachments = try {
-                withTimeoutOrNull(FEEDBACK_EXPORT_TIMEOUT_MS) { logStore.exportGzip(FileSystem.SYSTEM, export.toOkioPath()) }
-                    ?.let { listOf(io.sentry.kotlin.multiplatform.Attachment(export.path, FEEDBACK_LOG_NAME, "application/gzip")) }
-                    ?: emptyList<io.sentry.kotlin.multiplatform.Attachment>().also {
-                        rootLogger.fork("feedback").log(Logger.Level.WARN, "log export for feedback timed out")
-                    }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                rootLogger.fork("feedback").log(Logger.Level.WARN, "log export for feedback failed", e)
-                emptyList()
-            }
-            captureFeedbackReport(subject, message, attachments)
         }
     }
 

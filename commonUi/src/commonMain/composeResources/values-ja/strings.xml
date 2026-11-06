@@ -256,7 +256,6 @@
     <string name="settings_licenses_intro">YMusic は GNU GPL v3.0 のもとで公開されているオープンソースです。以下のコンポーネントを含みます：</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">不具合やご要望を GitHub またはメールでお知らせください。ログを確認して返信できるよう、下の匿名情報を添えてください。</string>
     <string name="feedback_info_title">匿名情報</string>
     <string name="feedback_copy">コピー</string>
     <string name="feedback_copied">コピーしました</string>
@@ -264,23 +263,8 @@
     <string name="feedback_app">アプリ</string>
     <string name="feedback_engine">エンジン</string>
     <string name="feedback_language">言語</string>
-    <string name="feedback_info_note">名前・メールアドレス・アカウントは含まれません。含まれるのはこれらの ID とこのアプリのログだけです。</string>
     <string name="feedback_github_title">GitHub で Issue を作成</string>
     <string name="feedback_github_hint">公開。バグやアイデアに最適 — 他のユーザーもフォローや追記ができます。</string>
-    <string name="feedback_email_title">%1$s にメール</string>
-    <string name="feedback_email_hint">非公開。アカウントや個人的なご質問に最適です。</string>
-    <string name="feedback_email_subject">YMusic へのフィードバック</string>
-    <string name="feedback_prefilled_note">どちらも情報が入力済みの状態で開きます。入っていない場合は貼り付けてください — この情報がないとサポートできません。</string>
-    <string name="feedback_reports_off_title">匿名レポートがオフです</string>
-    <string name="feedback_reports_off_message">問題を調べるには、このアプリのログが必要です。「続行」をタップすると、YMusic が匿名レポートを再びオンにしてログを送信します。</string>
-    <string name="feedback_reports_off_note">名前・メールアドレス・アカウントは送信されません。レポートは設定からいつでも再びオフにできます。</string>
-    <string name="feedback_continue">続行</string>
-    <string name="feedback_sentry_link">または Sentry で送信</string>
-    <string name="feedback_sentry_title">Sentry で送信</string>
-    <string name="feedback_sentry_label">何が起きましたか？</string>
-    <string name="feedback_sentry_note">匿名情報が添付されます。ここから送られたメッセージには返信できません。返信をご希望の場合は GitHub またはメールをご利用ください。</string>
-    <string name="feedback_sentry_send">送信</string>
-    <string name="feedback_sentry_sent">Sentry で送信しました。ありがとうございます！</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">メニュー</string>
@@ -397,10 +381,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">アップデートを自動でダウンロード</string>
     <string name="settings_auto_update_hint">新しいバージョンをバックグラウンドで取得し、次回起動時にインストールします。</string>
-    <string name="settings_crash_reports">匿名のクラッシュレポートを送信</string>
-    <string name="settings_crash_reports_hint">クラッシュやエラーを報告してバグ修正に協力します。レポートにはランダムなアプリ ID のみが含まれ、アカウント情報や再生履歴は含まれません。</string>
-    <string name="settings_stats">匿名の統計情報を送信</string>
-    <string name="settings_stats_hint">匿名の利用状況を共有してアプリの改善に協力します。</string>
     <string name="settings_enable_pip">ピクチャー イン ピクチャー</string>
     <string name="settings_enable_pip_hint">再生画面や全画面で動画を視聴中にアプリを離れると、小さなウィンドウで再生を続けます。オフの場合は、戻るまで音声のみに切り替わります。</string>
     <string name="settings_audio_focus">オーディオフォーカス</string>
@@ -532,7 +512,6 @@
     <string name="settings_section_playback">再生</string>
     <string name="settings_section_downloads">ダウンロード</string>
     <string name="settings_section_devices">デバイス</string>
-    <string name="settings_section_privacy">プライバシー</string>
     <string name="settings_section_about">アプリについて</string>
     <string name="settings_quick_download">クイックダウンロード</string>
     <string name="sound_bass">低音</string>

@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic GNU GPL v3.0 lisenziyası ilə açıq mənbəlidir. Aşağıdakı komponentləri ehtiva edir:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Nəyin səhv getdiyini və ya nə görmək istədiyinizi GitHub-da və ya e-poçtla bizə bildirin. Jurnallarınızı tapıb cavab verə bilməyimiz üçün aşağıdakı anonim məlumatınızı əlavə edin.</string>
     <string name="feedback_info_title">Anonim məlumat</string>
     <string name="feedback_copy">Kopyala</string>
     <string name="feedback_copied">Kopyalandı</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">Tətbiq</string>
     <string name="feedback_engine">Mühərrik</string>
     <string name="feedback_language">Dil</string>
-    <string name="feedback_info_note">Ad, e-poçt və ya hesab yoxdur — yalnız bu ID-lər və bu tətbiqin logları.</string>
     <string name="feedback_github_title">GitHub-da problem açın</string>
     <string name="feedback_github_hint">İctimai. Xətalar və ideyalar üçün ən yaxşısı — başqaları izləyə və əlavə edə bilər.</string>
-    <string name="feedback_email_title">%1$s ünvanına yazın</string>
-    <string name="feedback_email_hint">Şəxsi. Hesab və ya şəxsi suallar üçün ən yaxşısı.</string>
-    <string name="feedback_email_subject">YMusic rəyi</string>
-    <string name="feedback_prefilled_note">Hər ikisi məlumat artıq doldurulmuş halda açılır. Əgər yoxdursa, onu yapışdırın — onsuz kömək edə bilmərik.</string>
-    <string name="feedback_reports_off_title">Anonim hesabatlar söndürülüb</string>
-    <string name="feedback_reports_off_message">Probleminizi araşdırmaq üçün bu tətbiqin loglarına ehtiyacımız var. Davam et düyməsinə toxunun, YMusic anonim hesabatları yenidən aktivləşdirib logları göndərəcək.</string>
-    <string name="feedback_reports_off_note">Ad, e-poçt və ya hesab göndərilmir. Hesabatları Tənzimləmələrdə yenidən söndürə bilərsiniz.</string>
-    <string name="feedback_continue">Davam et</string>
-    <string name="feedback_sentry_link">və ya Sentry ilə</string>
-    <string name="feedback_sentry_title">Sentry ilə göndər</string>
-    <string name="feedback_sentry_label">Nə baş verdi?</string>
-    <string name="feedback_sentry_note">Anonim məlumatınız əlavə olunub. Buradan göndərilən mesajlara cavab verə bilmirik, cavab istəyirsinizsə GitHub və ya e-poçtdan istifadə edin.</string>
-    <string name="feedback_sentry_send">Göndər</string>
-    <string name="feedback_sentry_sent">Sentry ilə göndərildi. Təşəkkür edirik!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menyu</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Yeniləmələri avtomatik yüklə</string>
     <string name="settings_auto_update_hint">Yeni versiyaları arxa planda yükləyir və növbəti açılışda quraşdırır.</string>
-    <string name="settings_crash_reports">Anonim xəta hesabatları göndər</string>
-    <string name="settings_crash_reports_hint">Çökmələr və xətalar barədə məlumat verərək onların düzəldilməsinə kömək edin. Hesabatlarda təsadüfi tətbiq identifikatoru olur — hesab məlumatı yox, dinləmə tarixçəsi yox.</string>
-    <string name="settings_stats">Anonim statistika göndər</string>
-    <string name="settings_stats_hint">Tətbiqi təkmilləşdirməyə kömək etmək üçün anonim istifadə məlumatlarını paylaşın.</string>
     <string name="settings_enable_pip">Şəkil içində şəkil</string>
     <string name="settings_enable_pip_hint">İndi oxudulur və ya tam ekranda video izləyərkən tətbiqdən çıxsanız, kiçik pəncərədə davam edir. Əks halda siz qayıdana qədər video yalnız audioya keçir.</string>
     <string name="settings_audio_focus">Audio fokus</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">Oxutma</string>
     <string name="settings_section_downloads">Yükləmələr</string>
     <string name="settings_section_devices">Cihazlar</string>
-    <string name="settings_section_privacy">Məxfilik</string>
     <string name="settings_section_about">Haqqında</string>
     <string name="settings_quick_download">Sürətli yükləmə</string>
     <string name="sound_bass">Bas</string>

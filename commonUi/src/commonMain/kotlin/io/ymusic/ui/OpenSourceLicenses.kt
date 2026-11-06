@@ -43,7 +43,6 @@ internal val OssComponents: List<OssComponent> = listOf(
     OssComponent("Shine (linked into FFmpeg)", "LGPL-2.0+", "https://github.com/toots/shine", scope = "Android / Desktop"),
     OssComponent("NVIDIA codec headers (in FFmpeg)", "MIT", "https://github.com/FFmpeg/nv-codec-headers", scope = "Desktop (Linux)"),
     OssComponent("Vulkan-Headers (in FFmpeg)", "Apache-2.0", "https://github.com/KhronosGroup/Vulkan-Headers", scope = "Desktop (Linux)"),
-    OssComponent("Sentry SDK", "MIT", "https://github.com/getsentry/sentry-kotlin-multiplatform", scope = "Android / Desktop"),
     OssComponent("ZXing", "Apache-2.0", "https://github.com/zxing/zxing", scope = "Android / Desktop"),
     OssComponent("Skiko / Skia", "Apache-2.0 / BSD-3-Clause", "https://github.com/JetBrains/skiko", scope = "Desktop / iOS"),
     OssComponent("AndroidX", "Apache-2.0", "https://android.googlesource.com/platform/frameworks/support", scope = "Android"),

@@ -256,7 +256,6 @@
     <string name="settings_licenses_intro">YMusic 基于 GNU GPL v3.0 开源，包含以下组件：</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">通过 GitHub 或邮件告诉我们哪里出了问题，或你希望看到什么。请附上下方的匿名信息，方便我们找到你的日志并回复。</string>
     <string name="feedback_info_title">匿名信息</string>
     <string name="feedback_copy">复制</string>
     <string name="feedback_copied">已复制</string>
@@ -264,23 +263,8 @@
     <string name="feedback_app">应用</string>
     <string name="feedback_engine">引擎</string>
     <string name="feedback_language">语言</string>
-    <string name="feedback_info_note">不含姓名、邮箱或账号 — 只有这些 ID 和本应用的日志。</string>
     <string name="feedback_github_title">在 GitHub 上提交 Issue</string>
     <string name="feedback_github_hint">公开。最适合反馈 Bug 和想法 — 其他人可以关注并补充。</string>
-    <string name="feedback_email_title">发送邮件至 %1$s</string>
-    <string name="feedback_email_hint">私密。最适合账号或个人问题。</string>
-    <string name="feedback_email_subject">YMusic 反馈</string>
-    <string name="feedback_prefilled_note">两种方式打开时都会预先填好信息。如果缺失，请粘贴 — 没有这些信息我们无法提供帮助。</string>
-    <string name="feedback_reports_off_title">匿名报告已关闭</string>
-    <string name="feedback_reports_off_message">为了排查你的问题，我们需要本应用的日志。点按“继续”，YMusic 会重新开启匿名报告并发送日志。</string>
-    <string name="feedback_reports_off_note">不会发送姓名、邮箱或账号。你可以随时在设置中再次关闭报告。</string>
-    <string name="feedback_continue">继续</string>
-    <string name="feedback_sentry_link">或通过 Sentry 发送</string>
-    <string name="feedback_sentry_title">通过 Sentry 发送</string>
-    <string name="feedback_sentry_label">发生了什么？</string>
-    <string name="feedback_sentry_note">已附上你的匿名信息。我们无法回复从这里发送的消息，如需回复，请使用 GitHub 或邮件。</string>
-    <string name="feedback_sentry_send">发送</string>
-    <string name="feedback_sentry_sent">已通过 Sentry 发送。谢谢！</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">菜单</string>
@@ -397,10 +381,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">自动下载更新</string>
     <string name="settings_auto_update_hint">在后台获取新版本，并在下次启动时安装。</string>
-    <string name="settings_crash_reports">发送匿名崩溃报告</string>
-    <string name="settings_crash_reports_hint">报告崩溃和错误，帮助我们修复问题。报告只带有一个随机的应用 ID — 不含帐号数据，也不含收听记录。</string>
-    <string name="settings_stats">发送匿名统计数据</string>
-    <string name="settings_stats_hint">分享匿名使用数据，帮助改进应用。</string>
     <string name="settings_enable_pip">画中画</string>
     <string name="settings_enable_pip_hint">在“正在播放”或全屏观看视频时，离开应用后继续在小窗口中播放。关闭时视频将切换为仅音频，直到你返回。</string>
     <string name="settings_audio_focus">音频焦点</string>
@@ -532,7 +512,6 @@
     <string name="settings_section_playback">播放</string>
     <string name="settings_section_downloads">下载</string>
     <string name="settings_section_devices">设备</string>
-    <string name="settings_section_privacy">隐私</string>
     <string name="settings_section_about">关于</string>
     <string name="settings_quick_download">快速下载</string>
     <string name="sound_bass">低音</string>

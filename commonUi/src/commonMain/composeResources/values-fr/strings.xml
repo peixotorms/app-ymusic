@@ -264,7 +264,6 @@
     <string name="settings_licenses_intro">YMusic est open source sous licence GNU GPL v3.0. Il inclut ces composants :</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Dites-nous ce qui ne marche pas ou ce que vous aimeriez voir, sur GitHub ou par e-mail. Joignez vos infos anonymes ci-dessous pour que nous retrouvions vos journaux et vous répondions.</string>
     <string name="feedback_info_title">Infos anonymes</string>
     <string name="feedback_copy">Copier</string>
     <string name="feedback_copied">Copié</string>
@@ -272,23 +271,8 @@
     <string name="feedback_app">App</string>
     <string name="feedback_engine">Moteur</string>
     <string name="feedback_language">Langue</string>
-    <string name="feedback_info_note">Ni nom, ni e-mail, ni compte — seulement ces ID et les journaux de cette app.</string>
     <string name="feedback_github_title">Ouvrir un ticket sur GitHub</string>
     <string name="feedback_github_hint">Public. Idéal pour les bugs et les idées — d’autres peuvent suivre et compléter.</string>
-    <string name="feedback_email_title">Écrire à %1$s</string>
-    <string name="feedback_email_hint">Privé. Idéal pour les questions de compte ou personnelles.</string>
-    <string name="feedback_email_subject">Avis sur YMusic</string>
-    <string name="feedback_prefilled_note">Les deux s’ouvrent avec les infos déjà remplies. Si elles manquent, collez-les — sans elles, nous ne pouvons pas vous aider.</string>
-    <string name="feedback_reports_off_title">Les rapports anonymes sont désactivés</string>
-    <string name="feedback_reports_off_message">Pour étudier votre problème, nous avons besoin des journaux de cette app. Appuyez sur Continuer : YMusic réactivera les rapports anonymes et enverra les journaux.</string>
-    <string name="feedback_reports_off_note">Aucun nom, e-mail ni compte n’est envoyé. Vous pouvez désactiver à nouveau les rapports dans les Paramètres.</string>
-    <string name="feedback_continue">Continuer</string>
-    <string name="feedback_sentry_link">ou via Sentry</string>
-    <string name="feedback_sentry_title">Envoyer via Sentry</string>
-    <string name="feedback_sentry_label">Que s’est-il passé ?</string>
-    <string name="feedback_sentry_note">Vos infos anonymes sont jointes. Nous ne pouvons pas répondre aux messages envoyés d’ici : utilisez GitHub ou l’e-mail si vous souhaitez une réponse.</string>
-    <string name="feedback_sentry_send">Envoyer</string>
-    <string name="feedback_sentry_sent">Envoyé via Sentry. Merci !</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menu</string>
@@ -405,10 +389,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Télécharger les mises à jour automatiquement</string>
     <string name="settings_auto_update_hint">Récupère les nouvelles versions en arrière-plan et les installe au prochain démarrage.</string>
-    <string name="settings_crash_reports">Envoyer des rapports de plantage anonymes</string>
-    <string name="settings_crash_reports_hint">Aidez à corriger les bugs en signalant les plantages et les erreurs. Les rapports contiennent un identifiant d'app aléatoire — aucune donnée de compte, aucun historique d'écoute.</string>
-    <string name="settings_stats">Envoyer des statistiques anonymes</string>
-    <string name="settings_stats_hint">Partager des données d'utilisation anonymes pour aider à améliorer l'app.</string>
     <string name="settings_enable_pip">Picture-in-picture</string>
     <string name="settings_enable_pip_hint">Quand vous regardez une vidéo en lecture en cours ou en plein écran, elle continue dans une petite fenêtre si vous quittez l'app. Sinon, la vidéo passe en audio uniquement jusqu'à votre retour.</string>
     <string name="settings_audio_focus">Focus audio</string>
@@ -548,7 +528,6 @@
     <string name="settings_section_playback">Lecture</string>
     <string name="settings_section_downloads">Téléchargements</string>
     <string name="settings_section_devices">Appareils</string>
-    <string name="settings_section_privacy">Confidentialité</string>
     <string name="settings_section_about">À propos</string>
     <string name="settings_quick_download">Téléchargement rapide</string>
     <string name="sound_bass">Basses</string>

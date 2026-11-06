@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">Το YMusic είναι ανοιχτού κώδικα με άδεια GNU GPL v3.0. Περιλαμβάνει τα εξής στοιχεία:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Πείτε μας τι πήγε στραβά ή τι θα θέλατε να δείτε, στο GitHub ή με email. Συμπεριλάβετε τις ανώνυμες πληροφορίες σας παρακάτω για να βρούμε τα αρχεία καταγραφής σας και να απαντήσουμε.</string>
     <string name="feedback_info_title">Ανώνυμες πληροφορίες</string>
     <string name="feedback_copy">Αντιγραφή</string>
     <string name="feedback_copied">Αντιγράφηκε</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">Εφαρμογή</string>
     <string name="feedback_engine">Μηχανή</string>
     <string name="feedback_language">Γλώσσα</string>
-    <string name="feedback_info_note">Χωρίς όνομα, email ή λογαριασμό — μόνο αυτά τα ID και τα αρχεία καταγραφής της εφαρμογής.</string>
     <string name="feedback_github_title">Άνοιγμα θέματος στο GitHub</string>
     <string name="feedback_github_hint">Δημόσιο. Ιδανικό για σφάλματα και ιδέες — άλλοι μπορούν να το παρακολουθούν και να προσθέτουν.</string>
-    <string name="feedback_email_title">Email στο %1$s</string>
-    <string name="feedback_email_hint">Ιδιωτικό. Ιδανικό για ερωτήσεις λογαριασμού ή προσωπικές.</string>
-    <string name="feedback_email_subject">Σχόλια για το YMusic</string>
-    <string name="feedback_prefilled_note">Και τα δύο ανοίγουν με τις πληροφορίες ήδη συμπληρωμένες. Αν λείπουν, επικολλήστε τις — χωρίς αυτές δεν μπορούμε να βοηθήσουμε.</string>
-    <string name="feedback_reports_off_title">Οι ανώνυμες αναφορές είναι απενεργοποιημένες</string>
-    <string name="feedback_reports_off_message">Για να εξετάσουμε το πρόβλημά σας χρειαζόμαστε τα αρχεία καταγραφής της εφαρμογής. Πατήστε Συνέχεια και το YMusic θα ενεργοποιήσει ξανά τις ανώνυμες αναφορές και θα στείλει τα αρχεία.</string>
-    <string name="feedback_reports_off_note">Δεν αποστέλλεται όνομα, email ή λογαριασμός. Μπορείτε να απενεργοποιήσετε ξανά τις αναφορές στις Ρυθμίσεις.</string>
-    <string name="feedback_continue">Συνέχεια</string>
-    <string name="feedback_sentry_link">ή μέσω Sentry</string>
-    <string name="feedback_sentry_title">Αποστολή μέσω Sentry</string>
-    <string name="feedback_sentry_label">Τι συνέβη;</string>
-    <string name="feedback_sentry_note">Οι ανώνυμες πληροφορίες σας επισυνάπτονται. Δεν μπορούμε να απαντήσουμε σε μηνύματα που στέλνονται από εδώ, οπότε χρησιμοποιήστε GitHub ή email αν θέλετε απάντηση.</string>
-    <string name="feedback_sentry_send">Αποστολή</string>
-    <string name="feedback_sentry_sent">Στάλθηκε μέσω Sentry. Ευχαριστούμε!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Μενού</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Αυτόματη λήψη ενημερώσεων</string>
     <string name="settings_auto_update_hint">Λήψη νέων εκδόσεων στο παρασκήνιο και εγκατάσταση στην επόμενη εκκίνηση.</string>
-    <string name="settings_crash_reports">Αποστολή ανώνυμων αναφορών σφαλμάτων</string>
-    <string name="settings_crash_reports_hint">Βοηθήστε στη διόρθωση σφαλμάτων αναφέροντας κρασαρίσματα και σφάλματα. Οι αναφορές φέρουν ένα τυχαίο αναγνωριστικό εφαρμογής — χωρίς δεδομένα λογαριασμού, χωρίς ιστορικό ακρόασης.</string>
-    <string name="settings_stats">Αποστολή ανώνυμων στατιστικών</string>
-    <string name="settings_stats_hint">Μοιραστείτε ανώνυμα δεδομένα χρήσης για να βελτιωθεί η εφαρμογή.</string>
     <string name="settings_enable_pip">Picture-in-picture</string>
     <string name="settings_enable_pip_hint">Όταν βλέπετε βίντεο στην Αναπαραγωγή τώρα ή σε πλήρη οθόνη, συνεχίζει σε μικρό παράθυρο αν βγείτε από την εφαρμογή. Διαφορετικά το βίντεο γίνεται μόνο ήχος μέχρι να επιστρέψετε.</string>
     <string name="settings_audio_focus">Εστίαση ήχου</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">Αναπαραγωγή</string>
     <string name="settings_section_downloads">Λήψεις</string>
     <string name="settings_section_devices">Συσκευές</string>
-    <string name="settings_section_privacy">Απόρρητο</string>
     <string name="settings_section_about">Σχετικά</string>
     <string name="settings_quick_download">Γρήγορη λήψη</string>
     <string name="sound_bass">Μπάσα</string>

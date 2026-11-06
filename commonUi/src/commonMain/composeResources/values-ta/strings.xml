@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic GNU GPL v3.0 இன் கீழ் ஓப்பன் சோர்ஸ் ஆகும். இதில் இந்தக் கூறுகள் அடங்கும்:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">என்ன தவறு நடந்தது அல்லது நீங்கள் எதைப் பார்க்க விரும்புகிறீர்கள் என்பதை GitHub-இல் அல்லது மின்னஞ்சலில் சொல்லுங்கள். உங்கள் பதிவுகளைக் கண்டறிந்து பதிலளிக்க, கீழே உள்ள உங்கள் அநாமதேயத் தகவலைச் சேர்க்கவும்.</string>
     <string name="feedback_info_title">அநாமதேயத் தகவல்</string>
     <string name="feedback_copy">நகலெடு</string>
     <string name="feedback_copied">நகலெடுக்கப்பட்டது</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">ஆப்ஸ்</string>
     <string name="feedback_engine">இன்ஜின்</string>
     <string name="feedback_language">மொழி</string>
-    <string name="feedback_info_note">பெயர், மின்னஞ்சல், கணக்கு எதுவும் இல்லை — இந்த ID-களும் இந்த ஆப்ஸின் பதிவுகளும் மட்டுமே.</string>
     <string name="feedback_github_title">GitHub-இல் சிக்கலைத் திற</string>
     <string name="feedback_github_hint">பொதுவானது. பிழைகள் மற்றும் யோசனைகளுக்குச் சிறந்தது — மற்றவர்கள் பின்தொடர்ந்து சேர்க்கலாம்.</string>
-    <string name="feedback_email_title">%1$s-க்கு மின்னஞ்சல் அனுப்பு</string>
-    <string name="feedback_email_hint">தனிப்பட்டது. கணக்கு அல்லது தனிப்பட்ட கேள்விகளுக்குச் சிறந்தது.</string>
-    <string name="feedback_email_subject">YMusic கருத்து</string>
-    <string name="feedback_prefilled_note">இரண்டும் தகவல் ஏற்கெனவே நிரப்பப்பட்ட நிலையில் திறக்கும். அது இல்லையெனில் ஒட்டவும் — அது இல்லாமல் எங்களால் உதவ முடியாது.</string>
-    <string name="feedback_reports_off_title">அநாமதேய அறிக்கைகள் முடக்கப்பட்டுள்ளன</string>
-    <string name="feedback_reports_off_message">உங்கள் சிக்கலை ஆராய இந்த ஆப்ஸின் பதிவுகள் தேவை. தொடர் என்பதைத் தட்டினால், YMusic அநாமதேய அறிக்கைகளை மீண்டும் இயக்கிப் பதிவுகளை அனுப்பும்.</string>
-    <string name="feedback_reports_off_note">பெயர், மின்னஞ்சல், கணக்கு எதுவும் அனுப்பப்படாது. அமைப்புகளில் அறிக்கைகளை மீண்டும் முடக்கலாம்.</string>
-    <string name="feedback_continue">தொடர்</string>
-    <string name="feedback_sentry_link">அல்லது Sentry வழியாக</string>
-    <string name="feedback_sentry_title">Sentry வழியாக அனுப்பு</string>
-    <string name="feedback_sentry_label">என்ன நடந்தது?</string>
-    <string name="feedback_sentry_note">உங்கள் அநாமதேயத் தகவல் இணைக்கப்பட்டுள்ளது. இங்கிருந்து அனுப்பப்படும் செய்திகளுக்கு எங்களால் பதிலளிக்க முடியாது, பதில் வேண்டுமெனில் GitHub அல்லது மின்னஞ்சலைப் பயன்படுத்தவும்.</string>
-    <string name="feedback_sentry_send">அனுப்பு</string>
-    <string name="feedback_sentry_sent">Sentry வழியாக அனுப்பப்பட்டது. நன்றி!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">மெனு</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">புதுப்பிப்புகளைத் தானாகப் பதிவிறக்கு</string>
     <string name="settings_auto_update_hint">பின்னணியில் புதிய பதிப்புகளைப் பெற்று அடுத்த முறை தொடங்கும்போது நிறுவும்.</string>
-    <string name="settings_crash_reports">அநாமதேய செயலிழப்பு அறிக்கைகளை அனுப்பு</string>
-    <string name="settings_crash_reports_hint">செயலிழப்புகளையும் பிழைகளையும் புகாரளித்து பிழைகளைச் சரிசெய்ய உதவுங்கள். அறிக்கைகளில் ஒரு சீரற்ற ஆப்ஸ் id மட்டும் இருக்கும் — கணக்குத் தரவோ கேட்ட வரலாறோ இல்லை.</string>
-    <string name="settings_stats">அநாமதேய புள்ளிவிவரங்களை அனுப்பு</string>
-    <string name="settings_stats_hint">ஆப்ஸை மேம்படுத்த உதவ அநாமதேய பயன்பாட்டுத் தகவலைப் பகிரவும்.</string>
     <string name="settings_enable_pip">பிக்சர்-இன்-பிக்சர்</string>
     <string name="settings_enable_pip_hint">Now Playing அல்லது முழுத்திரையில் வீடியோ பார்க்கும்போது ஆப்ஸை விட்டு வெளியேறினால் சிறிய சாளரத்தில் தொடரும். இல்லையெனில் நீங்கள் திரும்பும் வரை வீடியோ ஆடியோ மட்டுமாக மாறும்.</string>
     <string name="settings_audio_focus">ஆடியோ ஃபோகஸ்</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">இயக்கம்</string>
     <string name="settings_section_downloads">பதிவிறக்கங்கள்</string>
     <string name="settings_section_devices">சாதனங்கள்</string>
-    <string name="settings_section_privacy">தனியுரிமை</string>
     <string name="settings_section_about">அறிமுகம்</string>
     <string name="settings_quick_download">விரைவுப் பதிவிறக்கம்</string>
     <string name="sound_bass">பேஸ்</string>

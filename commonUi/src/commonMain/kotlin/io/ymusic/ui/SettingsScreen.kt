@@ -56,8 +56,6 @@ import io.ymusic.ui.resources.settings_auto_update_hint
 import io.ymusic.ui.resources.settings_changelog
 import io.ymusic.ui.resources.settings_content_locale_hint
 import io.ymusic.ui.resources.settings_content_region
-import io.ymusic.ui.resources.settings_crash_reports
-import io.ymusic.ui.resources.settings_crash_reports_hint
 import io.ymusic.ui.resources.settings_debug
 import io.ymusic.ui.resources.settings_enable_pip
 import io.ymusic.ui.resources.settings_enable_pip_hint
@@ -71,15 +69,12 @@ import io.ymusic.ui.resources.settings_section_content
 import io.ymusic.ui.resources.settings_section_devices
 import io.ymusic.ui.resources.settings_section_downloads
 import io.ymusic.ui.resources.settings_section_playback
-import io.ymusic.ui.resources.settings_section_privacy
 import io.ymusic.ui.resources.settings_show_fps
 import io.ymusic.ui.resources.settings_show_fps_hint
 import io.ymusic.ui.resources.settings_source_code
 import io.ymusic.ui.resources.settings_speed_hint
 import io.ymusic.ui.resources.settings_sponsor_block
 import io.ymusic.ui.resources.settings_sponsor_block_hint
-import io.ymusic.ui.resources.settings_stats
-import io.ymusic.ui.resources.settings_stats_hint
 import io.ymusic.ui.resources.settings_terms
 import io.ymusic.ui.resources.settings_theme
 import io.ymusic.ui.resources.settings_theme_amoled
@@ -201,12 +196,7 @@ fun SettingsScreen(graph: AppGraph, signedIn: Boolean = false, onLogin: () -> Un
                 LinkDevicesRow(graph, signedIn = signedIn, onLogin = onLogin)
             }
         }
-        // Both telemetry consents are LIVE: the shells mirror them into the send-gates, so nothing
-        // leaves the app while a switch is off, and no restart is needed either way.
-        SettingsSection(Res.string.settings_section_privacy) {
-            ToggleRow(graph, AppSettings.crashReports, Res.string.settings_crash_reports, Res.string.settings_crash_reports_hint)
-            ToggleRow(graph, AppSettings.stats, Res.string.settings_stats, Res.string.settings_stats_hint)
-        }
+
         SettingsSection(Res.string.settings_section_about) {
             VersionsRow(graph)
             // Download updates in the background (on by default); installing still waits for a tap.

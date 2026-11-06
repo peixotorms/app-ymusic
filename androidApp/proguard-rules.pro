@@ -27,11 +27,9 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
-# Sentry events must map back to source lines; the file name is renamed, not dropped.
+# Local diagnostic stack traces retain line numbers.
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
 
-# Sentry titles and fingerprints events by the client-side exception type, and the telemetry
-# beforeSend matches TrailMark by name: unrenamed, and pinned against R8 class merging folding
-# unrelated exceptions into one type. Unused throwables are still removed.
+# Preserve exception categories in local logs.
 -keepnames class * extends java.lang.Throwable

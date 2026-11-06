@@ -2,37 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("io.sentry.android.gradle") version "6.18.0"
-}
-
-// Upload-only Sentry integration: the plugin injects the proguard UUID and ships release
-// mapping.txt + the Kotlin sources to Sentry, so events symbolicate with source context.
-// Runtime stays out of the plugin's hands — the SDK arrives via :telemetry
-// (sentry-kotlin-multiplatform), not auto-install, and bytecode instrumentation has no
-// consumer here (no performance tracing).
-sentry {
-    org.set("na-6d")
-    projectName.set("ymusic-kmp")
-    authToken.set(sentryAuthToken())
-    includeProguardMapping.set(true)
-    autoUploadProguardMapping.set(sentryAuthToken().isNotEmpty())
-    autoInstallation { enabled.set(false) }
-    tracingInstrumentation { enabled.set(false) }
-    includeSourceContext.set(sentryAuthToken().isNotEmpty())
-    // Reads the unstripped merged_native_libs; the APK's copies are stripped at packaging.
-    uploadNativeSymbols.set(sentryAuthToken().isNotEmpty())
-    includeNativeSources.set(sentryAuthToken().isNotEmpty())
-    // The plugin only collects THIS module's sources; the app's frames live in the library
-    // modules. Bundle every subproject source set that compiles into the Android app —
-    // other targets' sets (jvmMain/desktop/apple) stay out, their actuals would collide.
-    additionalSourceDirsForSourceContext.set(
-        rootProject.subprojects
-            .flatMap { p -> listOf("commonMain", "androidMain", "jvmCommonMain").map { p.file("src/$it/kotlin") } }
-            .filter { it.isDirectory }
-            .map { it.absolutePath }
-            .toSet(),
-    )
-    telemetry.set(false)
 }
 
 val appVersionName = appVersionName()
@@ -58,7 +27,6 @@ android {
         targetSdk = Versions.targetSdk
         versionCode = 22
         versionName = appVersionName
-        buildConfigField("String", "SENTRY_DSN", "\"${sentryDsn()}\"")
         buildConfigField("String", "GIT_COMMIT", "\"${gitCommit()}\"")
         buildConfigField(
             "boolean", "STRICT_ENGINE_STINTS",
@@ -169,7 +137,6 @@ dependencies {
     implementation("androidx.mediarouter:mediarouter:1.8.1")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("org.nanohttpd:nanohttpd:2.3.1")
-    implementation(project(":telemetry")) // api: sentry-kotlin-multiplatform + SentryLogger
     implementation(project(":log-store")) // the app log (logs.db)
     // androidx.media.app.NotificationCompat.MediaStyle for the playback notification.
     implementation("androidx.media:media:1.7.0")

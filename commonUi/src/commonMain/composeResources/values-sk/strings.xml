@@ -268,7 +268,6 @@
     <string name="settings_licenses_intro">YMusic je open source pod licenciou GNU GPL v3.0. Obsahuje tieto komponenty:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Napíšte nám, čo sa pokazilo alebo čo by ste radi videli, na GitHube alebo e-mailom. Priložte svoje anonymné údaje nižšie, aby sme našli vaše logy a mohli odpovedať.</string>
     <string name="feedback_info_title">Anonymné údaje</string>
     <string name="feedback_copy">Kopírovať</string>
     <string name="feedback_copied">Skopírované</string>
@@ -276,23 +275,8 @@
     <string name="feedback_app">Aplikácia</string>
     <string name="feedback_engine">Engine</string>
     <string name="feedback_language">Jazyk</string>
-    <string name="feedback_info_note">Žiadne meno, e‑mail ani účet — len tieto ID a logy tejto aplikácie.</string>
     <string name="feedback_github_title">Založiť issue na GitHube</string>
     <string name="feedback_github_hint">Verejné. Najlepšie pre chyby a nápady — ostatní ich môžu sledovať a dopĺňať.</string>
-    <string name="feedback_email_title">Napísať na %1$s</string>
-    <string name="feedback_email_hint">Súkromné. Najlepšie pre otázky k účtu alebo osobné otázky.</string>
-    <string name="feedback_email_subject">Spätná väzba k YMusic</string>
-    <string name="feedback_prefilled_note">Obe možnosti sa otvoria s už vyplnenými údajmi. Ak chýbajú, vložte ich — bez nich nemôžeme pomôcť.</string>
-    <string name="feedback_reports_off_title">Anonymné hlásenia sú vypnuté</string>
-    <string name="feedback_reports_off_message">Na preskúmanie vášho problému potrebujeme logy tejto aplikácie. Klepnite na Pokračovať a YMusic anonymné hlásenia znova zapne a odošle logy.</string>
-    <string name="feedback_reports_off_note">Neodosiela sa žiadne meno, e‑mail ani účet. Hlásenia môžete znova vypnúť v Nastaveniach.</string>
-    <string name="feedback_continue">Pokračovať</string>
-    <string name="feedback_sentry_link">alebo cez Sentry</string>
-    <string name="feedback_sentry_title">Odoslať cez Sentry</string>
-    <string name="feedback_sentry_label">Čo sa stalo?</string>
-    <string name="feedback_sentry_note">Vaše anonymné údaje sú priložené. Na správy odoslané odtiaľto nemôžeme odpovedať, takže ak chcete odpoveď, použite GitHub alebo e-mail.</string>
-    <string name="feedback_sentry_send">Odoslať</string>
-    <string name="feedback_sentry_sent">Odoslané cez Sentry. Ďakujeme!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Ponuka</string>
@@ -409,10 +393,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Sťahovať aktualizácie automaticky</string>
     <string name="settings_auto_update_hint">Sťahovať nové verzie na pozadí a nainštalovať ich pri ďalšom spustení.</string>
-    <string name="settings_crash_reports">Odosielať anonymné hlásenia o zlyhaniach</string>
-    <string name="settings_crash_reports_hint">Pomôžte opravovať chyby hlásením zlyhaní a chýb. Hlásenia obsahujú náhodné ID aplikácie — žiadne údaje o účte ani históriu počúvania.</string>
-    <string name="settings_stats">Odosielať anonymné štatistiky</string>
-    <string name="settings_stats_hint">Zdieľať anonymné údaje o používaní a pomôcť tak vylepšiť aplikáciu.</string>
     <string name="settings_enable_pip">Obraz v obraze</string>
     <string name="settings_enable_pip_hint">Pri pozeraní videa v Práve hrá alebo na celej obrazovke pokračovať v malom okne, keď aplikáciu opustíte. Inak sa video do vášho návratu prepne len na zvuk.</string>
     <string name="settings_audio_focus">Zvukový fokus</string>
@@ -556,7 +536,6 @@
     <string name="settings_section_playback">Prehrávanie</string>
     <string name="settings_section_downloads">Sťahovanie</string>
     <string name="settings_section_devices">Zariadenia</string>
-    <string name="settings_section_privacy">Súkromie</string>
     <string name="settings_section_about">O aplikácii</string>
     <string name="settings_quick_download">Rýchle stiahnutie</string>
     <string name="sound_bass">Basy</string>

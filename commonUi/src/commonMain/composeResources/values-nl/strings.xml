@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic is open source onder de GNU GPL v3.0. Het bevat deze componenten:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Vertel ons wat er misging of wat je graag zou zien, op GitHub of per e-mail. Voeg je anonieme info hieronder toe zodat we je logs kunnen vinden en kunnen antwoorden.</string>
     <string name="feedback_info_title">Anonieme info</string>
     <string name="feedback_copy">Kopiëren</string>
     <string name="feedback_copied">Gekopieerd</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">App</string>
     <string name="feedback_engine">Engine</string>
     <string name="feedback_language">Taal</string>
-    <string name="feedback_info_note">Geen naam, e-mail of account — alleen deze ID’s en de logs van deze app.</string>
     <string name="feedback_github_title">Een issue openen op GitHub</string>
     <string name="feedback_github_hint">Openbaar. Het beste voor bugs en ideeën — anderen kunnen meelezen en aanvullen.</string>
-    <string name="feedback_email_title">E-mail naar %1$s</string>
-    <string name="feedback_email_hint">Privé. Het beste voor vragen over je account of persoonlijke vragen.</string>
-    <string name="feedback_email_subject">YMusic-feedback</string>
-    <string name="feedback_prefilled_note">Beide openen met de info al ingevuld. Ontbreekt die, plak hem dan — zonder kunnen we niet helpen.</string>
-    <string name="feedback_reports_off_title">Anonieme rapporten staan uit</string>
-    <string name="feedback_reports_off_message">Om je probleem te onderzoeken hebben we de logs van deze app nodig. Tik op Doorgaan en YMusic zet anonieme rapporten weer aan en verstuurt de logs.</string>
-    <string name="feedback_reports_off_note">Er wordt geen naam, e-mail of account verstuurd. Je kunt rapporten in Instellingen weer uitzetten.</string>
-    <string name="feedback_continue">Doorgaan</string>
-    <string name="feedback_sentry_link">of via Sentry</string>
-    <string name="feedback_sentry_title">Versturen via Sentry</string>
-    <string name="feedback_sentry_label">Wat is er gebeurd?</string>
-    <string name="feedback_sentry_note">Je anonieme info is bijgevoegd. Op berichten die je hier verstuurt kunnen we niet antwoorden, dus gebruik GitHub of e-mail als je een antwoord wilt.</string>
-    <string name="feedback_sentry_send">Versturen</string>
-    <string name="feedback_sentry_sent">Verstuurd via Sentry. Bedankt!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menu</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Updates automatisch downloaden</string>
     <string name="settings_auto_update_hint">Nieuwe versies op de achtergrond ophalen en installeren bij de volgende start.</string>
-    <string name="settings_crash_reports">Anonieme crashrapporten versturen</string>
-    <string name="settings_crash_reports_hint">Help bugs op te lossen door crashes en fouten te melden. Rapporten bevatten een willekeurige app-ID — geen accountgegevens, geen luistergeschiedenis.</string>
-    <string name="settings_stats">Anonieme statistieken versturen</string>
-    <string name="settings_stats_hint">Deel anonieme gebruiksgegevens om de app te helpen verbeteren.</string>
     <string name="settings_enable_pip">Scherm-in-scherm</string>
     <string name="settings_enable_pip_hint">Als je een video bekijkt in Speelt nu of op volledig scherm, ga je verder in een klein venster wanneer je de app verlaat. Anders schakelt de video naar alleen audio tot je terugkomt.</string>
     <string name="settings_audio_focus">Audiofocus</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">Afspelen</string>
     <string name="settings_section_downloads">Downloads</string>
     <string name="settings_section_devices">Apparaten</string>
-    <string name="settings_section_privacy">Privacy</string>
     <string name="settings_section_about">Over</string>
     <string name="settings_quick_download">Snelle download</string>
     <string name="sound_bass">Bas</string>

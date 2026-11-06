@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic ni programu huria chini ya GNU GPL v3.0. Inajumuisha vipengele hivi:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Tuambie kilichoharibika au unachotaka kuona, kwenye GitHub au kwa barua pepe. Jumuisha maelezo yako yasiyo na jina hapa chini ili tupate kumbukumbu zako na tukujibu.</string>
     <string name="feedback_info_title">Maelezo bila kujulikana</string>
     <string name="feedback_copy">Nakili</string>
     <string name="feedback_copied">Imenakiliwa</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">Programu</string>
     <string name="feedback_engine">Injini</string>
     <string name="feedback_language">Lugha</string>
-    <string name="feedback_info_note">Hakuna jina, barua pepe wala akaunti — vitambulisho hivi tu na kumbukumbu za programu hii.</string>
     <string name="feedback_github_title">Fungua suala kwenye GitHub</string>
     <string name="feedback_github_hint">Hadharani. Bora kwa hitilafu na mawazo — wengine wanaweza kufuatilia na kuongeza.</string>
-    <string name="feedback_email_title">Tuma barua pepe kwa %1$s</string>
-    <string name="feedback_email_hint">Faragha. Bora kwa maswali ya akaunti au ya binafsi.</string>
-    <string name="feedback_email_subject">Maoni kuhusu YMusic</string>
-    <string name="feedback_prefilled_note">Zote mbili hufunguka maelezo yakiwa tayari yamejazwa. Yakikosekana, yabandike — bila hayo hatuwezi kusaidia.</string>
-    <string name="feedback_reports_off_title">Ripoti zisizojulikana zimezimwa</string>
-    <string name="feedback_reports_off_message">Ili kuchunguza tatizo lako tunahitaji kumbukumbu za programu hii. Gusa Endelea na YMusic itawasha tena ripoti zisizojulikana na kutuma kumbukumbu.</string>
-    <string name="feedback_reports_off_note">Hakuna jina, barua pepe wala akaunti inayotumwa. Unaweza kuzima ripoti tena kwenye Mipangilio.</string>
-    <string name="feedback_continue">Endelea</string>
-    <string name="feedback_sentry_link">au kupitia Sentry</string>
-    <string name="feedback_sentry_title">Tuma kupitia Sentry</string>
-    <string name="feedback_sentry_label">Nini kilitokea?</string>
-    <string name="feedback_sentry_note">Maelezo yako yasiyo na jina yameambatishwa. Hatuwezi kujibu ujumbe uliotumwa kutoka hapa, kwa hivyo tumia GitHub au barua pepe ikiwa unataka jibu.</string>
-    <string name="feedback_sentry_send">Tuma</string>
-    <string name="feedback_sentry_sent">Imetumwa kupitia Sentry. Asante!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menyu</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Pakua masasisho kiotomatiki</string>
     <string name="settings_auto_update_hint">Pata matoleo mapya chinichini na uyasakinishe programu itakapofunguliwa tena.</string>
-    <string name="settings_crash_reports">Tuma ripoti za kuacha kufanya kazi bila kujulikana</string>
-    <string name="settings_crash_reports_hint">Saidia kurekebisha hitilafu kwa kuripoti programu inapoacha kufanya kazi na hitilafu. Ripoti hubeba kitambulisho cha nasibu cha programu — hakuna data ya akaunti, hakuna historia ya kusikiliza.</string>
-    <string name="settings_stats">Tuma takwimu bila kujulikana</string>
-    <string name="settings_stats_hint">Shiriki takwimu za matumizi bila kujulikana ili kusaidia kuboresha programu.</string>
     <string name="settings_enable_pip">Picha ndani ya picha</string>
     <string name="settings_enable_pip_hint">Unapotazama video kwenye Inayocheza Sasa au skrini nzima, endelea kwenye dirisha dogo ukiondoka kwenye programu. Vinginevyo video itabadilika kuwa sauti pekee hadi utakaporudi.</string>
     <string name="settings_audio_focus">Mwelekeo wa sauti</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">Uchezaji</string>
     <string name="settings_section_downloads">Vipakuliwa</string>
     <string name="settings_section_devices">Vifaa</string>
-    <string name="settings_section_privacy">Faragha</string>
     <string name="settings_section_about">Kuhusu</string>
     <string name="settings_quick_download">Upakuaji wa haraka</string>
     <string name="sound_bass">Besi</string>

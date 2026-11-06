@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic on avatud lähtekoodiga litsentsi GNU GPL v3.0 alusel. See sisaldab järgmisi komponente:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Kirjuta meile, mis läks valesti või mida sooviksid näha, GitHubis või e-postiga. Lisa allolev anonüümne teave, et leiaksime sinu logid ja saaksime vastata.</string>
     <string name="feedback_info_title">Anonüümne teave</string>
     <string name="feedback_copy">Kopeeri</string>
     <string name="feedback_copied">Kopeeritud</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">Rakendus</string>
     <string name="feedback_engine">Mootor</string>
     <string name="feedback_language">Keel</string>
-    <string name="feedback_info_note">Ei nime, e-posti ega kontot — ainult need ID-d ja selle rakenduse logid.</string>
     <string name="feedback_github_title">Ava probleem GitHubis</string>
     <string name="feedback_github_hint">Avalik. Sobib kõige paremini vigade ja ideede jaoks — teised saavad seda jälgida ja täiendada.</string>
-    <string name="feedback_email_title">Kirjuta aadressile %1$s</string>
-    <string name="feedback_email_hint">Privaatne. Sobib kõige paremini konto- või isiklike küsimuste jaoks.</string>
-    <string name="feedback_email_subject">YMusicu tagasiside</string>
-    <string name="feedback_prefilled_note">Mõlemad avanevad juba täidetud teabega. Kui see puudub, kleepige see — ilma selleta me aidata ei saa.</string>
-    <string name="feedback_reports_off_title">Anonüümsed aruanded on välja lülitatud</string>
-    <string name="feedback_reports_off_message">Teie probleemi uurimiseks vajame selle rakenduse logisid. Puudutage Jätka ja YMusic lülitab anonüümsed aruanded uuesti sisse ning saadab logid.</string>
-    <string name="feedback_reports_off_note">Nime, e-posti ega kontot ei saadeta. Aruanded saate sätetes uuesti välja lülitada.</string>
-    <string name="feedback_continue">Jätka</string>
-    <string name="feedback_sentry_link">või Sentry kaudu</string>
-    <string name="feedback_sentry_title">Saada Sentry kaudu</string>
-    <string name="feedback_sentry_label">Mis juhtus?</string>
-    <string name="feedback_sentry_note">Sinu anonüümne teave on lisatud. Siit saadetud sõnumitele me vastata ei saa, seega kasuta vastuse saamiseks GitHubi või e-posti.</string>
-    <string name="feedback_sentry_send">Saada</string>
-    <string name="feedback_sentry_sent">Saadetud Sentry kaudu. Aitäh!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menüü</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Laadi värskendused automaatselt alla</string>
     <string name="settings_auto_update_hint">Too uued versioonid taustal ja paigalda need järgmisel käivitamisel.</string>
-    <string name="settings_crash_reports">Saada anonüümseid krahhiaruandeid</string>
-    <string name="settings_crash_reports_hint">Aita vigu parandada, teatades krahhidest ja vigadest. Aruanded sisaldavad juhuslikku rakenduse ID-d — ei mingeid kontoandmeid ega kuulamisajalugu.</string>
-    <string name="settings_stats">Saada anonüümset statistikat</string>
-    <string name="settings_stats_hint">Jaga anonüümseid kasutusandmeid, et aidata rakendust paremaks teha.</string>
     <string name="settings_enable_pip">Pilt pildis</string>
     <string name="settings_enable_pip_hint">Kui vaatad videot vaates Praegu mängib või täisekraanil, jätkub see rakendusest lahkudes väikeses aknas. Muidu lülitub video kuni naasmiseni ainult helile.</string>
     <string name="settings_audio_focus">Helifookus</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">Esitus</string>
     <string name="settings_section_downloads">Allalaadimised</string>
     <string name="settings_section_devices">Seadmed</string>
-    <string name="settings_section_privacy">Privaatsus</string>
     <string name="settings_section_about">Teave</string>
     <string name="settings_quick_download">Kiirallalaadimine</string>
     <string name="sound_bass">Bass</string>

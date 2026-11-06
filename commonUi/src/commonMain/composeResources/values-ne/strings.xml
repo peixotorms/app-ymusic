@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic GNU GPL v3.0 अन्तर्गत खुला स्रोत हो। यसमा यी कम्पोनेन्टहरू समावेश छन्:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">के बिग्रियो वा तपाईं के हेर्न चाहनुहुन्छ, GitHub मा वा इमेलबाट हामीलाई भन्नुहोस्। हामीले तपाईंको लग फेला पारी जवाफ दिन सकौं भनेर तलको बेनामी जानकारी समावेश गर्नुहोस्।</string>
     <string name="feedback_info_title">बेनामी जानकारी</string>
     <string name="feedback_copy">कपी गर्नुहोस्</string>
     <string name="feedback_copied">प्रतिलिपि गरियो</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">एप</string>
     <string name="feedback_engine">इन्जिन</string>
     <string name="feedback_language">भाषा</string>
-    <string name="feedback_info_note">नाम, इमेल वा खाता छैन — यी ID हरू र यो एपका लगहरू मात्र।</string>
     <string name="feedback_github_title">GitHub मा इस्यु खोल्नुहोस्</string>
     <string name="feedback_github_hint">सार्वजनिक। बग र विचारहरूका लागि उत्तम — अरूले पनि फलो गर्न र थप्न सक्छन्।</string>
-    <string name="feedback_email_title">%1$s मा इमेल गर्नुहोस्</string>
-    <string name="feedback_email_hint">निजी। खाता वा व्यक्तिगत प्रश्नहरूका लागि उत्तम।</string>
-    <string name="feedback_email_subject">YMusic प्रतिक्रिया</string>
-    <string name="feedback_prefilled_note">दुवै जानकारी पहिले नै भरिएको अवस्थामा खुल्छन्। यदि छैन भने, पेस्ट गर्नुहोस् — यसबिना हामी मद्दत गर्न सक्दैनौं।</string>
-    <string name="feedback_reports_off_title">बेनामी रिपोर्टहरू बन्द छन्</string>
-    <string name="feedback_reports_off_message">तपाईंको समस्या हेर्न हामीलाई यो एपका लगहरू चाहिन्छ। जारी राख्नुहोस् मा ट्याप गर्नुहोस्, YMusic ले बेनामी रिपोर्टहरू फेरि सक्रिय गरेर लगहरू पठाउनेछ।</string>
-    <string name="feedback_reports_off_note">कुनै नाम, इमेल वा खाता पठाइँदैन। तपाईं सेटिङमा रिपोर्टहरू फेरि बन्द गर्न सक्नुहुन्छ।</string>
-    <string name="feedback_continue">जारी राख्नुहोस्</string>
-    <string name="feedback_sentry_link">वा Sentry मार्फत</string>
-    <string name="feedback_sentry_title">Sentry मार्फत पठाउनुहोस्</string>
-    <string name="feedback_sentry_label">के भयो?</string>
-    <string name="feedback_sentry_note">तपाईंको बेनामी जानकारी संलग्न छ। यहाँबाट पठाइएका सन्देशहरूको हामी जवाफ दिन सक्दैनौं, त्यसैले जवाफ चाहिए GitHub वा इमेल प्रयोग गर्नुहोस्।</string>
-    <string name="feedback_sentry_send">पठाउनुहोस्</string>
-    <string name="feedback_sentry_sent">Sentry मार्फत पठाइयो। धन्यवाद!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">मेनु</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">अपडेटहरू स्वतः डाउनलोड गर्नुहोस्</string>
     <string name="settings_auto_update_hint">नयाँ संस्करण पृष्ठभूमिमा ल्याउनुहोस् र अर्को पटक सुरु हुँदा इन्स्टल गर्नुहोस्।</string>
-    <string name="settings_crash_reports">बेनामी क्र्यास रिपोर्ट पठाउनुहोस्</string>
-    <string name="settings_crash_reports_hint">क्र्यास र त्रुटिहरू रिपोर्ट गरेर बग सुधार्न मद्दत गर्नुहोस्। रिपोर्टमा एउटा अनियमित एप आईडी मात्र हुन्छ — कुनै खाता डेटा छैन, सुनेको इतिहास छैन।</string>
-    <string name="settings_stats">बेनामी तथ्याङ्क पठाउनुहोस्</string>
-    <string name="settings_stats_hint">एप सुधार्न मद्दत गर्न बेनामी प्रयोग सङ्केतहरू सेयर गर्नुहोस्।</string>
     <string name="settings_enable_pip">पिक्चर-इन-पिक्चर</string>
     <string name="settings_enable_pip_hint">प्लेयर स्क्रिन वा पूर्ण स्क्रिनमा भिडियो हेर्दा एप छोडेमा सानो विन्डोमा जारी रहन्छ। नत्र तपाईं नफर्केसम्म भिडियो अडियो मात्रमा बदलिन्छ।</string>
     <string name="settings_audio_focus">अडियो फोकस</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">प्लेब्याक</string>
     <string name="settings_section_downloads">डाउनलोडहरू</string>
     <string name="settings_section_devices">डिभाइसहरू</string>
-    <string name="settings_section_privacy">गोपनीयता</string>
     <string name="settings_section_about">बारेमा</string>
     <string name="settings_quick_download">द्रुत डाउनलोड</string>
     <string name="sound_bass">बेस</string>

@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic ist Open Source unter der GNU GPL v3.0. Es enthält diese Komponenten:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Sag uns, was schiefgelaufen ist oder was du dir wünschst, auf GitHub oder per E-Mail. Füge deine anonymen Infos von unten bei, damit wir deine Logs finden und antworten können.</string>
     <string name="feedback_info_title">Anonyme Infos</string>
     <string name="feedback_copy">Kopieren</string>
     <string name="feedback_copied">Kopiert</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">App</string>
     <string name="feedback_engine">Engine</string>
     <string name="feedback_language">Sprache</string>
-    <string name="feedback_info_note">Kein Name, keine E-Mail, kein Konto — nur diese IDs und die Logs dieser App.</string>
     <string name="feedback_github_title">Issue auf GitHub eröffnen</string>
     <string name="feedback_github_hint">Öffentlich. Ideal für Fehler und Ideen — andere können mitlesen und ergänzen.</string>
-    <string name="feedback_email_title">E-Mail an %1$s</string>
-    <string name="feedback_email_hint">Privat. Ideal für Fragen zum Konto oder persönliche Anliegen.</string>
-    <string name="feedback_email_subject">YMusic-Feedback</string>
-    <string name="feedback_prefilled_note">Beides öffnet sich mit bereits ausgefüllten Infos. Falls sie fehlen, füge sie ein — ohne sie können wir nicht helfen.</string>
-    <string name="feedback_reports_off_title">Anonyme Berichte sind aus</string>
-    <string name="feedback_reports_off_message">Um dein Problem zu untersuchen, brauchen wir die Logs dieser App. Tippe auf Weiter, dann schaltet YMusic anonyme Berichte wieder ein und sendet die Logs.</string>
-    <string name="feedback_reports_off_note">Es werden kein Name, keine E-Mail und kein Konto gesendet. Du kannst Berichte in den Einstellungen wieder ausschalten.</string>
-    <string name="feedback_continue">Weiter</string>
-    <string name="feedback_sentry_link">oder über Sentry</string>
-    <string name="feedback_sentry_title">Über Sentry senden</string>
-    <string name="feedback_sentry_label">Was ist passiert?</string>
-    <string name="feedback_sentry_note">Deine anonymen Infos sind angehängt. Auf Nachrichten von hier können wir nicht antworten. Nutze GitHub oder E-Mail, wenn du eine Antwort möchtest.</string>
-    <string name="feedback_sentry_send">Senden</string>
-    <string name="feedback_sentry_sent">Über Sentry gesendet. Danke!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menü</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Updates automatisch herunterladen</string>
     <string name="settings_auto_update_hint">Neue Versionen im Hintergrund laden und beim nächsten Start installieren.</string>
-    <string name="settings_crash_reports">Anonyme Absturzberichte senden</string>
-    <string name="settings_crash_reports_hint">Hilf beim Beheben von Fehlern, indem du Abstürze und Fehler meldest. Berichte enthalten eine zufällige App-ID — keine Kontodaten, keinen Hörverlauf.</string>
-    <string name="settings_stats">Anonyme Statistiken senden</string>
-    <string name="settings_stats_hint">Anonyme Nutzungsdaten teilen, um die App zu verbessern.</string>
     <string name="settings_enable_pip">Bild-im-Bild</string>
     <string name="settings_enable_pip_hint">Wenn du ein Video in „Aktuelle Wiedergabe“ oder im Vollbild ansiehst, läuft es beim Verlassen der App in einem kleinen Fenster weiter. Andernfalls wechselt es zu Nur Audio, bis du zurückkehrst.</string>
     <string name="settings_audio_focus">Audiofokus</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">Wiedergabe</string>
     <string name="settings_section_downloads">Downloads</string>
     <string name="settings_section_devices">Geräte</string>
-    <string name="settings_section_privacy">Datenschutz</string>
     <string name="settings_section_about">Über</string>
     <string name="settings_quick_download">Schnell-Download</string>
     <string name="sound_bass">Bass</string>

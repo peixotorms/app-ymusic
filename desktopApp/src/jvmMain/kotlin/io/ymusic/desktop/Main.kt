@@ -81,7 +81,6 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.sun.jna.Native
-import io.sentry.kotlin.multiplatform.Sentry
 import io.ymusic.desktop.media.MacDock
 import io.ymusic.desktop.media.connectMediaSession
 import io.ymusic.desktop.resources.ymusic_logo_dock
@@ -122,22 +121,10 @@ import io.ymusic.quickjs.QuickJsRuntime
 import io.ymusic.remoteconfig.HttpApiService
 import io.ymusic.remoteconfig.RemoteConfig
 import io.ymusic.remoteconfig.RunningBundles
-import io.ymusic.remoteconfig.StatUsage
 import io.ymusic.settings.AppSettings
 import io.ymusic.settings.anonymousDeviceId
 import io.ymusic.settings.flow
 import io.ymusic.settings.put
-import io.ymusic.telemetry.SentryLogger
-import io.ymusic.telemetry.applyYMusicTelemetry
-import io.ymusic.telemetry.bindCrashReporting
-import io.ymusic.telemetry.bindErrorPolicy
-import io.ymusic.telemetry.captureFeedbackReport
-import io.ymusic.telemetry.installErrorLogs
-import io.ymusic.telemetry.installSentryDesktopOsContext
-import io.ymusic.telemetry.installSentryDeviceId
-import io.ymusic.telemetry.installSentryEngineVersion
-import io.ymusic.telemetry.installSentryPlayerVersion
-import io.ymusic.telemetry.shareLogTraceWithSentry
 import io.ymusic.ui.APP_HTTP_TIMEOUT
 import io.ymusic.ui.ActionIcon
 import io.ymusic.ui.App
@@ -245,12 +232,8 @@ import java.awt.Color as AwtColor
  */
 private val logStore = LogStore(jvmLogDatabaseDriver(File(ymusicDataDir().apply { mkdirs() }, "logs.db").path))
 
-// The app log + Sentry events (no-op when Sentry wasn't initialized), and stdout in debug builds only.
 private val rootLogger: Logger =
-    TeeLogger(
-        DbLogger(logStore),
-        if (DEBUG_BUILD) TeeLogger(SentryLogger(), StdoutLogger()) else SentryLogger(),
-    ).also { it.bindMseNativeLogs() }
+    (if (DEBUG_BUILD) TeeLogger(DbLogger(logStore), StdoutLogger()) else DbLogger(logStore)).also { it.bindMseNativeLogs() }
 
 private val LOG_FLUSH_TIMEOUT = 3.seconds
 
@@ -328,7 +311,7 @@ fun main(args: Array<String>) {
     if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.APP_EVENT_REOPENED)) {
         Desktop.getDesktop().addAppEventListener(AppReopenedListener { showWindowRequests.tryEmit(Unit) })
     }
-    // Opened before anything else: crash-reporting consent lives here.
+    // Settings are available before the first window.
     val appStore = AppStore.open(ymusicDataDir(), rootLogger.fork("app-store"))
     val settings = kotlinx.coroutines.runBlocking {
         AppStoreSettings.open(appStore).also {
@@ -340,26 +323,6 @@ fun main(args: Array<String>) {
     // decorations and the colour the frame wears before Compose has drawn a thing.
     val darkChrome = settings.flow(AppSettings.theme).value != "light"
     applyWindowChrome(darkChrome)
-    // Crash reporting is consent-gated and LIVE: init runs once (crash handlers install and
-    // stay), but nothing leaves the process unless the Settings toggle says yes (default off).
-    if (SENTRY_DSN.isNotEmpty()) {
-        val telemetryDeviceId = kotlinx.coroutines.runBlocking { settings.anonymousDeviceId() }
-        bindCrashReporting(
-            scope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
-            consent = settings.flow(AppSettings.crashReports),
-        ) {
-            Sentry.initWithPlatformOptions {
-                it.applyYMusicTelemetry()
-                it.dsn = SENTRY_DSN
-                // The commit in the release traces an event to git history (no source upload).
-                it.release = SENTRY_RELEASE
-                it.environment = if (DEBUG_BUILD) "debug" else "production"
-            }
-            installSentryDeviceId(telemetryDeviceId)
-            installSentryDesktopOsContext()
-            shareLogTraceWithSentry()
-        }
-    }
 
     application {
         // Dock ignores Window(icon=). Vector is 192dp; Density(1024/192) makes the
@@ -834,28 +797,12 @@ private suspend fun buildGraph(settings: AppStoreSettings, session: CookieSessio
         now = { System.currentTimeMillis() },
         log = rootLogger.fork("remote-config"),
     ).also { it.checkUpdate() } // app open is itself a hotpoint
-    installErrorLogs(logStore, remoteConfig, APP_VERSION_CODE)
-    bindErrorPolicy(backgroundScope, remoteConfig, rootLogger.fork("error-policy"))
     backgroundScope.launch {
         // The cap waits for the loaded config: the store trims nothing until it has one.
         remoteConfig.awaitLoaded()
         remoteConfig.features.collect { logStore.setMaxLines(it.logLines) }
     }
-    // Anonymous usage stats — held by the graph so any screen can record events. The "Send
-    // anonymous stats" answer is read per event, so the Settings switch applies live, and a
-    // disabled gate costs nothing.
-    val stats = StatUsage(
-        api = api,
-        enabled = { settings.flow(AppSettings.stats).value },
-        queueFile = File(dataDir, "stat-queue.json").absolutePath.toPath(),
-        fileSystem = FileSystem.SYSTEM,
-        scope = backgroundScope,
-        now = { System.currentTimeMillis() },
-        log = rootLogger.fork("stats"),
-    ).also { it.onAppStart() }
 
-    // The engine bundle: jar-resource embed (no compiled-in constant) + file cache + the revision
-    // the config service publishes, which the manager follows from start.
     val engineSource = DefaultJsSourceProvider(
         client = http.engine,
         config = remoteConfig.bundleConfig(remoteConfig.engineJs),
@@ -879,9 +826,7 @@ private suspend fun buildGraph(settings: AppStoreSettings, session: CookieSessio
             cookieJar = cookies,
             settings = settings,
             strictStints = DEBUG_BUILD,
-            // Every Sentry event and service call names the engine-js bundle that was live (start + each swap).
             onBackendVersion = { version ->
-                installSentryEngineVersion(version)
                 runningBundles.engine = version
                 backgroundScope.launch { settings.put(AppSettings.lastLoadedEngineJsVer, version) }
             },
@@ -989,7 +934,6 @@ private suspend fun buildGraph(settings: AppStoreSettings, session: CookieSessio
                             ioDispatcher = Dispatchers.IO,
                         ),
                         onPlayerJsVersion = { version ->
-                            installSentryPlayerVersion(version)
                             runningBundles.player = version
                             backgroundScope.launch { settings.put(AppSettings.lastLoadedPlayerJsVer, version) }
                         },
@@ -1121,10 +1065,9 @@ private suspend fun buildGraph(settings: AppStoreSettings, session: CookieSessio
             )
         },
         downloads = downloadService,
-        stats = stats,
+
         api = api,
         remoteConfig = remoteConfig.config,
-        captureFeedbackReport = captureFeedbackReportAction.takeIf { SENTRY_DSN.isNotEmpty() },
         platformInfo = "${System.getProperty("os.name")} ${System.getProperty("os.version")} · ${desktopArch()}",
         createDocument = { name, _ -> pickSaveFile(name)?.let { file -> withContext(Dispatchers.IO) { FileSystem.SYSTEM.sink(file.toOkioPath()) } } },
         openDocument = { _ -> pickOpenFile()?.let { file -> withContext(Dispatchers.IO) { FileSystem.SYSTEM.source(file.toOkioPath()) } } },
@@ -1547,27 +1490,6 @@ private fun saveWindowPrefs(size: DpSize, position: WindowPosition) {
     } catch (e: java.io.IOException) {
         // Environmental (disk full, permissions) — the window still works, only the memory is lost.
         rootLogger.fork("window").log(Logger.Level.WARN, "window prefs save failed", e)
-    }
-}
-
-/** Sends the app logs as one anonymous Sentry report for the Feedback screen. */
-private val captureFeedbackReportAction: suspend (String, String?) -> Unit = { subject, message ->
-    withContext(Dispatchers.IO) {
-        val export = File(System.getProperty("java.io.tmpdir"), FEEDBACK_LOG_NAME)
-        // The report still goes without the log when the export fails or the log store is stuck.
-        val attachments = try {
-            withTimeoutOrNull(FEEDBACK_EXPORT_TIMEOUT_MS) { logStore.exportGzip(FileSystem.SYSTEM, export.absolutePath.toPath()) }
-                ?.let { listOf(io.sentry.kotlin.multiplatform.Attachment(export.absolutePath, FEEDBACK_LOG_NAME, "application/gzip")) }
-                ?: emptyList<io.sentry.kotlin.multiplatform.Attachment>().also {
-                    rootLogger.fork("feedback").log(Logger.Level.WARN, "log export for feedback timed out")
-                }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            rootLogger.fork("feedback").log(Logger.Level.WARN, "log export for feedback failed", e)
-            emptyList()
-        }
-        captureFeedbackReport(subject, message, attachments)
     }
 }
 

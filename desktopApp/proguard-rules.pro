@@ -63,12 +63,7 @@
 -keep class org.sqlite.BusyHandler { *; }
 -keep class org.sqlite.Collation { *; }
 
-# Sentry (JVM flavor): no keeps needed — protocol/envelope JSON is hand-rolled (JsonSerializable,
-# no reflection over model classes), and its Class.forName probes for optional integrations
-# (spring/servlet/otel) just report "absent" when shrunk away. sentry-android's consumer rules
-# exist for Android-specific reflection this JVM shell never touches.
-
-# Sentry events must map back to source lines.
+# Local diagnostic stack traces retain line numbers.
 -keepattributes SourceFile,LineNumberTable
 
 # Library-internal references to optional/absent classes — not on our classpath, never hit:

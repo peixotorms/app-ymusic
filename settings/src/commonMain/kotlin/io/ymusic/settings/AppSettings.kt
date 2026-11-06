@@ -151,18 +151,6 @@ object AppSettings {
     val theme = StringSetting("app.theme", "dark")
 
     /**
-     * Whether anonymous crash reports may be sent. Default OFF — reporting must never start before
-     * the user said yes in Settings.
-     */
-    val crashReports = BoolSetting("telemetry.crashReports", true)
-
-    /**
-     * Whether anonymous usage stats (app opens and the like) may be sent. Default OFF, same
-     * contract as [crashReports]: nothing is ever sent before the user said yes.
-     */
-    val stats = BoolSetting("telemetry.stats", true)
-
-    /**
      * Enter picture-in-picture when the OS asks (Home / app switch) while Now Playing or
      * fullscreen video is up. Off: going to background drops to AudioOnly until the app returns.
      */

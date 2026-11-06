@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic متن‌باز و تحت مجوز GNU GPL v3.0 است. این برنامه شامل این اجزا است:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">بگویید چه چیزی خراب شد یا دوست دارید چه چیزی ببینید، در GitHub یا با ایمیل. اطلاعات ناشناس زیر را هم بفرستید تا گزارش‌هایتان را پیدا کنیم و پاسخ دهیم.</string>
     <string name="feedback_info_title">اطلاعات ناشناس</string>
     <string name="feedback_copy">کپی</string>
     <string name="feedback_copied">کپی شد</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">برنامه</string>
     <string name="feedback_engine">موتور</string>
     <string name="feedback_language">زبان</string>
-    <string name="feedback_info_note">بدون نام، ایمیل یا حساب — فقط این شناسه‌ها و گزارش‌های ثبت این برنامه.</string>
     <string name="feedback_github_title">باز کردن مسئله در GitHub</string>
     <string name="feedback_github_hint">عمومی. بهترین گزینه برای اشکال‌ها و ایده‌ها — دیگران می‌توانند آن را دنبال کنند و به آن بیفزایند.</string>
-    <string name="feedback_email_title">ایمیل به %1$s</string>
-    <string name="feedback_email_hint">خصوصی. بهترین گزینه برای پرسش‌های مربوط به حساب یا شخصی.</string>
-    <string name="feedback_email_subject">بازخورد YMusic</string>
-    <string name="feedback_prefilled_note">هر دو با اطلاعاتِ از پیش پرشده باز می‌شوند. اگر نبود، آن را جای‌گذاری کنید — بدون آن نمی‌توانیم کمک کنیم.</string>
-    <string name="feedback_reports_off_title">گزارش‌های ناشناس خاموش است</string>
-    <string name="feedback_reports_off_message">برای بررسی مشکل شما به گزارش‌های ثبت این برنامه نیاز داریم. روی ادامه بزنید تا YMusic گزارش‌های ناشناس را دوباره روشن کند و گزارش‌های ثبت را بفرستد.</string>
-    <string name="feedback_reports_off_note">هیچ نام، ایمیل یا حسابی ارسال نمی‌شود. می‌توانید دوباره گزارش‌ها را در تنظیمات خاموش کنید.</string>
-    <string name="feedback_continue">ادامه</string>
-    <string name="feedback_sentry_link">یا از طریق Sentry</string>
-    <string name="feedback_sentry_title">ارسال از طریق Sentry</string>
-    <string name="feedback_sentry_label">چه اتفاقی افتاد؟</string>
-    <string name="feedback_sentry_note">اطلاعات ناشناس شما پیوست شده است. نمی‌توانیم به پیام‌هایی که از اینجا فرستاده می‌شوند پاسخ دهیم، پس اگر پاسخ می‌خواهید از GitHub یا ایمیل استفاده کنید.</string>
-    <string name="feedback_sentry_send">ارسال</string>
-    <string name="feedback_sentry_sent">از طریق Sentry ارسال شد. سپاسگزاریم!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">منو</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">دانلود خودکار به‌روزرسانی‌ها</string>
     <string name="settings_auto_update_hint">نسخه‌های جدید در پس‌زمینه دریافت و در اجرای بعدی نصب می‌شوند.</string>
-    <string name="settings_crash_reports">ارسال گزارش‌های ناشناس خرابی</string>
-    <string name="settings_crash_reports_hint">با گزارش خرابی‌ها و خطاها به رفع اشکال کمک کنید. گزارش‌ها فقط یک شناسه تصادفی برنامه دارند — بدون اطلاعات حساب، بدون تاریخچه شنیدن.</string>
-    <string name="settings_stats">ارسال آمار ناشناس</string>
-    <string name="settings_stats_hint">داده‌های ناشناس استفاده را برای بهبود برنامه به اشتراک بگذارید.</string>
     <string name="settings_enable_pip">تصویر در تصویر</string>
     <string name="settings_enable_pip_hint">هنگام تماشای ویدیو در صفحه پخش یا تمام‌صفحه، اگر از برنامه خارج شوید پخش در یک پنجره کوچک ادامه می‌یابد. در غیر این صورت تا بازگشت شما، ویدیو به حالت فقط صدا می‌رود.</string>
     <string name="settings_audio_focus">فوکوس صدا</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">پخش</string>
     <string name="settings_section_downloads">دانلودها</string>
     <string name="settings_section_devices">دستگاه‌ها</string>
-    <string name="settings_section_privacy">حریم خصوصی</string>
     <string name="settings_section_about">درباره</string>
     <string name="settings_quick_download">دانلود سریع</string>
     <string name="sound_bass">بیس</string>

@@ -256,7 +256,6 @@
     <string name="settings_licenses_intro">YMusic เป็นโอเพนซอร์สภายใต้ GNU GPL v3.0 และมีส่วนประกอบต่อไปนี้:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">บอกเราว่าเกิดปัญหาอะไรหรืออยากเห็นอะไร ผ่าน GitHub หรืออีเมล แนบข้อมูลนิรนามด้านล่างเพื่อให้เราหาบันทึกของคุณและตอบกลับได้</string>
     <string name="feedback_info_title">ข้อมูลแบบไม่ระบุตัวตน</string>
     <string name="feedback_copy">คัดลอก</string>
     <string name="feedback_copied">คัดลอกแล้ว</string>
@@ -264,23 +263,8 @@
     <string name="feedback_app">แอป</string>
     <string name="feedback_engine">เอนจิน</string>
     <string name="feedback_language">ภาษา</string>
-    <string name="feedback_info_note">ไม่มีชื่อ อีเมล หรือบัญชี — มีเพียงรหัสเหล่านี้และบันทึกของแอปนี้</string>
     <string name="feedback_github_title">เปิด issue บน GitHub</string>
     <string name="feedback_github_hint">สาธารณะ เหมาะสำหรับบั๊กและไอเดีย — คนอื่นติดตามและเพิ่มเติมได้</string>
-    <string name="feedback_email_title">ส่งอีเมลถึง %1$s</string>
-    <string name="feedback_email_hint">ส่วนตัว เหมาะสำหรับคำถามเกี่ยวกับบัญชีหรือเรื่องส่วนตัว</string>
-    <string name="feedback_email_subject">ความคิดเห็นเกี่ยวกับ YMusic</string>
-    <string name="feedback_prefilled_note">ทั้งสองแบบจะเปิดพร้อมข้อมูลที่กรอกไว้แล้ว หากไม่มี ให้วางข้อมูลลงไป — หากไม่มีข้อมูลนี้เราช่วยไม่ได้</string>
-    <string name="feedback_reports_off_title">รายงานแบบไม่ระบุตัวตนปิดอยู่</string>
-    <string name="feedback_reports_off_message">เพื่อตรวจสอบปัญหาของคุณ เราต้องใช้บันทึกของแอปนี้ แตะดำเนินการต่อ แล้ว YMusic จะเปิดรายงานแบบไม่ระบุตัวตนอีกครั้งและส่งบันทึก</string>
-    <string name="feedback_reports_off_note">ไม่มีการส่งชื่อ อีเมล หรือบัญชี คุณปิดรายงานอีกครั้งได้ในการตั้งค่า</string>
-    <string name="feedback_continue">ดำเนินการต่อ</string>
-    <string name="feedback_sentry_link">หรือผ่าน Sentry</string>
-    <string name="feedback_sentry_title">ส่งผ่าน Sentry</string>
-    <string name="feedback_sentry_label">เกิดอะไรขึ้น?</string>
-    <string name="feedback_sentry_note">แนบข้อมูลนิรนามของคุณไว้แล้ว เราไม่สามารถตอบกลับข้อความที่ส่งจากที่นี่ได้ หากต้องการคำตอบ โปรดใช้ GitHub หรืออีเมล</string>
-    <string name="feedback_sentry_send">ส่ง</string>
-    <string name="feedback_sentry_sent">ส่งผ่าน Sentry แล้ว ขอบคุณ!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">เมนู</string>
@@ -397,10 +381,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">ดาวน์โหลดอัปเดตโดยอัตโนมัติ</string>
     <string name="settings_auto_update_hint">ดึงเวอร์ชันใหม่ในเบื้องหลังและติดตั้งเมื่อเปิดแอปครั้งถัดไป</string>
-    <string name="settings_crash_reports">ส่งรายงานข้อขัดข้องแบบไม่ระบุตัวตน</string>
-    <string name="settings_crash_reports_hint">ช่วยแก้ไขบั๊กด้วยการรายงานข้อขัดข้องและข้อผิดพลาด รายงานมีเพียงรหัสแอปแบบสุ่ม — ไม่มีข้อมูลบัญชี ไม่มีประวัติการฟัง</string>
-    <string name="settings_stats">ส่งสถิติแบบไม่ระบุตัวตน</string>
-    <string name="settings_stats_hint">แชร์ข้อมูลการใช้งานแบบไม่ระบุตัวตนเพื่อช่วยปรับปรุงแอป</string>
     <string name="settings_enable_pip">การแสดงภาพซ้อนภาพ</string>
     <string name="settings_enable_pip_hint">เมื่อดูวิดีโอในหน้ากำลังเล่นหรือเต็มหน้าจอ จะเล่นต่อในหน้าต่างขนาดเล็กหากคุณออกจากแอป หากปิดไว้ วิดีโอจะเปลี่ยนเป็นเสียงเท่านั้นจนกว่าคุณจะกลับมา</string>
     <string name="settings_audio_focus">โฟกัสเสียง</string>
@@ -532,7 +512,6 @@
     <string name="settings_section_playback">การเล่น</string>
     <string name="settings_section_downloads">การดาวน์โหลด</string>
     <string name="settings_section_devices">อุปกรณ์</string>
-    <string name="settings_section_privacy">ความเป็นส่วนตัว</string>
     <string name="settings_section_about">เกี่ยวกับ</string>
     <string name="settings_quick_download">ดาวน์โหลดด่วน</string>
     <string name="sound_bass">เบส</string>

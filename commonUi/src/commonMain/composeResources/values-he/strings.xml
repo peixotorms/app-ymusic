@@ -264,7 +264,6 @@
     <string name="settings_licenses_intro">YMusic היא תוכנת קוד פתוח ברישיון GNU GPL v3.0. היא כוללת את הרכיבים הבאים:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">ספרו לנו מה השתבש או מה הייתם רוצים לראות, ב־GitHub או באימייל. צרפו את המידע האנונימי שלכם שלמטה כדי שנוכל למצוא את היומנים שלכם ולהשיב.</string>
     <string name="feedback_info_title">מידע אנונימי</string>
     <string name="feedback_copy">העתקה</string>
     <string name="feedback_copied">הועתק</string>
@@ -272,23 +271,8 @@
     <string name="feedback_app">אפליקציה</string>
     <string name="feedback_engine">מנוע</string>
     <string name="feedback_language">שפה</string>
-    <string name="feedback_info_note">בלי שם, אימייל או חשבון — רק המזהים האלה והיומנים של האפליקציה.</string>
     <string name="feedback_github_title">פתיחת issue ב-GitHub</string>
     <string name="feedback_github_hint">ציבורי. הכי מתאים לבאגים ולרעיונות — אחרים יכולים לעקוב ולהוסיף.</string>
-    <string name="feedback_email_title">שליחת אימייל אל %1$s</string>
-    <string name="feedback_email_hint">פרטי. הכי מתאים לשאלות על החשבון או לשאלות אישיות.</string>
-    <string name="feedback_email_subject">משוב על YMusic</string>
-    <string name="feedback_prefilled_note">שתי האפשרויות נפתחות עם המידע כבר ממולא. אם הוא חסר, הדביקו אותו — בלעדיו לא נוכל לעזור.</string>
-    <string name="feedback_reports_off_title">הדוחות האנונימיים כבויים</string>
-    <string name="feedback_reports_off_message">כדי לבדוק את הבעיה אנחנו צריכים את היומנים של האפליקציה. הקישו על המשך ו-YMusic יפעיל מחדש את הדוחות האנונימיים וישלח את היומנים.</string>
-    <string name="feedback_reports_off_note">לא נשלחים שם, אימייל או חשבון. אפשר לכבות שוב את הדוחות בהגדרות.</string>
-    <string name="feedback_continue">המשך</string>
-    <string name="feedback_sentry_link">או דרך Sentry</string>
-    <string name="feedback_sentry_title">שליחה דרך Sentry</string>
-    <string name="feedback_sentry_label">מה קרה?</string>
-    <string name="feedback_sentry_note">המידע האנונימי שלכם מצורף. איננו יכולים להשיב להודעות שנשלחות מכאן, לכן השתמשו ב־GitHub או באימייל אם תרצו תשובה.</string>
-    <string name="feedback_sentry_send">שליחה</string>
-    <string name="feedback_sentry_sent">נשלח דרך Sentry. תודה!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">תפריט</string>
@@ -405,10 +389,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">הורדת עדכונים אוטומטית</string>
     <string name="settings_auto_update_hint">הורדת גרסאות חדשות ברקע והתקנתן בהפעלה הבאה.</string>
-    <string name="settings_crash_reports">שליחת דוחות קריסה אנונימיים</string>
-    <string name="settings_crash_reports_hint">עזור לתקן באגים באמצעות דיווח על קריסות ושגיאות. הדוחות כוללים מזהה אפליקציה אקראי — ללא נתוני חשבון, ללא היסטוריית האזנה.</string>
-    <string name="settings_stats">שליחת נתונים סטטיסטיים אנונימיים</string>
-    <string name="settings_stats_hint">שתף נתוני שימוש אנונימיים כדי לעזור לשפר את האפליקציה.</string>
     <string name="settings_enable_pip">תמונה בתוך תמונה</string>
     <string name="settings_enable_pip_hint">כשצופים בסרטון במסך המתנגן כעת או במסך מלא, הצפייה תמשיך בחלון קטן אם יוצאים מהאפליקציה. אחרת הסרטון עובר לאודיו בלבד עד שתחזור.</string>
     <string name="settings_audio_focus">מיקוד שמע</string>
@@ -548,7 +528,6 @@
     <string name="settings_section_playback">השמעה</string>
     <string name="settings_section_downloads">הורדות</string>
     <string name="settings_section_devices">מכשירים</string>
-    <string name="settings_section_privacy">פרטיות</string>
     <string name="settings_section_about">אודות</string>
     <string name="settings_quick_download">הורדה מהירה</string>
     <string name="sound_bass">בס</string>

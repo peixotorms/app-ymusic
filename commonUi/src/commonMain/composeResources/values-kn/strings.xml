@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic GNU GPL v3.0 ಅಡಿಯಲ್ಲಿ ಓಪನ್ ಸೋರ್ಸ್ ಆಗಿದೆ. ಇದು ಈ ಘಟಕಗಳನ್ನು ಒಳಗೊಂಡಿದೆ:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">ಏನು ತಪ್ಪಾಯಿತು ಅಥವಾ ನೀವು ಏನನ್ನು ನೋಡಲು ಬಯಸುತ್ತೀರಿ ಎಂಬುದನ್ನು GitHub ನಲ್ಲಿ ಅಥವಾ ಇಮೇಲ್ ಮೂಲಕ ತಿಳಿಸಿ. ನಿಮ್ಮ ಲಾಗ್‌ಗಳನ್ನು ಹುಡುಕಿ ಉತ್ತರಿಸಲು ಕೆಳಗಿನ ನಿಮ್ಮ ಅನಾಮಧೇಯ ಮಾಹಿತಿಯನ್ನು ಸೇರಿಸಿ.</string>
     <string name="feedback_info_title">ಅನಾಮಧೇಯ ಮಾಹಿತಿ</string>
     <string name="feedback_copy">ನಕಲಿಸಿ</string>
     <string name="feedback_copied">ನಕಲಿಸಲಾಗಿದೆ</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">ಆ್ಯಪ್</string>
     <string name="feedback_engine">ಎಂಜಿನ್</string>
     <string name="feedback_language">ಭಾಷೆ</string>
-    <string name="feedback_info_note">ಹೆಸರು, ಇಮೇಲ್ ಅಥವಾ ಖಾತೆ ಇಲ್ಲ — ಈ ID ಗಳು ಮತ್ತು ಈ ಆ್ಯಪ್‌ನ ಲಾಗ್‌ಗಳು ಮಾತ್ರ.</string>
     <string name="feedback_github_title">GitHub ನಲ್ಲಿ ಸಮಸ್ಯೆ ತೆರೆಯಿರಿ</string>
     <string name="feedback_github_hint">ಸಾರ್ವಜನಿಕ. ದೋಷಗಳು ಮತ್ತು ಐಡಿಯಾಗಳಿಗೆ ಉತ್ತಮ — ಇತರರು ಅನುಸರಿಸಬಹುದು ಮತ್ತು ಸೇರಿಸಬಹುದು.</string>
-    <string name="feedback_email_title">%1$s ಗೆ ಇಮೇಲ್ ಮಾಡಿ</string>
-    <string name="feedback_email_hint">ಖಾಸಗಿ. ಖಾತೆ ಅಥವಾ ವೈಯಕ್ತಿಕ ಪ್ರಶ್ನೆಗಳಿಗೆ ಉತ್ತಮ.</string>
-    <string name="feedback_email_subject">YMusic ಪ್ರತಿಕ್ರಿಯೆ</string>
-    <string name="feedback_prefilled_note">ಎರಡೂ ಮಾಹಿತಿಯನ್ನು ಈಗಾಗಲೇ ತುಂಬಿದ ಸ್ಥಿತಿಯಲ್ಲಿ ತೆರೆಯುತ್ತವೆ. ಅದು ಇಲ್ಲದಿದ್ದರೆ, ಅಂಟಿಸಿ — ಅದಿಲ್ಲದೆ ನಾವು ಸಹಾಯ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
-    <string name="feedback_reports_off_title">ಅನಾಮಧೇಯ ವರದಿಗಳು ಆಫ್ ಆಗಿವೆ</string>
-    <string name="feedback_reports_off_message">ನಿಮ್ಮ ಸಮಸ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಲು ನಮಗೆ ಈ ಆ್ಯಪ್‌ನ ಲಾಗ್‌ಗಳು ಬೇಕು. ಮುಂದುವರಿಸಿ ಟ್ಯಾಪ್ ಮಾಡಿ, YMusic ಅನಾಮಧೇಯ ವರದಿಗಳನ್ನು ಮತ್ತೆ ಆನ್ ಮಾಡಿ ಲಾಗ್‌ಗಳನ್ನು ಕಳುಹಿಸುತ್ತದೆ.</string>
-    <string name="feedback_reports_off_note">ಯಾವುದೇ ಹೆಸರು, ಇಮೇಲ್ ಅಥವಾ ಖಾತೆಯನ್ನು ಕಳುಹಿಸಲಾಗುವುದಿಲ್ಲ. ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ವರದಿಗಳನ್ನು ಮತ್ತೆ ಆಫ್ ಮಾಡಬಹುದು.</string>
-    <string name="feedback_continue">ಮುಂದುವರಿಸಿ</string>
-    <string name="feedback_sentry_link">ಅಥವಾ Sentry ಮೂಲಕ</string>
-    <string name="feedback_sentry_title">Sentry ಮೂಲಕ ಕಳುಹಿಸಿ</string>
-    <string name="feedback_sentry_label">ಏನಾಯಿತು?</string>
-    <string name="feedback_sentry_note">ನಿಮ್ಮ ಅನಾಮಧೇಯ ಮಾಹಿತಿಯನ್ನು ಲಗತ್ತಿಸಲಾಗಿದೆ. ಇಲ್ಲಿಂದ ಕಳುಹಿಸಿದ ಸಂದೇಶಗಳಿಗೆ ನಾವು ಉತ್ತರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ, ಉತ್ತರ ಬೇಕಿದ್ದರೆ GitHub ಅಥವಾ ಇಮೇಲ್ ಬಳಸಿ.</string>
-    <string name="feedback_sentry_send">ಕಳುಹಿಸಿ</string>
-    <string name="feedback_sentry_sent">Sentry ಮೂಲಕ ಕಳುಹಿಸಲಾಗಿದೆ. ಧನ್ಯವಾದಗಳು!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">ಮೆನು</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">ಅಪ್‌ಡೇಟ್‌ಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ</string>
     <string name="settings_auto_update_hint">ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಹೊಸ ಆವೃತ್ತಿಗಳನ್ನು ಪಡೆದು ಮುಂದಿನ ಪ್ರಾರಂಭದಲ್ಲಿ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ.</string>
-    <string name="settings_crash_reports">ಅನಾಮಧೇಯ ಕ್ರ್ಯಾಶ್ ವರದಿಗಳನ್ನು ಕಳುಹಿಸಿ</string>
-    <string name="settings_crash_reports_hint">ಕ್ರ್ಯಾಶ್‌ಗಳು ಮತ್ತು ದೋಷಗಳನ್ನು ವರದಿ ಮಾಡುವ ಮೂಲಕ ಬಗ್‌ಗಳನ್ನು ಸರಿಪಡಿಸಲು ಸಹಾಯ ಮಾಡಿ. ವರದಿಗಳಲ್ಲಿ ಯಾದೃಚ್ಛಿಕ ಆ್ಯಪ್ id ಇರುತ್ತದೆ — ಖಾತೆ ಡೇಟಾ ಇಲ್ಲ, ಕೇಳಿದ ಇತಿಹಾಸ ಇಲ್ಲ.</string>
-    <string name="settings_stats">ಅನಾಮಧೇಯ ಅಂಕಿಅಂಶಗಳನ್ನು ಕಳುಹಿಸಿ</string>
-    <string name="settings_stats_hint">ಆ್ಯಪ್ ಸುಧಾರಿಸಲು ಸಹಾಯ ಮಾಡಲು ಅನಾಮಧೇಯ ಬಳಕೆಯ ಮಾಹಿತಿ ಹಂಚಿಕೊಳ್ಳಿ.</string>
     <string name="settings_enable_pip">ಪಿಕ್ಚರ್-ಇನ್-ಪಿಕ್ಚರ್</string>
     <string name="settings_enable_pip_hint">Now Playing ಅಥವಾ ಪೂರ್ಣ ಪರದೆಯಲ್ಲಿ ವೀಡಿಯೊ ನೋಡುವಾಗ ಆ್ಯಪ್‌ನಿಂದ ಹೊರಹೋದರೆ ಸಣ್ಣ ವಿಂಡೋದಲ್ಲಿ ಮುಂದುವರಿಸಿ. ಇಲ್ಲದಿದ್ದರೆ ನೀವು ಹಿಂತಿರುಗುವವರೆಗೆ ವೀಡಿಯೊ ಆಡಿಯೊ ಮಾತ್ರಕ್ಕೆ ಬದಲಾಗುತ್ತದೆ.</string>
     <string name="settings_audio_focus">ಆಡಿಯೋ ಫೋಕಸ್</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">ಪ್ಲೇಬ್ಯಾಕ್</string>
     <string name="settings_section_downloads">ಡೌನ್‌ಲೋಡ್‌ಗಳು</string>
     <string name="settings_section_devices">ಸಾಧನಗಳು</string>
-    <string name="settings_section_privacy">ಗೌಪ್ಯತೆ</string>
     <string name="settings_section_about">ಕುರಿತು</string>
     <string name="settings_quick_download">ತ್ವರಿತ ಡೌನ್‌ಲೋಡ್</string>
     <string name="sound_bass">ಬಾಸ್</string>

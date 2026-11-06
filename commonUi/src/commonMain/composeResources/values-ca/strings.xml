@@ -264,7 +264,6 @@
     <string name="settings_licenses_intro">YMusic és de codi obert sota la GNU GPL v3.0. Inclou aquests components:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Explica’ns què ha fallat o què t’agradaria veure, a GitHub o per correu. Inclou la teva informació anònima de més avall perquè puguem trobar els teus registres i respondre’t.</string>
     <string name="feedback_info_title">Informació anònima</string>
     <string name="feedback_copy">Copia</string>
     <string name="feedback_copied">Copiat</string>
@@ -272,23 +271,8 @@
     <string name="feedback_app">App</string>
     <string name="feedback_engine">Motor</string>
     <string name="feedback_language">Idioma</string>
-    <string name="feedback_info_note">Sense nom, correu ni compte — només aquests ID i els registres d’aquesta app.</string>
     <string name="feedback_github_title">Obre una incidència a GitHub</string>
     <string name="feedback_github_hint">Pública. Ideal per a errors i idees — altres persones la poden seguir i afegir-hi informació.</string>
-    <string name="feedback_email_title">Envia un correu a %1$s</string>
-    <string name="feedback_email_hint">Privat. Ideal per a preguntes sobre el compte o personals.</string>
-    <string name="feedback_email_subject">Comentaris sobre YMusic</string>
-    <string name="feedback_prefilled_note">Totes dues opcions s’obren amb la informació ja emplenada. Si hi falta, enganxa-la — sense ella no et podem ajudar.</string>
-    <string name="feedback_reports_off_title">Els informes anònims estan desactivats</string>
-    <string name="feedback_reports_off_message">Per investigar el problema necessitem els registres d’aquesta app. Toca Continua i YMusic tornarà a activar els informes anònims i enviarà els registres.</string>
-    <string name="feedback_reports_off_note">No s’envia cap nom, correu ni compte. Pots tornar a desactivar els informes a Configuració.</string>
-    <string name="feedback_continue">Continua</string>
-    <string name="feedback_sentry_link">o a través de Sentry</string>
-    <string name="feedback_sentry_title">Envia a través de Sentry</string>
-    <string name="feedback_sentry_label">Què ha passat?</string>
-    <string name="feedback_sentry_note">S’adjunta la teva informació anònima. No podem respondre els missatges enviats des d’aquí; fes servir GitHub o el correu si vols una resposta.</string>
-    <string name="feedback_sentry_send">Envia</string>
-    <string name="feedback_sentry_sent">Enviat a través de Sentry. Gràcies!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menú</string>
@@ -405,10 +389,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Descarrega les actualitzacions automàticament</string>
     <string name="settings_auto_update_hint">Obtén les versions noves en segon pla i instal·la-les en el proper inici.</string>
-    <string name="settings_crash_reports">Envia informes d'errors anònims</string>
-    <string name="settings_crash_reports_hint">Ajuda a corregir errors informant de fallades i errors. Els informes porten un identificador d'aplicació aleatori — sense dades del compte ni historial d'escolta.</string>
-    <string name="settings_stats">Envia estadístiques anònimes</string>
-    <string name="settings_stats_hint">Comparteix dades d'ús anònimes per ajudar a millorar l'aplicació.</string>
     <string name="settings_enable_pip">Pantalla en pantalla</string>
     <string name="settings_enable_pip_hint">Quan miris un vídeo a Ara sona o a pantalla completa, continua en una finestra petita si surts de l'aplicació. Si no, el vídeo passa a només àudio fins que tornis.</string>
     <string name="settings_audio_focus">Focus d’àudio</string>
@@ -548,7 +528,6 @@
     <string name="settings_section_playback">Reproducció</string>
     <string name="settings_section_downloads">Descàrregues</string>
     <string name="settings_section_devices">Dispositius</string>
-    <string name="settings_section_privacy">Privadesa</string>
     <string name="settings_section_about">Quant a</string>
     <string name="settings_quick_download">Descàrrega ràpida</string>
     <string name="sound_bass">Greus</string>

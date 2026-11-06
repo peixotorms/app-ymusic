@@ -264,7 +264,6 @@
     <string name="settings_licenses_intro">YMusic este open source sub licența GNU GPL v3.0. Include aceste componente:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Spune-ne ce nu a mers sau ce ți-ai dori să vezi, pe GitHub sau prin e-mail. Include informațiile tale anonime de mai jos ca să găsim jurnalele tale și să-ți răspundem.</string>
     <string name="feedback_info_title">Informații anonime</string>
     <string name="feedback_copy">Copiază</string>
     <string name="feedback_copied">Copiat</string>
@@ -272,23 +271,8 @@
     <string name="feedback_app">Aplicație</string>
     <string name="feedback_engine">Motor</string>
     <string name="feedback_language">Limbă</string>
-    <string name="feedback_info_note">Fără nume, e-mail sau cont — doar aceste ID-uri și jurnalele acestei aplicații.</string>
     <string name="feedback_github_title">Deschide o problemă pe GitHub</string>
     <string name="feedback_github_hint">Public. Ideal pentru erori și idei — alții pot urmări și adăuga.</string>
-    <string name="feedback_email_title">Scrie la %1$s</string>
-    <string name="feedback_email_hint">Privat. Ideal pentru întrebări despre cont sau personale.</string>
-    <string name="feedback_email_subject">Feedback YMusic</string>
-    <string name="feedback_prefilled_note">Ambele se deschid cu informațiile deja completate. Dacă lipsesc, lipește-le — fără ele nu te putem ajuta.</string>
-    <string name="feedback_reports_off_title">Rapoartele anonime sunt dezactivate</string>
-    <string name="feedback_reports_off_message">Ca să investigăm problema, avem nevoie de jurnalele acestei aplicații. Atinge Continuă și YMusic reactivează rapoartele anonime și trimite jurnalele.</string>
-    <string name="feedback_reports_off_note">Nu se trimite niciun nume, e-mail sau cont. Poți dezactiva din nou rapoartele în Setări.</string>
-    <string name="feedback_continue">Continuă</string>
-    <string name="feedback_sentry_link">sau prin Sentry</string>
-    <string name="feedback_sentry_title">Trimite prin Sentry</string>
-    <string name="feedback_sentry_label">Ce s-a întâmplat?</string>
-    <string name="feedback_sentry_note">Informațiile tale anonime sunt atașate. Nu putem răspunde mesajelor trimise de aici, așa că folosește GitHub sau e-mailul dacă vrei un răspuns.</string>
-    <string name="feedback_sentry_send">Trimite</string>
-    <string name="feedback_sentry_sent">Trimis prin Sentry. Mulțumim!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Meniu</string>
@@ -405,10 +389,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Descarcă automat actualizările</string>
     <string name="settings_auto_update_hint">Descarcă versiunile noi în fundal și instalează-le la următoarea pornire.</string>
-    <string name="settings_crash_reports">Trimite rapoarte anonime de blocare</string>
-    <string name="settings_crash_reports_hint">Ajută la remedierea erorilor raportând blocările și erorile. Rapoartele conțin un ID aleatoriu al aplicației — fără date de cont, fără istoric de ascultare.</string>
-    <string name="settings_stats">Trimite statistici anonime</string>
-    <string name="settings_stats_hint">Partajează semnale anonime de utilizare pentru a ajuta la îmbunătățirea aplicației.</string>
     <string name="settings_enable_pip">Picture-in-picture</string>
     <string name="settings_enable_pip_hint">Când urmărești un videoclip în Se redă acum sau pe ecran complet, continuă într-o fereastră mică dacă părăsești aplicația. Altfel, videoclipul trece la doar audio până revii.</string>
     <string name="settings_audio_focus">Focus audio</string>
@@ -548,7 +528,6 @@
     <string name="settings_section_playback">Redare</string>
     <string name="settings_section_downloads">Descărcări</string>
     <string name="settings_section_devices">Dispozitive</string>
-    <string name="settings_section_privacy">Confidențialitate</string>
     <string name="settings_section_about">Despre</string>
     <string name="settings_quick_download">Descărcare rapidă</string>
     <string name="sound_bass">Bas</string>

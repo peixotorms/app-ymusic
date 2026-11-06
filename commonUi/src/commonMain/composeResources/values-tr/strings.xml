@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic, GNU GPL v3.0 kapsamında açık kaynaklıdır. Şu bileşenleri içerir:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Neyin ters gittiğini ya da ne görmek istediğini GitHub’da veya e-postayla bize anlat. Günlüklerini bulup yanıt verebilmemiz için aşağıdaki anonim bilgilerini ekle.</string>
     <string name="feedback_info_title">Anonim bilgiler</string>
     <string name="feedback_copy">Kopyala</string>
     <string name="feedback_copied">Kopyalandı</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">Uygulama</string>
     <string name="feedback_engine">Motor</string>
     <string name="feedback_language">Dil</string>
-    <string name="feedback_info_note">Ad, e-posta veya hesap yok — yalnızca bu kimlikler ve bu uygulamanın günlükleri.</string>
     <string name="feedback_github_title">GitHub’da sorun kaydı aç</string>
     <string name="feedback_github_hint">Herkese açık. Hatalar ve fikirler için en iyisi — başkaları takip edip ekleme yapabilir.</string>
-    <string name="feedback_email_title">%1$s adresine e-posta gönder</string>
-    <string name="feedback_email_hint">Gizli. Hesap veya kişisel sorular için en iyisi.</string>
-    <string name="feedback_email_subject">YMusic geri bildirimi</string>
-    <string name="feedback_prefilled_note">İkisi de bilgiler önceden doldurulmuş olarak açılır. Eksikse yapıştır — onsuz yardımcı olamayız.</string>
-    <string name="feedback_reports_off_title">Anonim raporlar kapalı</string>
-    <string name="feedback_reports_off_message">Sorununu incelemek için bu uygulamanın günlüklerine ihtiyacımız var. Devam’a dokun; YMusic anonim raporları yeniden açıp günlükleri gönderir.</string>
-    <string name="feedback_reports_off_note">Ad, e-posta veya hesap gönderilmez. Raporları Ayarlar’dan yeniden kapatabilirsin.</string>
-    <string name="feedback_continue">Devam</string>
-    <string name="feedback_sentry_link">veya Sentry ile</string>
-    <string name="feedback_sentry_title">Sentry ile gönder</string>
-    <string name="feedback_sentry_label">Ne oldu?</string>
-    <string name="feedback_sentry_note">Anonim bilgilerin ekli. Buradan gönderilen mesajlara yanıt veremiyoruz; yanıt istiyorsan GitHub veya e-posta kullan.</string>
-    <string name="feedback_sentry_send">Gönder</string>
-    <string name="feedback_sentry_sent">Sentry ile gönderildi. Teşekkürler!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menü</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Güncellemeleri otomatik indir</string>
     <string name="settings_auto_update_hint">Yeni sürümleri arka planda indirir ve bir sonraki açılışta yükler.</string>
-    <string name="settings_crash_reports">Anonim çökme raporları gönder</string>
-    <string name="settings_crash_reports_hint">Çökmeleri ve hataları bildirerek hataların düzeltilmesine yardım edin. Raporlar rastgele bir uygulama kimliği taşır — hesap verisi yok, dinleme geçmişi yok.</string>
-    <string name="settings_stats">Anonim istatistik gönder</string>
-    <string name="settings_stats_hint">Uygulamanın gelişmesine yardımcı olmak için anonim kullanım verileri paylaşın.</string>
     <string name="settings_enable_pip">Pencere içinde pencere</string>
     <string name="settings_enable_pip_hint">Şimdi Çalıyor'da veya tam ekranda video izlerken uygulamadan çıkarsanız küçük bir pencerede devam eder. Aksi halde video, siz dönene kadar yalnızca sese geçer.</string>
     <string name="settings_audio_focus">Ses odağı</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">Oynatma</string>
     <string name="settings_section_downloads">İndirmeler</string>
     <string name="settings_section_devices">Cihazlar</string>
-    <string name="settings_section_privacy">Gizlilik</string>
     <string name="settings_section_about">Hakkında</string>
     <string name="settings_quick_download">Hızlı indirme</string>
     <string name="sound_bass">Bas</string>

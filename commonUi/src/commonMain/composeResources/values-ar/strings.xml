@@ -318,7 +318,6 @@
     <string name="settings_versions_engine">EngineJs %1$s</string>
     <string name="settings_versions_player">PlayerJs %1$s</string>
     <string name="settings_licenses_intro">‏YMusic مفتوح المصدر بموجب رخصة GNU GPL v3.0، ويتضمن المكوّنات التالية:</string>
-    <string name="feedback_intro">أخبرنا بما حدث من خطأ أو بما تودّ رؤيته، عبر GitHub أو البريد الإلكتروني. أرفق معلوماتك المجهولة أدناه حتى نجد سجلاتك ونرد عليك.</string>
     <string name="feedback_info_title">معلومات مجهولة الهوية</string>
     <string name="feedback_copy">نسخ</string>
     <string name="feedback_copied">تم النسخ</string>
@@ -326,23 +325,8 @@
     <string name="feedback_app">التطبيق</string>
     <string name="feedback_engine">المحرك</string>
     <string name="feedback_language">اللغة</string>
-    <string name="feedback_info_note">لا اسم ولا بريد إلكتروني ولا حساب — فقط هذه المعرّفات وسجلات هذا التطبيق.</string>
     <string name="feedback_github_title">فتح مشكلة على GitHub</string>
     <string name="feedback_github_hint">عام. الأفضل للأخطاء والأفكار — يمكن للآخرين متابعتها والإضافة إليها.</string>
-    <string name="feedback_email_title">مراسلة %1$s</string>
-    <string name="feedback_email_hint">خاص. الأفضل لأسئلة الحساب أو الأسئلة الشخصية.</string>
-    <string name="feedback_email_subject">ملاحظات YMusic</string>
-    <string name="feedback_prefilled_note">كلاهما يُفتح والمعلومات مُعبّأة مسبقًا. إن لم تكن موجودة، الصقها — لا يمكننا المساعدة بدونها.</string>
-    <string name="feedback_reports_off_title">التقارير المجهولة الهوية متوقفة</string>
-    <string name="feedback_reports_off_message">لفحص مشكلتك نحتاج إلى سجلات هذا التطبيق. انقر على متابعة وسيعيد YMusic تشغيل التقارير المجهولة الهوية ويرسل السجلات.</string>
-    <string name="feedback_reports_off_note">لا يُرسل أي اسم أو بريد إلكتروني أو حساب. يمكنك إيقاف التقارير مجددًا من الإعدادات.</string>
-    <string name="feedback_continue">متابعة</string>
-    <string name="feedback_sentry_link">أو عبر Sentry</string>
-    <string name="feedback_sentry_title">إرسال عبر Sentry</string>
-    <string name="feedback_sentry_label">ماذا حدث؟</string>
-    <string name="feedback_sentry_note">معلوماتك المجهولة مرفقة. لا يمكننا الرد على الرسائل المرسلة من هنا، لذا استخدم GitHub أو البريد الإلكتروني إن أردت ردًا.</string>
-    <string name="feedback_sentry_send">إرسال</string>
-    <string name="feedback_sentry_sent">أُرسلت عبر Sentry. شكرًا لك!</string>
 
     <string name="cd_menu">القائمة</string>
     <string name="cd_search">بحث</string>
@@ -391,10 +375,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">تنزيل التحديثات تلقائيًا</string>
     <string name="settings_auto_update_hint">تنزيل الإصدارات الجديدة في الخلفية لتكون جاهزة للتثبيت.</string>
-    <string name="settings_crash_reports">إرسال تقارير أعطال مجهولة الهوية</string>
-    <string name="settings_crash_reports_hint">ساعد في إصلاح الأخطاء بالإبلاغ عن الأعطال والأخطاء. تحمل التقارير معرّفًا عشوائيًا للتطبيق — دون بيانات الحساب ودون سجل الاستماع.</string>
-    <string name="settings_stats">إرسال إحصاءات مجهولة الهوية</string>
-    <string name="settings_stats_hint">شارك إشارات استخدام مجهولة الهوية للمساعدة في تحسين التطبيق.</string>
     <string name="settings_enable_pip">صورة داخل صورة</string>
     <string name="settings_enable_pip_hint">عند مشاهدة فيديو في التشغيل الآن أو بملء الشاشة، تابع المشاهدة في نافذة صغيرة إذا غادرت التطبيق. وإلا يتحوّل الفيديو إلى الصوت فقط حتى تعود.</string>
     <string name="settings_audio_focus">تركيز الصوت</string>
@@ -638,7 +618,6 @@
     <string name="settings_section_playback">التشغيل</string>
     <string name="settings_section_downloads">التنزيلات</string>
     <string name="settings_section_devices">الأجهزة</string>
-    <string name="settings_section_privacy">الخصوصية</string>
     <string name="settings_section_about">حول</string>
     <string name="settings_quick_download">تنزيل سريع</string>
     <string name="sound_bass">Bass</string>

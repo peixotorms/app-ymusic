@@ -36,7 +36,6 @@ import io.ymusic.player.mse.MsePlayer
 import io.ymusic.remoteconfig.HttpApiService
 import io.ymusic.remoteconfig.RemoteConfig
 import io.ymusic.remoteconfig.RunningBundles
-import io.ymusic.remoteconfig.StatUsage
 import io.ymusic.settings.AppSettings
 import io.ymusic.settings.anonymousDeviceId
 import io.ymusic.settings.flow
@@ -232,16 +231,6 @@ private suspend fun buildIosGraph(container: UIView): AppGraph {
         remoteConfig.awaitLoaded()
         remoteConfig.features.collect { logStore.setMaxLines(it.logLines) }
     }
-    // Anonymous usage stats, gated per event by the "Send anonymous stats" setting.
-    val stats = StatUsage(
-        api = api,
-        enabled = { settings.flow(AppSettings.stats).value },
-        queueFile = dataDir.resolve("stat-queue.json"),
-        fileSystem = FileSystem.SYSTEM,
-        scope = backgroundScope,
-        now = now,
-        log = rootLogger.fork("stats"),
-    ).also { it.onAppStart() }
 
     val playerCacheRoot = (NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true).first() as String)
         .toPath()
@@ -311,7 +300,6 @@ private suspend fun buildIosGraph(container: UIView): AppGraph {
         appVersionCode = appVersionCode,
         platformInfo = "iOS ${UIDevice.currentDevice.systemVersion}",
         runningBundles = runningBundles,
-        stats = stats,
         api = api,
         remoteConfig = remoteConfig.config,
         surfaceScalesDown = true,

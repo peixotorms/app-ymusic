@@ -264,7 +264,6 @@
     <string name="settings_licenses_intro">YMusic је отвореног кода под лиценцом GNU GPL v3.0. Обухвата следеће компоненте:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Реците нам шта је пошло наопако или шта бисте волели да видите, на GitHub-у или имејлом. Приложите своје анонимне податке испод да бисмо пронашли ваше логове и одговорили.</string>
     <string name="feedback_info_title">Анонимни подаци</string>
     <string name="feedback_copy">Копирај</string>
     <string name="feedback_copied">Копирано</string>
@@ -272,23 +271,8 @@
     <string name="feedback_app">Апликација</string>
     <string name="feedback_engine">Механизам</string>
     <string name="feedback_language">Језик</string>
-    <string name="feedback_info_note">Без имена, имејла или налога — само ови ID-ови и логови ове апликације.</string>
     <string name="feedback_github_title">Отвори пријаву на GitHub-у</string>
     <string name="feedback_github_hint">Јавно. Најбоље за грешке и идеје — други могу да прате и допуњују.</string>
-    <string name="feedback_email_title">Пошаљи имејл на %1$s</string>
-    <string name="feedback_email_hint">Приватно. Најбоље за питања о налогу или лична питања.</string>
-    <string name="feedback_email_subject">Повратне информације за YMusic</string>
-    <string name="feedback_prefilled_note">Обе опције се отварају са већ попуњеним подацима. Ако недостају, налепите их — без њих не можемо да помогнемо.</string>
-    <string name="feedback_reports_off_title">Анонимни извештаји су искључени</string>
-    <string name="feedback_reports_off_message">Да бисмо истражили проблем, потребни су нам логови ове апликације. Додирните Настави и YMusic ће поново укључити анонимне извештаје и послати логове.</string>
-    <string name="feedback_reports_off_note">Не шаље се име, имејл ни налог. Извештаје можете поново да искључите у Подешавањима.</string>
-    <string name="feedback_continue">Настави</string>
-    <string name="feedback_sentry_link">или преко Sentry-ја</string>
-    <string name="feedback_sentry_title">Пошаљи преко Sentry-ја</string>
-    <string name="feedback_sentry_label">Шта се догодило?</string>
-    <string name="feedback_sentry_note">Ваши анонимни подаци су приложени. На поруке послате одавде не можемо да одговоримо, па користите GitHub или имејл ако желите одговор.</string>
-    <string name="feedback_sentry_send">Пошаљи</string>
-    <string name="feedback_sentry_sent">Послато преко Sentry-ја. Хвала!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Мени</string>
@@ -405,10 +389,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Аутоматски преузимај ажурирања</string>
     <string name="settings_auto_update_hint">Преузима нове верзије у позадини и инсталира их при следећем покретању.</string>
-    <string name="settings_crash_reports">Шаљи анонимне извештаје о падовима</string>
-    <string name="settings_crash_reports_hint">Помозите у исправљању грешака пријављивањем падова и грешака. Извештаји садрже насумични ID апликације — без података о налогу, без историје слушања.</string>
-    <string name="settings_stats">Шаљи анонимну статистику</string>
-    <string name="settings_stats_hint">Делите анонимне податке о коришћењу да бисте помогли у побољшању апликације.</string>
     <string name="settings_enable_pip">Слика у слици</string>
     <string name="settings_enable_pip_hint">Када гледате видео у „Сада се пушта“ или преко целог екрана, наставља се у малом прозору ако напустите апликацију. У супротном видео прелази на само звук док се не вратите.</string>
     <string name="settings_audio_focus">Аудио фокус</string>
@@ -548,7 +528,6 @@
     <string name="settings_section_playback">Репродукција</string>
     <string name="settings_section_downloads">Преузимања</string>
     <string name="settings_section_devices">Уређаји</string>
-    <string name="settings_section_privacy">Приватност</string>
     <string name="settings_section_about">О апликацији</string>
     <string name="settings_quick_download">Брзо преузимање</string>
     <string name="sound_bass">Бас</string>

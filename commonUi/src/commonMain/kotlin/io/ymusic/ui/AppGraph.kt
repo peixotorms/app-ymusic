@@ -13,7 +13,6 @@ import io.ymusic.player.Player
 import io.ymusic.player.VideoQualityState
 import io.ymusic.remoteconfig.ApiService
 import io.ymusic.remoteconfig.RemoteConfigData
-import io.ymusic.remoteconfig.StatUsage
 import io.ymusic.settings.AppSettings
 import io.ymusic.settings.SettingsStore
 import io.ymusic.settings.flow
@@ -155,7 +154,7 @@ class AppGraph(
     val runningBundles: io.ymusic.remoteconfig.RunningBundles? = null,
     /** Thumbnail loading; null keeps the placeholder boxes (e.g. a shell without a cache dir yet). */
     val imageLoader: ImageLoader? = null,
-    /** The app's root logger (Sentry-backed in the shells); screens fork their own scope off it. */
+    /** The app's local logger; screens fork their own scope off it. */
     val logger: kmpcommon.log.Logger? = null,
     /** The process's one settings store. */
     val settings: SettingsStore,
@@ -200,12 +199,6 @@ class AppGraph(
      * like [mediaStore].
      */
     val downloads: io.ymusic.download.DownloadService? = null,
-    /**
-     * Sends the app logs as one anonymous report (Sentry in the shells) titled by [subject] — the
-     * channel ("Github", "Email", "Copy") or the typed message — with the message typed in the Feedback
-     * section, if any. Null drops the reports-off dialog and the message option from the Feedback section.
-     */
-    val captureFeedbackReport: (suspend (subject: String, message: String?) -> Unit)? = null,
     /** The OS and CPU for the Feedback section's info (e.g. "Android 16 · arm64-v8a"); null omits them. */
     val platformInfo: String? = null,
     /** The OS "save as" picker: a sink into the chosen file (the caller closes it), null when canceled.
@@ -228,12 +221,6 @@ class AppGraph(
     /** Opens the donation screen; null where there is none (only Android has one) — the drawer's
      *  Donate item then hides. */
     val openDonation: (() -> Unit)? = null,
-    /**
-     * Anonymous usage stats — `stats?.record("play")` from any screen. The consent gate and the
-     * no-service case are its own business ([StatUsage.record] returns before doing any work);
-     * null only in shells and tests that wire no recorder at all.
-     */
-    val stats: StatUsage? = null,
     /** The YMusic service (the QR sign-in relay rides it); null when this build has no service url. */
     val api: ApiService? = null,
     /**

@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic е с отворен код под лиценз GNU GPL v3.0. Включва следните компоненти:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Кажете ни какво се е объркало или какво бихте искали да видите – в GitHub или по имейл. Включете анонимната си информация по-долу, за да намерим логовете ви и да отговорим.</string>
     <string name="feedback_info_title">Анонимна информация</string>
     <string name="feedback_copy">Копиране</string>
     <string name="feedback_copied">Копирано</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">Приложение</string>
     <string name="feedback_engine">Енджин</string>
     <string name="feedback_language">Език</string>
-    <string name="feedback_info_note">Без име, имейл или акаунт — само тези ID и логовете на това приложение.</string>
     <string name="feedback_github_title">Отваряне на проблем в GitHub</string>
     <string name="feedback_github_hint">Публично. Най-добре за грешки и идеи — други могат да следят и да добавят.</string>
-    <string name="feedback_email_title">Имейл до %1$s</string>
-    <string name="feedback_email_hint">Лично. Най-добре за въпроси за акаунта или лични въпроси.</string>
-    <string name="feedback_email_subject">Отзив за YMusic</string>
-    <string name="feedback_prefilled_note">И двата варианта се отварят с вече попълнена информация. Ако липсва, поставете я — без нея не можем да помогнем.</string>
-    <string name="feedback_reports_off_title">Анонимните отчети са изключени</string>
-    <string name="feedback_reports_off_message">За да проучим проблема ви, ни трябват логовете на това приложение. Докоснете „Продължи“ и YMusic ще включи отново анонимните отчети и ще изпрати логовете.</string>
-    <string name="feedback_reports_off_note">Не се изпраща име, имейл или акаунт. Можете отново да изключите отчетите в Настройки.</string>
-    <string name="feedback_continue">Продължи</string>
-    <string name="feedback_sentry_link">или чрез Sentry</string>
-    <string name="feedback_sentry_title">Изпращане чрез Sentry</string>
-    <string name="feedback_sentry_label">Какво се случи?</string>
-    <string name="feedback_sentry_note">Анонимната ви информация е прикачена. Не можем да отговаряме на съобщения, изпратени оттук, затова използвайте GitHub или имейл, ако искате отговор.</string>
-    <string name="feedback_sentry_send">Изпращане</string>
-    <string name="feedback_sentry_sent">Изпратено чрез Sentry. Благодарим!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Меню</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Автоматично изтегляне на актуализации</string>
     <string name="settings_auto_update_hint">Изтегля новите версии във фонов режим и ги инсталира при следващото стартиране.</string>
-    <string name="settings_crash_reports">Изпращане на анонимни отчети за сривове</string>
-    <string name="settings_crash_reports_hint">Помогнете за отстраняването на грешки, като докладвате сривове и грешки. Отчетите съдържат случаен идентификатор на приложението — без данни за профила и история на слушане.</string>
-    <string name="settings_stats">Изпращане на анонимна статистика</string>
-    <string name="settings_stats_hint">Споделяйте анонимни данни за използването, за да помогнете за подобряване на приложението.</string>
     <string name="settings_enable_pip">Картина в картината</string>
     <string name="settings_enable_pip_hint">Когато гледате видео в „Сега се изпълнява“ или на цял екран, продължава в малък прозорец, ако напуснете приложението. Иначе видеото минава в режим само аудио, докато се върнете.</string>
     <string name="settings_audio_focus">Аудио фокус</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">Възпроизвеждане</string>
     <string name="settings_section_downloads">Изтегляния</string>
     <string name="settings_section_devices">Устройства</string>
-    <string name="settings_section_privacy">Поверителност</string>
     <string name="settings_section_about">Информация</string>
     <string name="settings_quick_download">Бързо изтегляне</string>
     <string name="sound_bass">Баси</string>

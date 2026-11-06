@@ -46,7 +46,7 @@ kotlin {
                 api(project(":image-loader"))
                 api(project(":settings"))
                 implementation(project(":projectCommon"))
-                api(project(":remote-config")) // StatUsage rides AppGraph
+                api(project(":remote-config")) // shared service/config contracts
 
                 api(project(":kmpFfmpeg"))
                 api(project(":download"))

@@ -47,9 +47,6 @@ val fullJdkHome: String? = run {
     candidates.firstOrNull { it.isNotBlank() && File(it, "bin/jpackage").exists() }
 }
 
-// The DSN is machine-local (see SentryProps in buildSrc), so it reaches the app as generated
-// source rather than a checked-in constant. The release carries the git commit — that's how an
-// event traces back to git history without a source-context upload.
 // The key app updates must be signed with, from the environment/local.properties so a fork builds
 // without ours. No key means no update is ever offered.
 val updatePublicKeyValue: String = providers.gradleProperty("ymusic.updatePublicKey").orNull
@@ -173,11 +170,7 @@ fun relinkMacJni(jni: File) {
 }
 
 val generateBuildConfig by tasks.registering {
-    val dsn = sentryDsn()
-    val release = "ymusic-desktop@$desktopVersion+${gitCommit()}"
     val outDir = layout.buildDirectory.dir("generated/buildconfig/kotlin")
-    inputs.property("dsn", dsn)
-    inputs.property("release", release)
     inputs.property("engineJsVersion", Versions.engineJsVersion)
     inputs.property("versionCode", desktopVersionCode)
     inputs.property("updatePublicKey", updatePublicKeyValue)
@@ -192,8 +185,6 @@ val generateBuildConfig by tasks.registering {
             """
             package io.ymusic.desktop
 
-            internal const val SENTRY_DSN = "$dsn"
-            internal const val SENTRY_RELEASE = "$release"
 
             // The jar's engine_ymusic.js resource revision (Versions.engineJsVersion).
             internal const val ENGINE_JS_VERSION: Long = ${Versions.engineJsVersion}L
@@ -260,7 +251,6 @@ kotlin {
                 implementation(Libs.Jna.core)
                 implementation(Libs.NavigationEvent.compose) // Esc as a back event, after popups'
                 implementation(Libs.SqlDelight.sqliteDriver) // AppStore
-                implementation(project(":telemetry")) // api: sentry-kotlin-multiplatform + SentryLogger
                 implementation(project(":log-store")) // the app log (logs.db)
                 implementation(project(":kmpHttp:core"))
                 implementation(project(":projectCommon"))
@@ -428,7 +418,7 @@ compose.desktop {
             }
             // jlink modules the default set misses but the runtime graph uses: java.sql
             // (sqlite-jdbc), jdk.unsupported (Unsafe — JNA/coroutines/okio),
-            // java.management + java.logging (Sentry integrations, JNA), jdk.crypto.ec
+            // java.management + java.logging (JNA), jdk.crypto.ec
             // (TLS for update checks), jdk.accessibility (bundles AccessBridge so AWT
             // doesn't abort at startup when a screen reader / Magnifier is active).
             modules("java.sql", "java.management", "java.logging", "jdk.unsupported", "jdk.crypto.ec", "jdk.accessibility")

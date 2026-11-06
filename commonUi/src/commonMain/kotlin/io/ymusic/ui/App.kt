@@ -793,26 +793,7 @@ private fun AppRoot(
         val uriHandler = LocalUriHandler.current
         val config by remember(graph) { graph.remoteConfig ?: emptyFlow() }.collectAsState(initial = null)
         var checkingUpdate by remember { mutableStateOf(false) }
-        // Feedback sends the app logs on arrival, so with anonymous reports off it stays closed
-        // until the user agrees in this dialog.
-        var askFeedbackConsent by remember { mutableStateOf(false) }
-        fun openSection(target: AppSection) {
-            val needsConsent = target == AppSection.Feedback && graph.captureFeedbackReport != null &&
-                !graph.settings.flow(AppSettings.crashReports).value
-            if (needsConsent) askFeedbackConsent = true else onSection(target)
-        }
-        if (askFeedbackConsent) {
-            ReportsOffDialog(
-                onContinue = {
-                    askFeedbackConsent = false
-                    scope.launch {
-                        graph.settings.put(AppSettings.crashReports, true)
-                        onSection(AppSection.Feedback)
-                    }
-                },
-                onCancel = { askFeedbackConsent = false },
-            )
-        }
+        fun openSection(target: AppSection) = onSection(target)
         // The song menus' cross-screen jumps land on the Library's root, over Now Playing and any search layer.
         fun openLibraryRoot() {
             graph.pip.nowPlayingOpen.value = false

@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic kode irekikoa da GNU GPL v3.0 lizentziapean. Osagai hauek ditu:</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Esaiguzu zer joan den gaizki edo zer ikusi nahiko zenukeen, GitHub-en edo posta elektronikoz. Gehitu beheko zure informazio anonimoa zure erregistroak aurkitu eta erantzun ahal izateko.</string>
     <string name="feedback_info_title">Informazio anonimoa</string>
     <string name="feedback_copy">Kopiatu</string>
     <string name="feedback_copied">Kopiatuta</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">Aplikazioa</string>
     <string name="feedback_engine">Motorra</string>
     <string name="feedback_language">Hizkuntza</string>
-    <string name="feedback_info_note">Izenik, helbide elektronikorik edo konturik ez — ID hauek eta aplikazio honen erregistroak soilik.</string>
     <string name="feedback_github_title">Ireki arazo bat GitHub-en</string>
     <string name="feedback_github_hint">Publikoa. Akatsetarako eta ideietarako onena — beste batzuek jarraitu eta gehitu dezakete.</string>
-    <string name="feedback_email_title">Bidali mezua helbide honetara: %1$s</string>
-    <string name="feedback_email_hint">Pribatua. Kontuari buruzko galderetarako edo galdera pertsonaletarako onena.</string>
-    <string name="feedback_email_subject">YMusic-i buruzko iritzia</string>
-    <string name="feedback_prefilled_note">Biak informazioa beteta dutela irekitzen dira. Falta bada, itsatsi — hura gabe ezin dizugu lagundu.</string>
-    <string name="feedback_reports_off_title">Txosten anonimoak desaktibatuta daude</string>
-    <string name="feedback_reports_off_message">Zure arazoa aztertzeko aplikazio honen erregistroak behar ditugu. Sakatu Jarraitu, eta YMusic-ek txosten anonimoak berriro aktibatu eta erregistroak bidaliko ditu.</string>
-    <string name="feedback_reports_off_note">Ez da izenik, helbide elektronikorik edo konturik bidaltzen. Txostenak berriro desaktiba ditzakezu Ezarpenetan.</string>
-    <string name="feedback_continue">Jarraitu</string>
-    <string name="feedback_sentry_link">edo Sentry bidez</string>
-    <string name="feedback_sentry_title">Bidali Sentry bidez</string>
-    <string name="feedback_sentry_label">Zer gertatu da?</string>
-    <string name="feedback_sentry_note">Zure informazio anonimoa erantsita dago. Hemendik bidalitako mezuei ezin diegu erantzun; erabili GitHub edo posta elektronikoa erantzuna nahi baduzu.</string>
-    <string name="feedback_sentry_send">Bidali</string>
-    <string name="feedback_sentry_sent">Sentry bidez bidali da. Eskerrik asko!</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Menua</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Deskargatu eguneratzeak automatikoki</string>
     <string name="settings_auto_update_hint">Eskuratu bertsio berriak atzeko planoan eta instalatu hurrengo abiaraztean.</string>
-    <string name="settings_crash_reports">Bidali hutsegite-txosten anonimoak</string>
-    <string name="settings_crash_reports_hint">Lagundu akatsak konpontzen hutsegiteak eta erroreak jakinarazita. Txostenek ausazko aplikazio-ID bat dute — kontuko daturik ez, entzunaldien historiarik ez.</string>
-    <string name="settings_stats">Bidali estatistika anonimoak</string>
-    <string name="settings_stats_hint">Partekatu erabilera-datu anonimoak aplikazioa hobetzen laguntzeko.</string>
     <string name="settings_enable_pip">Pantaila txikia</string>
     <string name="settings_enable_pip_hint">Bideoa Orain erreproduzitzen pantailan edo pantaila osoan ikustean, jarraitu leiho txiki batean aplikaziotik irtetean. Bestela, bideoa audio soilera aldatuko da itzuli arte.</string>
     <string name="settings_audio_focus">Audio-fokua</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">Erreprodukzioa</string>
     <string name="settings_section_downloads">Deskargak</string>
     <string name="settings_section_devices">Gailuak</string>
-    <string name="settings_section_privacy">Pribatutasuna</string>
     <string name="settings_section_about">Honi buruz</string>
     <string name="settings_quick_download">Deskarga azkarra</string>
     <string name="sound_bass">Baxuak</string>

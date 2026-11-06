@@ -260,7 +260,6 @@
     <string name="settings_licenses_intro">YMusic-ը բաց կոդով է՝ GNU GPL v3.0 լիցենզիայով։ Այն ներառում է հետևյալ բաղադրիչները՝</string>
 
     <!-- Feedback -->
-    <string name="feedback_intro">Պատմեք մեզ, թե ինչն է սխալ գնացել կամ ինչ կցանկանայիք տեսնել՝ GitHub-ում կամ էլ. փոստով։ Կցեք ձեր անանուն տվյալները ստորև, որպեսզի գտնենք ձեր մատյանները և պատասխանենք։</string>
     <string name="feedback_info_title">Անանուն տեղեկություն</string>
     <string name="feedback_copy">Պատճենել</string>
     <string name="feedback_copied">Պատճենված է</string>
@@ -268,23 +267,8 @@
     <string name="feedback_app">Հավելված</string>
     <string name="feedback_engine">Շարժիչ</string>
     <string name="feedback_language">Լեզու</string>
-    <string name="feedback_info_note">Ոչ անուն, ոչ էլ. փոստ, ոչ հաշիվ — միայն այս ID-ները և այս հավելվածի մատյանները։</string>
     <string name="feedback_github_title">Բացել խնդիր GitHub-ում</string>
     <string name="feedback_github_hint">Հրապարակային։ Լավագույնը սխալների և գաղափարների համար — մյուսները կարող են հետևել և լրացնել։</string>
-    <string name="feedback_email_title">Գրել %1$s հասցեին</string>
-    <string name="feedback_email_hint">Անձնական։ Լավագույնը հաշվի կամ անձնական հարցերի համար։</string>
-    <string name="feedback_email_subject">YMusic-ի կարծիք</string>
-    <string name="feedback_prefilled_note">Երկուսն էլ բացվում են արդեն լրացված տեղեկությամբ։ Եթե այն բացակայում է, տեղադրեք այն — առանց դրա չենք կարող օգնել։</string>
-    <string name="feedback_reports_off_title">Անանուն հաշվետվություններն անջատված են</string>
-    <string name="feedback_reports_off_message">Ձեր խնդիրն ուսումնասիրելու համար մեզ պետք են այս հավելվածի մատյանները։ Հպեք Շարունակել, և YMusic-ը նորից կմիացնի անանուն հաշվետվությունները ու կուղարկի մատյանները։</string>
-    <string name="feedback_reports_off_note">Անուն, էլ. փոստ կամ հաշիվ չի ուղարկվում։ Հաշվետվությունները կարող եք նորից անջատել Կարգավորումներում։</string>
-    <string name="feedback_continue">Շարունակել</string>
-    <string name="feedback_sentry_link">կամ Sentry-ի միջոցով</string>
-    <string name="feedback_sentry_title">Ուղարկել Sentry-ի միջոցով</string>
-    <string name="feedback_sentry_label">Ի՞նչ պատահեց</string>
-    <string name="feedback_sentry_note">Ձեր անանուն տվյալները կցված են։ Այստեղից ուղարկված հաղորդագրություններին չենք կարող պատասխանել, ուստի պատասխան ստանալու համար օգտագործեք GitHub կամ էլ. փոստ։</string>
-    <string name="feedback_sentry_send">Ուղարկել</string>
-    <string name="feedback_sentry_sent">Ուղարկվեց Sentry-ի միջոցով։ Շնորհակալություն։</string>
 
     <!-- Accessibility labels (contentDescription only) -->
     <string name="cd_menu">Ընտրացանկ</string>
@@ -401,10 +385,6 @@
     <!-- Updates -->
     <string name="settings_auto_update">Ավտոմատ ներբեռնել թարմացումները</string>
     <string name="settings_auto_update_hint">Ներբեռնում է նոր տարբերակները ֆոնային ռեժիմում և տեղադրում հաջորդ գործարկման ժամանակ։</string>
-    <string name="settings_crash_reports">Ուղարկել անանուն խափանման հաշվետվություններ</string>
-    <string name="settings_crash_reports_hint">Օգնեք ուղղել սխալները՝ հաղորդելով խափանումների և սխալների մասին։ Հաշվետվությունները պարունակում են պատահական հավելվածի ID — ոչ մի հաշվի տվյալ, ոչ մի լսելու պատմություն։</string>
-    <string name="settings_stats">Ուղարկել անանուն վիճակագրություն</string>
-    <string name="settings_stats_hint">Կիսվեք օգտագործման անանուն տվյալներով՝ հավելվածը բարելավելու համար։</string>
     <string name="settings_enable_pip">Նկար նկարի մեջ</string>
     <string name="settings_enable_pip_hint">«Հիմա հնչում է» կամ լիաէկրան ռեժիմում տեսանյութ դիտելիս, եթե դուրս գաք հավելվածից, այն կշարունակվի փոքր պատուհանում։ Հակառակ դեպքում տեսանյութը կանցնի միայն աուդիոյի, մինչև վերադառնաք։</string>
     <string name="settings_audio_focus">Աուդիո ֆոկուս</string>
@@ -540,7 +520,6 @@
     <string name="settings_section_playback">Նվագարկում</string>
     <string name="settings_section_downloads">Ներբեռնումներ</string>
     <string name="settings_section_devices">Սարքեր</string>
-    <string name="settings_section_privacy">Գաղտնիություն</string>
     <string name="settings_section_about">Հավելվածի մասին</string>
     <string name="settings_quick_download">Արագ ներբեռնում</string>
     <string name="sound_bass">Բաս</string>

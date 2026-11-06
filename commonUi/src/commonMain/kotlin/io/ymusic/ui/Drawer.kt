@@ -82,7 +82,7 @@ fun AppDrawer(
             val updateWaiting = updateStatus is AppUpdateStatus.Offered
             DrawerHeader(appVersion, premium, onCheckUpdate, updateWaiting, websiteUrl)
             HorizontalDivider(color = DesignColors.Divider)
-            val listed = AppSection.entries
+            val listed = AppSection.entries.filter { it != AppSection.Telegram }
                 .filter { it != AppSection.Catalogue || showCatalogue }
                 .filter { it != AppSection.PlayAgain || !guest }
                 .filter { it != AppSection.Donate || showDonate }
@@ -160,7 +160,7 @@ private fun DrawerHeader(appVersion: String?, premium: Boolean, onCheckUpdate: (
                     }
                 }
             }
-            HeaderLink("ymusic.io") { uriHandler.openUri(websiteUrl) }
+            HeaderLink("GitHub") { uriHandler.openUri(websiteUrl) }
         }
     }
 }
