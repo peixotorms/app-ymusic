@@ -66,3 +66,8 @@ For local release builds, the matching environment variables are
 
 Build from a disposable checkout and keep generated files and caches outside the source
 checkout. No app updater configuration is generated; install releases manually.
+
+For reusable build caches, run the workflow from `master` and fill in its `tag` input
+with the release tag. App sources are checked out at that exact tag. GitHub isolates
+caches between tags, while tagged builds can reuse caches saved on the default branch:
+[cache scope documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching#restrictions-for-accessing-a-cache).
