@@ -1,24 +1,11 @@
 package io.ymusic.android.cast
 
 import android.content.Context
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cast
 import androidx.compose.material.icons.outlined.CastConnected
-import androidx.compose.material.icons.outlined.PhoneAndroid
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -28,8 +15,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.mediarouter.media.MediaRouter
+import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.SessionManagerListener
@@ -37,10 +24,7 @@ import io.ymusic.download.SabrSpecResolver
 import io.ymusic.player.LocalPlayer
 import io.ymusic.player.YtEngine
 import io.ymusic.ui.resources.Res
-import io.ymusic.ui.resources.cast_discovery_unavailable
 import io.ymusic.ui.resources.cast_play_on
-import io.ymusic.ui.resources.cast_searching
-import io.ymusic.ui.resources.cast_this_device
 import kmpcommon.log.Logger
 import kmphttp.KmpHttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -110,7 +94,6 @@ internal class CastController(
     fun route(local: YtEngine): YtEngine = CastYtEngine(local, CastRoutingEngine(local, remote, connected, scope, logger))
     fun route(local: LocalPlayer): LocalPlayer = CastLocalPlayer(local, CastRoutingEngine(local, remote, connected, scope, logger))
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Button(modifier: Modifier) {
         var show by remember { mutableStateOf(false) }
@@ -149,28 +132,33 @@ internal class CastController(
         val routes = remember(revision, selector) {
             router.routes.filter { !it.isDefaultOrBluetooth && selector != null && it.matchesSelector(selector) }
         }
-        ModalBottomSheet(onDismissRequest = { show = false }) {
-            Text(stringResource(Res.string.cast_play_on), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp))
-            ListItem(
-                headlineContent = { Text(stringResource(Res.string.cast_this_device)) },
-                leadingContent = { Icon(Icons.Outlined.PhoneAndroid, null) },
-                trailingContent = { RadioButton(selected = !casting, onClick = null) },
-                modifier = Modifier.clickable { playOnThisDevice(); show = false },
-            )
-            Column(Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState())) {
-                routes.forEach { route ->
-                    ListItem(
-                        headlineContent = { Text(route.name) },
-                        leadingContent = { Icon(Icons.Outlined.Cast, null) },
-                        trailingContent = { RadioButton(selected = casting && route.isSelected, onClick = null) },
-                        modifier = Modifier.clickable(enabled = route.isEnabled) { route.select(); show = false },
-                    )
-                }
-            }
-            if (routes.isEmpty()) Text(
-                stringResource(if (discoveryFailed) Res.string.cast_discovery_unavailable else Res.string.cast_searching),
-                modifier = Modifier.padding(24.dp),
+        val devices = listOf(CastOutputDevice(CastDevicePreferences.LOCAL_DEVICE, "", CastOutputKind.Local, !casting)) + routes.map { route ->
+            val device = CastDevice.getFromBundle(route.extras)
+            CastOutputDevice(
+                id = device?.deviceId ?: route.id,
+                name = route.name,
+                kind = when {
+                    device?.hasCapability(CastDevice.CAPABILITY_MULTIZONE_GROUP) == true || route.isGroup -> CastOutputKind.Group
+                    device?.hasCapability(CastDevice.CAPABILITY_VIDEO_OUT) == true || route.deviceType == MediaRouter.RouteInfo.DEVICE_TYPE_TV -> CastOutputKind.Television
+                    else -> CastOutputKind.Speaker
+                },
+                selected = casting && route.isSelected,
+                enabled = route.isEnabled,
+                connecting = route.isConnecting,
             )
         }
+        CastOutputSheet(
+            devices = devices,
+            preferences = preferences,
+            volume = volume,
+            discoveryFailed = discoveryFailed,
+            onChoose = { id ->
+                if (id == CastDevicePreferences.LOCAL_DEVICE) playOnThisDevice()
+                else routes.firstOrNull { (CastDevice.getFromBundle(it.extras)?.deviceId ?: it.id) == id }?.select()
+                show = false
+            },
+            onVolumeKey = volume::dispatchKeyEvent,
+            onDismiss = { show = false },
+        )
     }
 }

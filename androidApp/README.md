@@ -67,8 +67,8 @@ release builds already log without throwing. This flag does not change playback 
 
 Keep `MainActivity` on `AppCompatActivity` and both activity themes on `Theme.AppCompat.DayNight.NoActionBar` when merging upstream. The earlier SDK picker crashed with the incompatible activity theme. The current output selector uses a Compose sheet; an Android emulator check opened it and selected This device while speaker discovery was unavailable. This checks the local UI path, not a physical Cast connection.
 
-The Cast button in Now Playing opens a Play on sheet with This device and discovered Cast routes, including
-Cast audio devices and speaker groups. Discovery uses the Cast selector and the SDK's default media receiver. Choosing This device ends the Cast session and transfers the queue item, position, and play/pause intent back to the phone; a receiver failure preserves that intent too. The Nest stereo pair should be discovered as its configured
+The Cast button in Now Playing opens a Play on sheet with Local device and discovered Cast routes, including
+Cast audio devices and speaker groups. Two-line cards show the device name, Android or Chromecast, and a device-specific icon. The current output is highlighted; each device has a configure button, and inactive receivers can be hidden. Sorting and per-device volume steps/visibility are saved using the Cast device ID. Show hidden devices restores access to hidden receivers. Discovery uses the Cast selector and the SDK's default media receiver. Choosing Local device ends the Cast session and transfers the queue item, position, and play/pause intent back to the phone; a receiver failure preserves that intent too. The Nest stereo pair should be discovered as its configured
 pair name when phone and speakers share a reachable Wi-Fi network; guest-network isolation or a VPN
 can prevent the receiver from reaching the phone.
 
@@ -82,17 +82,19 @@ YouTube audio uses the existing authenticated SABR resolver to select default-tr
 Then an HTTP server bound to the phone's receiver-facing address serves that one file at an
 unguessable URL with byte-range support and body-free HEAD responses. Cookies and account tokens stay on the phone. The server
 and temporary audio are retired on replacement, stop, or disconnect. Cast SDK notifications and
-media sessions are disabled because `PlaybackService` already supplies those controls.
+media sessions are disabled because `PlaybackService` already supplies those controls. `CastSessionPlayer` wraps that service's Media3 adapter and publishes remote device volume (0–100) while a Cast route is selected. Device-volume commands call `CastSession.setVolume`/`setMute`; receiver callbacks keep the session and picker synchronized. Physical buttons change the receiver by five percentage points by default and display its name and volume. Configure offers 1/2/3/5/10/15/20-point steps and Restore defaults. Local device uses Android's normal steps unless explicitly configured. Returning to local playback restores local volume routing; suspension retains remote routing while volume changes are unavailable.
+
+The picker also has a volume slider, mute and volume buttons. These affect receiver device volume; the player's own audio gain remains separate. Rapid presses accumulate against the pending level, with receiver confirmation or a delayed reconciliation. A failed volume request reports E60076 without stopping playback. Foreground key interception and Media3 remote volume handling must both survive upstream merges. The picker follows the layout in the user's Symfonium reference using Compose and Material icons. [Symfonium's renderer settings](https://docs.symfonium.app/wiki/settings/settings-renderer-settings/) describe volume steps and protocol-specific options; UPnP options do not apply here, and this YouTube source requires the phone proxy rather than an optional proxy toggle.
 
 Current limits: each track is fully buffered before the receiver starts, so track changes may pause;
 live YouTube streams are unsupported; local media is copied without transcoding, so receiver codec
 support applies. Receiver speed is limited to 0.5–2×, and phone equalizer/pitch effects do not process
 remote audio. The phone must remain reachable while casting. Runtime errors surface through the
-existing player error UI. Real Nest playback, pair discovery, reconnect, screen-off playback, and
+existing player error UI. The user confirmed speaker playback works. The updated volume controls, reconnect, screen-off playback, and
 long queues need hardware validation; HTTP/routing checks and Android compilation alone cannot
 establish receiver compatibility.
 
-Cast failures distinguish audio preparation (E60072), local server/address setup (E60073), rejected or unanswered receiver loads (E60074), and receiver media errors (E60075). Local logs record receiver HTTP request and served-byte counts to distinguish an unreachable sender from a media decoding failure. Real Nest playback still requires device verification.
+Cast failures distinguish audio preparation (E60072), local server/address setup (E60073), rejected or unanswered receiver loads (E60074), receiver media errors (E60075), and device-volume changes (E60076). Local logs record receiver HTTP request and served-byte counts to distinguish an unreachable sender from a media decoding failure.
 
 Cast SDK session/device/client access must stay on the main thread. Capture the receiver address before moving socket routing and server startup to IO; `CastSession.getCastDevice()` throws off-main, before the receiver receives a media load. Handoffs read play intent from `PlaybackState.Prepared`, because the native engines update that state while the facade maintains the outer `PlaybackStatus.playWhenReady`. Preserve the last requested intent through errors and initialization, reset a destination that requires it, and surface preparation failure or timeout instead of leaving a pending transfer.
 
