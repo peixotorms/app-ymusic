@@ -7,7 +7,7 @@
 Based on upstream YMusic 4.0.16. Builds target Android ARM64, Windows x64, and Linux x64.
 
 - **Separate Android installation:** named YMusic, with its own app ID and private storage so the original YMusic V4 can remain installed.
-- **Track transitions:** keep the decoder running when a playing song changes its media source, clear the previous song's ended/seeking state, and preserve requested playback across queue handoffs. Startup recovery remains available for genuine failures.
+- **Track transitions:** fix a buffer stall that left a prepared next song at 0:00 until playback restarted. Preserve the buffered audio and playback intent during handoffs, keep the decoder running when the media source changes, and clear the previous song's ended/seeking state. Startup recovery remains available for genuine failures.
 - **Audio buffering:** choose 30 seconds, one minute, or two minutes ahead. Playback starts normally and expands the buffer after five seconds of listening. Video targets 30 seconds.
 - **Next song:** prepare about 15 seconds of the next queued song once the current song is buffered through its end and has at most one minute left. Skips, seeks, and queue changes cancel obsolete fetching.
 - **SponsorBlock:** use the public service first, with YMusic as a fallback if the lookup fails. Existing category controls still apply.

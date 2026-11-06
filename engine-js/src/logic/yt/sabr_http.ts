@@ -211,7 +211,7 @@ async function sabrIntercept(chain: HttpChain): Promise<HttpResponse> {
   noteSabrPlaybackUrl(req0.url);
   const rewritten = rewriteReq(req0);
   const held = bufferBackoff(req0.url, rewritten.req.body);
-  if (held) return held;
+  if (held) return new SabrResponse(held, rewritten.state, req0.url, () => {});
   const retire = playbackBuffer.track(videoIdForSabrUrl(req0.url), req0.cancel);
   try {
     const res = await chain.proceed(rewritten.req);

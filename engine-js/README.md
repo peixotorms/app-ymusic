@@ -101,6 +101,8 @@ Module detail for the one-line summary in the root [`AGENTS.md`](../AGENTS.md) �
 
   `player/load` explicitly applies play or pause after loading, including when YouTube reuses a prepared item. This keeps the requested playback intent across queue handoffs without changing command arguments or response fields.
 
+  Local buffer-backoff responses run through the same SABR completion as network responses. A prefetched audio-only track can hold its audio before the synthetic video track is initialized; promotion must still supply that setup while further network fetching is held, so the cached audio can start.
+
 - **Media-source handoff** — assigning a different MSE resource clears ended/seeking/stall/loop state. A native pipeline reset stops decoding, so an unpaused element explicitly restores native play intent after attaching the replacement; a paused element remains paused. This uses only existing native calls.
 
 - **YouTube Music ratings** — `logic/yt/musicRatings.ts` uses WEB_REMIX on music.youtube.com for both song status and mutations. Mutations carry only `target.videoId`, matching [ytmusicapi rate_song](https://github.com/sigma67/ytmusicapi/blob/main/ytmusicapi/mixins/library.py). Signed-out writes and rejected responses fail explicitly. Existing WEB rating commands retain their wire contract.
