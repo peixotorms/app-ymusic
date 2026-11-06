@@ -1198,8 +1198,19 @@ class HTMLMediaElement {
          is a new empty ChunkDemuxer. */
       if (prev) detachMediaSource(prev);
       resetPipeline();
+      this["ended"] = false;
+      this["seeking"] = false;
+      this._stalled = false;
+      this._looped = false;
       this._ms = ms;
       if (ms && ms["readyState"] === "closed") notifySourceOpen(ms);
+      if (!ms) {
+        this["paused"] = true;
+        stopMediaTick();
+      } else if (!this["paused"]) {
+        __msePlay();
+        startMediaTick(this);
+      }
     } else {
       this._ms = ms;
     }
