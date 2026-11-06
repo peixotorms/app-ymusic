@@ -13,7 +13,7 @@ Based on upstream YMusic 4.0.16. Builds target Android ARM64, Windows x64, and L
 - **SponsorBlock:** use the public service first, with YMusic as a fallback if the lookup fails. Existing category controls still apply.
 - **Stability:** fixed a crash when canceled work finishes after the player’s engine has closed.
 - **Ratings:** like, dislike, or remove a rating through the signed-in YouTube Music account. Unlike/re-like refreshes music lists, and failures restore the previous state. Phone and Android Auto share the rating; Like/Unlike appears before Shuffle in the car.
-- **Casting:** play audio on Google Cast speakers and groups. A Play on picker includes This device to return playback to the phone at the current position. Select compatible AAC audio, correct receiver HTTP probes, and report preparation and receiver failures separately.
+- **Casting:** play audio on Google Cast speakers and groups. A Play on picker includes This device to return playback to the phone at the current position. Fix connection setup and preserve play/pause intent when switching devices, including after a Cast failure. Recover failed local sessions and report transfer timeouts. Select compatible AAC audio, correct receiver HTTP probes, and report preparation and receiver failures separately.
 - **YouTube Music Home:** make it the app's opening screen and the first car tab. Combine favorites and personalized mixes first, show playlist cards together, arrange the named recommendation sections, and move Listen again to the bottom without duplicate liked-music/Supermix shortcuts. Automatically load the next set of sections on opening Home so the order applies without tapping Show more. Keep individual shelves collapsed, other dynamic sections, and further paging.
 - **Privacy:** remove automatic crash reporting, anonymous usage-stat sending, their settings, and automatic feedback uploads. Keep local logs and explicit Copy/GitHub feedback actions.
 - **Project links:** source code, changelog, website, terms, and issue links point to this fork. Remove upstream email, Telegram, and donation actions.
@@ -21,7 +21,7 @@ Based on upstream YMusic 4.0.16. Builds target Android ARM64, Windows x64, and L
 - **Manual updates:** removed app update checks and installer downloads. New builds are installed manually.
 - **Android Auto:** documented sideload discovery, checked the media-browser service in an emulator, and confirmed playback in a car. Support was already present upstream.
 
-Live track transitions, Google Nest stereo-pair playback, signed-in rating synchronization, and the final car layout still need device confirmation. The Play on picker and This device selection were checked in an Android emulator.
+Track transitions are confirmed working on the user's device. Google Nest stereo-pair playback, signed-in rating synchronization, and the final car layout still need device confirmation. The Play on picker and This device selection were checked in an Android emulator.
 
 ## 4.0.16
 

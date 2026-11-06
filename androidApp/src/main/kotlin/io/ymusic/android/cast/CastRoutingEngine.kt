@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 
 internal class CastRoutingEngine<S : PlayableItem>(
     private val local: MediaEngine<S>,
@@ -56,7 +56,8 @@ internal class CastRoutingEngine<S : PlayableItem>(
                 transfer?.cancel()
                 val item = source
                 transferPosition = progress.value.positionMs
-                if (status.value.state !is PlaybackState.Error) transferPlay = status.value.playWhenReady
+                // Backends update Prepared's intent; the facade owns the outer playWhenReady flag.
+                (status.value.state as? PlaybackState.Prepared)?.let { transferPlay = it.playWhenReady }
                 if (item != null) target.stop()
                 useCast = cast
                 if (item == null) {
@@ -65,14 +66,28 @@ internal class CastRoutingEngine<S : PlayableItem>(
                 } else {
                     transfer = scope.launch {
                         try {
-                            target.init()
-                            withTimeout(30_000) { target.status.first { it.state.readyToLoad } }
-                            if (source == item) target.load(item, transferPosition, transferPlay, config)
+                            val destination = target
+                            val state = destination.status.value.state
+                            if (state is PlaybackState.Error && state.error.needReset) {
+                                destination.reset("Cast route transfer")
+                            } else {
+                                destination.init()
+                            }
+                            val ready = withTimeoutOrNull(30_000) {
+                                destination.status.first { it.state.readyToLoad || it.state is PlaybackState.Error }
+                            } ?: error("Cast route preparation timed out")
+                            if (source == item) {
+                                if (ready.state is PlaybackState.Error && !ready.state.readyToLoad) {
+                                    status.value = ready.copy(playWhenReady = transferPlay)
+                                } else {
+                                    destination.load(item, transferPosition, transferPlay, config)
+                                }
+                            }
                         } catch (error: CancellationException) {
                             throw error
                         } catch (error: Throwable) {
                             logger.log(Logger.Level.WARN, "Cast route transfer failed", error)
-                            status.value = PlaybackStatus(PlaybackState.Error(PlayerError("E60071", cause = error)))
+                            status.value = PlaybackStatus(PlaybackState.Error(PlayerError("E60071", cause = error)), playWhenReady = transferPlay)
                         }
                     }
                 }

@@ -94,6 +94,10 @@ establish receiver compatibility.
 
 Cast failures distinguish audio preparation (E60072), local server/address setup (E60073), rejected or unanswered receiver loads (E60074), and receiver media errors (E60075). Local logs record receiver HTTP request and served-byte counts to distinguish an unreachable sender from a media decoding failure. Real Nest playback still requires device verification.
 
+Cast SDK session/device/client access must stay on the main thread. Capture the receiver address before moving socket routing and server startup to IO; `CastSession.getCastDevice()` throws off-main, before the receiver receives a media load. Handoffs read play intent from `PlaybackState.Prepared`, because the native engines update that state while the facade maintains the outer `PlaybackStatus.playWhenReady`. Preserve the last requested intent through errors and initialization, reset a destination that requires it, and surface preparation failure or timeout instead of leaving a pending transfer.
+
+YouTube casting is audio-only in both phone modes and for both speakers and TVs. Video-on-TV casting is not implemented. The phone serves authenticated YouTube audio locally; no external proxy server is required. Symfonium's documented direct URL/proxy choices use the same receiver-fetches-media model ([proxy settings](https://docs.symfonium.app/faq/casting-issues-with-chromecast/)); its registered receiver and transcoding features are separate from this fork's default Google receiver.
+
 Implementation references: [Google Cast sender integration](https://developers.google.com/cast/docs/android_sender/integrate), [supported media](https://developers.google.com/cast/docs/media), [SessionManager](https://developers.google.com/android/reference/com/google/android/gms/cast/framework/SessionManager), [UAMP player switching](https://github.com/android/uamp/blob/main/common/src/main/java/com/example/android/uamp/media/MusicService.kt), and [storage-cast local HTTP serving](https://github.com/ak800i/storage-cast).
 
 ## App updates

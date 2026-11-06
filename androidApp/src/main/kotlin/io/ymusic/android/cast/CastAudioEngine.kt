@@ -72,9 +72,10 @@ internal class CastAudioEngine(
                 val prepared = this@CastAudioEngine.source.prepare(source, file)
                 failureCode = "E60073"
                 val cast = session ?: error("Cast session ended")
+                val receiverAddress = checkNotNull(cast.castDevice).inetAddress
                 val host = withContext(Dispatchers.IO) {
                     DatagramSocket().use {
-                        it.connect(checkNotNull(cast.castDevice).inetAddress, 8009)
+                        it.connect(receiverAddress, 8009)
                         it.localAddress.hostAddress ?: error("no route to Cast device")
                     }
                 }
