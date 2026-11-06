@@ -415,7 +415,7 @@
     <string name="settings_audio_focus_calls">Pauziraj samo za telefonske pozive</string>
     <string name="settings_audio_focus_apps">Pauziraj kada druge aplikacije reproduciraju zvuk</string>
     <string name="settings_sponsor_block">SponsorBlock</string>
-    <string name="settings_sponsor_block_hint">Automatski preskače sponzorirane dijelove u YouTube videozapisima. Za pojedini videozapis isključite na zaslonu Sada svira.</string>
+    <string name="settings_sponsor_block_hint">Automatski preskače sponzorirane dijelove u YouTube videozapisima. Za pojedini videozapis isključite na zaslonu Sada svira. (https://sponsor.ajay.app, CC BY-NC-SA 4.0)</string>
     <string name="sponsor_block_included">SponsorBlock uključen za ovaj videozapis</string>
     <string name="sponsor_block_excluded">SponsorBlock isključen za ovaj videozapis</string>
     <string name="settings_sound">Zvuk</string>

@@ -411,7 +411,7 @@
     <string name="settings_audio_focus_calls">Nur bei Anrufen pausieren</string>
     <string name="settings_audio_focus_apps">Pausieren, wenn andere Apps Ton abspielen</string>
     <string name="settings_sponsor_block">SponsorBlock</string>
-    <string name="settings_sponsor_block_hint">Gesponserte Abschnitte in YouTube-Videos automatisch überspringen. In „Aktuelle Wiedergabe“ für einzelne Videos abschaltbar.</string>
+    <string name="settings_sponsor_block_hint">Gesponserte Abschnitte in YouTube-Videos automatisch überspringen. In „Aktuelle Wiedergabe“ für einzelne Videos abschaltbar. (https://sponsor.ajay.app, CC BY-NC-SA 4.0)</string>
     <string name="sponsor_block_included">SponsorBlock für dieses Video aktiviert</string>
     <string name="sponsor_block_excluded">SponsorBlock für dieses Video deaktiviert</string>
     <string name="settings_sound">Sound</string>

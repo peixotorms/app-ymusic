@@ -12,12 +12,24 @@ The shared Compose Multiplatform app UI (jvm + android; iOS later).
 
 - **Download selection** — long-press a download to select it, tap others or select all in the current filter, then remove entries or delete completed files after confirming their titles. Removing entries preserves finished files; failed file deletions preserve the entries and selection. Back clears selection, and changing filters starts a fresh selection.
 
-- **SponsorBlock seam** — `ymusic.ui.sponsorblock`: `SponsorBlockApi` + `MockSponsorBlockApi` +
-  SQLite cache/whitelist (`SponsorBlockStore`) + `SponsorBlockService` + `SponsorBlockCoordinator`
-  (queue videoId → `Player.setSkipSegments`). The mock returns a 0–10s intro and a 60–75s mid-roll;
-  swap `AppGraph`'s `sponsorBlockApi` for the real `/sponsorBlock/getSkipSegments` client when that
-  lands. Enable is `AppSettings.sponsorBlockEnabled` (Settings row); per-video whitelist is the Now
-  Playing toggle (hidden when there are no segments). Seek bars draw the ranges on `SlimSeekBar`.
+- **SponsorBlock** — Android and desktop use the public SponsorBlock API first, querying a four-character
+  SHA-256 video-ID prefix and matching the full ID locally. It requests skip actions for sponsor,
+  self-promotion, interaction, intro, outro, and music non-content categories. Network, HTTP, and parse
+  failures fall back to the configured YMusic service, or `https://api.ymix.io/v1/sponsorblock/segments`
+  when no service is configured. Each source has a five-second lookup limit; successful empty results
+  are authoritative and do not trigger fallback. `SponsorBlockService` caches results for six minutes,
+  reuses stale cache if both sources fail, and honors the global switch and per-video whitelist.
+  Overlapping or adjoining ranges are united before reaching the player; source metadata stays intact.
+  Playback continues if lookup fails. Source selection does not enable app updates or other YMusic services.
+  Skip data is provided by [SponsorBlock](https://sponsor.ajay.app/) under
+  [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+- **Playback cache** — Settings → Playback → Player cache defaults to 2 GB, with Off, 128/256/512 MB,
+  and 1/2/5/10 GB choices. Streaming stores media chunks in a persistent least-recently-used cache;
+  it does not automatically create offline downloads for the queue. The facade cues the next track
+  during the current track's final ten seconds, except live streams and repeat-one. There is no
+  configurable multi-track download-ahead option. Cast's full-track buffering is separate; see
+  [`androidApp/README.md`](../androidApp/README.md#google-cast).
 
 - **AppGraph** — shells construct `AppGraph` (engines + `Player` facade + optional mediaStore/scan callback + the
   platform `playerSurface(modifier)` composable, which hosts the one shared video container the shell handed the

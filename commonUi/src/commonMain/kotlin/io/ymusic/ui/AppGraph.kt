@@ -248,8 +248,8 @@ class AppGraph(
     /** The player cache, for its size limit and Settings' usage line; null hides the setting. */
     val playerCache: io.ymusic.ytmedia.cache.MediaCache? = null,
     /**
-     * SponsorBlock skip-segment fetch, over [api]; null (no service) skips nothing. Shells pass a
-     * SQLite [sponsorBlockStore] for cache + per-video whitelist.
+     * SponsorBlock skip-segment fetch. Android and desktop supply public-API-first providers and a
+     * SQLite [sponsorBlockStore] for cache + per-video whitelist. Null skips network lookups.
      */
     sponsorBlockApi: SponsorBlockApi? = api?.let(::ServiceSponsorBlockApi),
     sponsorBlockStore: SponsorBlockStore = InMemorySponsorBlockStore(),

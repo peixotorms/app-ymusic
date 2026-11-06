@@ -1072,6 +1072,7 @@ private suspend fun buildGraph(settings: AppStoreSettings, session: CookieSessio
         player,
         logger = rootLogger,
         playerCache = playerCache,
+        sponsorBlockApi = io.ymusic.ui.sponsorblock.networkSponsorBlockApi(http.engine, api, rootLogger),
         mediaStore = mediaStore,
         playHistory = PlayHistoryStore(playHistoryJdbcDriver(File(dataDir, "play-history.db").absolutePath)),
         sponsorBlockStore = SqliteSponsorBlockStore(

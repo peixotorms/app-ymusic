@@ -411,7 +411,7 @@
     <string name="settings_audio_focus_calls">ಫೋನ್ ಕರೆಗಳಿಗೆ ಮಾತ್ರ ವಿರಾಮ</string>
     <string name="settings_audio_focus_apps">ಇತರ ಆ್ಯಪ್‌ಗಳು ಧ್ವನಿ ಪ್ಲೇ ಮಾಡಿದಾಗ ವಿರಾಮ</string>
     <string name="settings_sponsor_block">SponsorBlock</string>
-    <string name="settings_sponsor_block_hint">YouTube ವೀಡಿಯೊಗಳಲ್ಲಿನ ಪ್ರಾಯೋಜಿತ ಭಾಗಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಸ್ಕಿಪ್ ಮಾಡಿ. Now Playing ನಿಂದ ಒಂದು ವೀಡಿಯೊಗೆ ಆಫ್ ಮಾಡಿ.</string>
+    <string name="settings_sponsor_block_hint">YouTube ವೀಡಿಯೊಗಳಲ್ಲಿನ ಪ್ರಾಯೋಜಿತ ಭಾಗಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಸ್ಕಿಪ್ ಮಾಡಿ. Now Playing ನಿಂದ ಒಂದು ವೀಡಿಯೊಗೆ ಆಫ್ ಮಾಡಿ. (https://sponsor.ajay.app, CC BY-NC-SA 4.0)</string>
     <string name="sponsor_block_included">ಈ ವೀಡಿಯೊಗೆ SponsorBlock ಸಕ್ರಿಯವಾಗಿದೆ</string>
     <string name="sponsor_block_excluded">ಈ ವೀಡಿಯೊಗೆ SponsorBlock ನಿಷ್ಕ್ರಿಯವಾಗಿದೆ</string>
     <string name="settings_sound">ಧ್ವನಿ</string>

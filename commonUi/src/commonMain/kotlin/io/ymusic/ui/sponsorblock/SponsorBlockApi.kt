@@ -2,7 +2,7 @@ package io.ymusic.ui.sponsorblock
 
 import io.ymusic.remoteconfig.ApiService
 
-/** The skip-segment fetch seam; [ServiceSponsorBlockApi] in the app. Times are seconds. */
+/** The skip-segment fetch seam. Times are seconds. */
 interface SponsorBlockApi {
     suspend fun getSkipSegments(videoId: String): GetSkipSegmentsResponse
 }

@@ -695,6 +695,7 @@ class YMusicApplication : Application() {
             },
             fileRenaming = AndroidFileRenaming(contentResolver),
             api = shared.api,
+            sponsorBlockApi = io.ymusic.ui.sponsorblock.networkSponsorBlockApi(shared.http.engine, shared.api, rootLogger),
             remoteConfig = shared.remoteConfig.config,
             mediaStore = shared.mediaStore,
             playHistory = PlayHistoryStore(playHistoryAndroidDriver(this)),

@@ -407,7 +407,7 @@
     <string name="settings_audio_focus_calls">전화 통화 중에만 일시정지</string>
     <string name="settings_audio_focus_apps">다른 앱에서 소리가 재생되면 일시정지</string>
     <string name="settings_sponsor_block">SponsorBlock</string>
-    <string name="settings_sponsor_block_hint">YouTube 동영상의 스폰서 구간을 자동으로 건너뜁니다. 재생 화면에서 동영상별로 끌 수 있습니다.</string>
+    <string name="settings_sponsor_block_hint">YouTube 동영상의 스폰서 구간을 자동으로 건너뜁니다. 재생 화면에서 동영상별로 끌 수 있습니다. (https://sponsor.ajay.app, CC BY-NC-SA 4.0)</string>
     <string name="sponsor_block_included">이 동영상에 SponsorBlock 사용</string>
     <string name="sponsor_block_excluded">이 동영상에 SponsorBlock 사용 안 함</string>
     <string name="settings_sound">사운드</string>

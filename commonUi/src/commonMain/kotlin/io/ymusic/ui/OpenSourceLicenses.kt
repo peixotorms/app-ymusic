@@ -18,6 +18,7 @@ internal data class OssComponent(val name: String, val license: String, val url:
  * source of the FFmpeg build — scripts, pinned sources, patches — is github.com/ymusic-io/ffmpeg-build.
  */
 internal val OssComponents: List<OssComponent> = listOf(
+    OssComponent("SponsorBlock (Ajay Ramachandran and contributors)", "CC BY-NC-SA 4.0", "https://sponsor.ajay.app/"),
     OssComponent("Kotlin Standard Library", "Apache-2.0", "https://github.com/JetBrains/kotlin"),
     OssComponent("kotlinx.coroutines", "Apache-2.0", "https://github.com/Kotlin/kotlinx.coroutines"),
     OssComponent("kotlinx.serialization", "Apache-2.0", "https://github.com/Kotlin/kotlinx.serialization"),

@@ -58,8 +58,8 @@ class SponsorBlockCoordinator(
     }
 }
 
-internal fun List<SponsorBlockSegment>.toPlayerSkipSegments(): List<SkipSegment> =
-    mapNotNull { seg ->
+internal fun List<SponsorBlockSegment>.toPlayerSkipSegments(): List<SkipSegment> {
+    val ranges = mapNotNull { seg ->
         val lengthMs = ((seg.endTime - seg.startTime) * 1_000.0).toLong()
         if (lengthMs < 1_000L) {
             null
@@ -69,4 +69,16 @@ internal fun List<SponsorBlockSegment>.toPlayerSkipSegments(): List<SkipSegment>
                 lengthMs = lengthMs,
             )
         }
+    }.sortedBy { it.startMs }
+    val merged = mutableListOf<SkipSegment>()
+    for (range in ranges) {
+        val previous = merged.lastOrNull()
+        if (previous != null && range.startMs <= previous.startMs + previous.lengthMs) {
+            val end = maxOf(previous.startMs + previous.lengthMs, range.startMs + range.lengthMs)
+            merged[merged.lastIndex] = SkipSegment(previous.startMs, end - previous.startMs)
+        } else {
+            merged += range
+        }
     }
+    return merged
+}
