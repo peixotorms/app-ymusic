@@ -42,10 +42,9 @@ internal class CastAudioSource(
                     check(!item.live) { "live Cast playback is unavailable" }
                     for (attempt in 0..2) {
                         val spec = resolver.resolve(item.videoId).spec
-                        val format = spec.formats.filter {
-                            it.mimeType.startsWith("audio/mp4") && it.audioTrackIsDefault != false
-                        }.sortedWith(compareBy({ it.isDrc }, { -it.clen })).firstOrNull()
+                        val format = castAudioFormat(spec.formats)
                             ?: error("no Cast-compatible AAC audio")
+                        logger.log(Logger.Level.INFO, "Cast audio itag=${format.itag} codec=${format.mimeType} bytes=${format.clen}")
                         file.outputStream().close()
                         try {
                             SabrSession(logger = logger).download(
@@ -78,6 +77,7 @@ internal class CastAudioSource(
                         ?: "application/octet-stream"
                 }
             }
+            check(file.length() > 0) { "Cast audio file is empty" }
             PreparedAudio(file, mimeType)
         } catch (error: Throwable) {
             file.delete()

@@ -1,11 +1,20 @@
 package io.ymusic.android.cast
 
 import fi.iki.elonen.NanoHTTPD
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
+import java.io.FilterInputStream
+import java.io.InputStream
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
 
 internal class CastAudioServer(host: String, private val file: File, private val mimeType: String) : NanoHTTPD(host, 0) {
+    private val requests = AtomicInteger()
+    private val bytes = AtomicLong()
+    val requestCount: Int get() = requests.get()
+    val bytesRead: Long get() = bytes.get()
     private val path = "/${UUID.randomUUID()}/audio.m4a"
     val url: String get() {
         val host = if (hostname.contains(':')) "[$hostname]" else hostname
@@ -14,6 +23,7 @@ internal class CastAudioServer(host: String, private val file: File, private val
 
     override fun serve(session: IHTTPSession): Response {
         if (session.uri != path) return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "")
+        requests.incrementAndGet()
         if (session.method == Method.OPTIONS) return cors(newFixedLengthResponse(""))
         if (session.method != Method.GET && session.method != Method.HEAD) {
             return newFixedLengthResponse(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT, "")
@@ -36,14 +46,21 @@ internal class CastAudioServer(host: String, private val file: File, private val
             }
             if (start >= length || start > end) return unsatisfiable(length)
         }
-        val input = FileInputStream(file)
+        // NanoHTTPD 2.3.1 needs an empty stream to suppress a fixed-length HEAD body.
+        val input: InputStream = if (session.method == Method.HEAD) ByteArrayInputStream(ByteArray(0)) else FileInputStream(file)
         try {
-            input.channel.position(start)
+            if (input is FileInputStream) input.channel.position(start)
+            val monitored = object : FilterInputStream(input) {
+                override fun read(): Int = input.read().also { if (it >= 0) bytes.incrementAndGet() }
+                override fun read(buffer: ByteArray, offset: Int, length: Int): Int = input.read(buffer, offset, length).also {
+                    if (it > 0) bytes.addAndGet(it.toLong())
+                }
+            }
             return cors(
                 newFixedLengthResponse(
                     if (range == null) Response.Status.OK else Response.Status.PARTIAL_CONTENT,
                     mimeType,
-                    input,
+                    monitored,
                     end - start + 1,
                 ),
             ).apply {
@@ -64,7 +81,7 @@ internal class CastAudioServer(host: String, private val file: File, private val
         closeConnection(true)
         addHeader("Access-Control-Allow-Origin", "*")
         addHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS")
-        addHeader("Access-Control-Allow-Headers", "Range")
+        addHeader("Access-Control-Allow-Headers", "Range, Content-Type")
         addHeader("Access-Control-Expose-Headers", "Content-Length, Content-Range, Accept-Ranges")
     }
 }

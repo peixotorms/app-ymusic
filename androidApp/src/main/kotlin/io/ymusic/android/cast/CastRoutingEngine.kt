@@ -21,7 +21,7 @@ import kotlinx.coroutines.withTimeout
 
 internal class CastRoutingEngine<S : PlayableItem>(
     private val local: MediaEngine<S>,
-    private val remote: CastAudioEngine,
+    private val remote: MediaEngine<PlayableItem>,
     private val connected: StateFlow<Boolean>,
     private val scope: CoroutineScope,
     private val logger: Logger,
@@ -56,7 +56,7 @@ internal class CastRoutingEngine<S : PlayableItem>(
                 transfer?.cancel()
                 val item = source
                 transferPosition = progress.value.positionMs
-                transferPlay = status.value.playWhenReady
+                if (status.value.state !is PlaybackState.Error) transferPlay = status.value.playWhenReady
                 if (item != null) target.stop()
                 useCast = cast
                 if (item == null) {
@@ -98,6 +98,8 @@ internal class CastRoutingEngine<S : PlayableItem>(
         transfer?.cancel()
         this.source = source
         this.config = config
+        transferPosition = startPositionMs
+        transferPlay = playWhenReady
         target.load(source, startPositionMs, playWhenReady, config)
         status.value = target.status.value
         progress.value = target.progress.value

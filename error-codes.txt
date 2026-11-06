@@ -180,4 +180,8 @@ E91015 D android update install refused by the device: SD-card install it can't 
 
 E60070 D Cast audio preparation or receiver playback failed
 E60071 D Cast playback route transfer failed
+E60072 - Preparing the Cast audio file failed
+E60073 - Starting a receiver-reachable Cast audio server failed
+E60074 - Cast receiver rejected the media load or did not acknowledge it
+E60075 - Cast receiver entered its media playback error state
 E70072 D Bulk deletion of downloaded files failed

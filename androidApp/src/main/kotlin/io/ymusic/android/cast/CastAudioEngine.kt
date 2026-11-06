@@ -24,6 +24,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import projectcommon.error.errorCode
 import java.io.File
 import java.net.DatagramSocket
 
@@ -64,10 +65,12 @@ internal class CastAudioEngine(
         status.value = PlaybackStatus(PlaybackState.Prepared(playWhenReady, buffering = true, ended = false))
         progress.value = Progress(positionMs = startPositionMs, durationMs = source.durationMs ?: -1L)
         job = scope.launch {
+            var failureCode = "E60072"
             try {
                 val file = this@CastAudioEngine.source.newFile()
                 audioFile = file
                 val prepared = this@CastAudioEngine.source.prepare(source, file)
+                failureCode = "E60073"
                 val cast = session ?: error("Cast session ended")
                 val host = withContext(Dispatchers.IO) {
                     DatagramSocket().use {
@@ -97,6 +100,8 @@ internal class CastAudioEngine(
                     .apply { source.durationMs?.let { setStreamDuration(it) } }
                     .build()
                 val remote = cast.remoteMediaClient ?: error("Cast media client unavailable")
+                failureCode = "E60074"
+                val sentAt = System.nanoTime()
                 val loadPosition = pendingPosition
                 remote.load(
                     MediaLoadRequestData.Builder().setMediaInfo(media)
@@ -104,7 +109,7 @@ internal class CastAudioEngine(
                 ).setResultCallback { result ->
                     if (this@CastAudioEngine.server !== server) return@setResultCallback
                     if (!result.status.isSuccess) {
-                        fail(IllegalStateException("Cast load failed: ${result.status.statusCode}"))
+                        fail(IllegalStateException("Cast load failed: ${result.status.statusCode}"), failureCode)
                     } else {
                         loaded = true
                         setConfig(this@CastAudioEngine.config)
@@ -115,20 +120,27 @@ internal class CastAudioEngine(
                 }
                 while (true) {
                     delay(500)
+                    if (!loaded && System.nanoTime() - sentAt > 15_000_000_000L) {
+                        fail(IllegalStateException("Cast load response timed out"), failureCode)
+                        break
+                    }
                     update()
                 }
             } catch (error: CancellationException) {
                 throw error
             } catch (error: Throwable) {
-                fail(error)
+                fail(error, failureCode)
             }
         }
     }
 
-    private fun fail(error: Throwable) {
-        log.log(Logger.Level.WARN, "Cast audio failed", error)
+    private fun fail(error: Throwable, failureCode: String) {
+        val savedProgress = progress.value
+        val play = wantedPlay
+        log.log(Logger.Level.WARN, "Cast audio failed ($failureCode) requests=${server?.requestCount ?: 0} bytes=${server?.bytesRead ?: 0}", error)
         stop()
-        status.value = PlaybackStatus(PlaybackState.Error(PlayerError("E60070", cause = error)))
+        progress.value = savedProgress
+        status.value = PlaybackStatus(PlaybackState.Error(PlayerError(error.errorCode() ?: failureCode, cause = error)), playWhenReady = play)
     }
 
     private fun update() {
@@ -137,7 +149,7 @@ internal class CastAudioEngine(
         if (remote.mediaInfo?.contentId != server?.url) return
         val mediaStatus = remote.mediaStatus ?: return
         if (mediaStatus.playerState == MediaStatus.PLAYER_STATE_IDLE && mediaStatus.idleReason == MediaStatus.IDLE_REASON_ERROR) {
-            fail(IllegalStateException("Cast receiver could not play the audio"))
+            fail(IllegalStateException("Cast receiver could not play the audio"), "E60075")
             return
         }
         val ended = mediaStatus.playerState == MediaStatus.PLAYER_STATE_IDLE && mediaStatus.idleReason == MediaStatus.IDLE_REASON_FINISHED
