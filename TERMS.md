@@ -1,10 +1,10 @@
 # YMusic Terms of Use & Privacy Policy
 
-_Last updated: October 19, 2026_
+_Last updated: November 6, 2026_
 
 ## Terms of use
 
-**In short:** YMusic is free and open source. Use it fairly, and know that it comes with no guarantees.
+YMusic is free and open source. Use it fairly; it comes with no guarantees.
 
 1. **Free and open source.** YMusic is free. Its code is released under the
    [GNU GPL v3.0](LICENSE).
@@ -15,9 +15,8 @@ _Last updated: October 19, 2026_
 4. **Downloads.** Only download content you have the right to keep, and only for your own personal
    use.
 5. **Your Google account.** Signing in is optional. Keep your account safe, and only sign in on a
-   copy of YMusic from [ymusic.io](https://ymusic.io) or our
-   [GitHub Releases](https://github.com/ymusic-io/YMusicV4/releases). A modified copy could steal
-   your account.
+   trusted copy of this fork from its
+   [GitHub Releases](https://github.com/peixotorms/app-ymusic/releases).
 6. **No guarantees.** YMusic is provided "as is". Features may break or change at any time, for
    example when YouTube changes, and we may stop the app or its online services.
 7. **Liability.** As far as the law allows, the YMusic developers are not responsible for any
@@ -26,44 +25,34 @@ _Last updated: October 19, 2026_
 
 ## Privacy
 
-**In short:** YMusic has no accounts and no ads, and we don't sell anything about you. Your music,
-history and settings stay on your device. The little we do collect is anonymous, and you can switch
-it off.
+This fork does not send automatic crash reports or anonymous usage statistics. Local settings, history, downloads and diagnostic logs stay on your device. Online playback and account actions still require requests to the services described below.
 
 ### What stays on your device
 
-- Your library, playlists, downloads, play history and settings.
-- Your YouTube sign-in. Sign-in happens on Google's own page. We never see your password, and your
-  login cookies are only used to talk to YouTube for you.
+- Your local library, playlists, downloads, play history, settings and logs.
+- Your YouTube sign-in cookies. Sign-in happens on Google's own page. The app uses the cookies to make authenticated YouTube requests; it does not send them to Cast receivers or feedback services.
 
 ### What leaves your device
 
-| What | Why | Can I turn it off? |
+| What | Why | When |
 |---|---|---|
-| **Crash reports**: what went wrong, the app version and device model/OS, plus a random app ID. They may include the ID of the video that failed. They never include your account or your listening history. | To fix bugs | Yes: Settings → Privacy |
-| **Anonymous stats**, such as "the app was opened", with the same random app ID | To see how many people use the app | Yes: Settings → Privacy |
-| **Update and settings checks**: OS, app version and the random app ID | To offer updates and keep the app working | No |
-| **SponsorBlock lookups**: the video ID | To skip sponsored segments | Yes: Settings → Playback → SponsorBlock |
-| **Feedback you send**: your message, any files you attach, and your name and email if you give them | To answer you | Only sent when you press Send |
-| **Linking devices**: your sign-in, encrypted on your phone and passed to your computer through our server | To sign in on your computer | Only when you scan the QR code |
+| **YouTube/Google requests:** searches, content IDs, media, artwork and signed-in actions such as likes and playlist changes | To browse, stream and use your account | When you use these online features |
+| **YMusic service requests:** OS/architecture, app and engine versions, and a random app-instance ID | To fetch service configuration and support configured service features | When a YMusic service is configured; automatic app-installer checks and downloads are disabled |
+| **Engine/player bundle downloads** from URLs supplied by service configuration | To keep the playback engine compatible | When configured; separate from installing a new app version |
+| **SponsorBlock lookups:** a short video-hash prefix to the public service, or the video ID to the YMusic fallback | To find segments to skip | When SponsorBlock is enabled in Playback settings |
+| **Casting:** audio, its temporary local-network URL, title and artwork | To play on the selected receiver | Only while casting; account cookies stay on the phone |
+| **Feedback:** diagnostic text containing the app-instance ID, platform and version details | To help describe an issue | Copy puts it on your clipboard; GitHub opens a prefilled issue for you to review and submit. Nothing is uploaded automatically |
+| **Linking devices:** encrypted sign-in data through the configured YMusic relay | To sign in on another device | Only when you use QR device linking |
 
-The random app ID is created by YMusic and is not linked to you, your device or your Google account.
-When you link devices, the key to unlock your sign-in is only in the QR code, so our server can't
-read it.
+The random app-instance ID is stored in the app's private settings. It is not a hardware identifier. For QR linking, the key that unlocks the sign-in data is carried in the QR code. Network services can also see the network address making each request.
 
-### Who else is involved
+### Other services
 
-- **YouTube / Google**: YMusic plays content from YouTube, so YouTube sees those requests the same
-  way it would in a browser. [Google's Privacy Policy](https://policies.google.com/privacy) applies
-  to that.
-- **Sentry**: stores crash reports and feedback for us.
-
-We don't share your data with anyone else, and we never sell it.
+YouTube and Google handle online music and account requests under [Google's Privacy Policy](https://policies.google.com/privacy). SponsorBlock, the configured YMusic service, media/artwork hosts and GitHub handle requests for their respective features. This fork has no Sentry integration or background usage-stat sender.
 
 ### Deleting your data
 
-Uninstalling YMusic deletes everything stored on your device. To remove crash reports or feedback
-you sent, contact us.
+Uninstalling removes the app's private data. Downloaded files saved to a shared folder, changes saved to your Google account and issues posted on GitHub remain until you remove them from those locations.
 
 ## Changes
 
@@ -72,5 +61,4 @@ using YMusic after a change, you accept the new version.
 
 ## Contact
 
-Open an issue at [github.com/ymusic-io/YMusicV4/issues](https://github.com/ymusic-io/YMusicV4/issues)
-or email `contact@ymusic.io`.
+Open an issue at [github.com/peixotorms/app-ymusic/issues](https://github.com/peixotorms/app-ymusic/issues).
