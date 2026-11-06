@@ -7,21 +7,21 @@
 Based on upstream YMusic 4.0.16. Builds target Android ARM64, Windows x64, and Linux x64.
 
 - **Separate Android installation:** named YMusic, with its own app ID and private storage so the original YMusic V4 can remain installed.
-- **Track transitions:** explicitly start requested playback when loading the next song, tolerate buffer-end rounding when preparing it, and keep the startup timeout active until playback advances instead of accepting metadata or 0:00 as success. A stalled YouTube startup gets one clean reload of the same song; a second failure is reported.
+- **Track transitions:** keep the decoder running when a playing song changes its media source, clear the previous song's ended/seeking state, and preserve requested playback across queue handoffs. Startup recovery remains available for genuine failures.
 - **Audio buffering:** choose 30 seconds, one minute, or two minutes ahead. Playback starts normally and expands the buffer after five seconds of listening. Video targets 30 seconds.
 - **Next song:** prepare about 15 seconds of the next queued song once the current song is buffered through its end and has at most one minute left. Skips, seeks, and queue changes cancel obsolete fetching.
 - **SponsorBlock:** use the public service first, with YMusic as a fallback if the lookup fails. Existing category controls still apply.
 - **Stability:** fixed a crash when canceled work finishes after the player’s engine has closed.
-- **Ratings:** like, dislike, or remove a rating from Now Playing using the signed-in YouTube account. Android Auto adds Like/Unlike before Shuffle, with a shared liked state and protection against duplicate or stale-track requests.
-- **Casting:** added Google Cast audio support on Android for compatible speakers and groups, and fixed the incompatible theme that could crash its device picker.
-- **YouTube Music Home:** make it the app's opening screen and the first car tab. Combine favorites and personalized mixes first, show playlist cards together, arrange the named recommendation sections, and move Listen again to the bottom without duplicate liked-music/Supermix shortcuts. Keep other dynamic sections and normal paging.
+- **Ratings:** like, dislike, or remove a rating through the signed-in YouTube Music account. Unlike/re-like refreshes music lists, and failures restore the previous state. Phone and Android Auto share the rating; Like/Unlike appears before Shuffle in the car.
+- **Casting:** play audio on Google Cast speakers and groups. A Play on picker includes This device to return playback to the phone at the current position. Select compatible AAC audio, correct receiver HTTP probes, and report preparation and receiver failures separately.
+- **YouTube Music Home:** make it the app's opening screen and the first car tab. Combine favorites and personalized mixes first, show playlist cards together, arrange the named recommendation sections, and move Listen again to the bottom without duplicate liked-music/Supermix shortcuts. Automatically load the next set of sections on opening Home so the order applies without tapping Show more. Keep individual shelves collapsed, other dynamic sections, and further paging.
 - **Privacy:** remove automatic crash reporting, anonymous usage-stat sending, their settings, and automatic feedback uploads. Keep local logs and explicit Copy/GitHub feedback actions.
 - **Project links:** source code, changelog, website, terms, and issue links point to this fork. Remove upstream email, Telegram, and donation actions.
 - **Downloads:** select multiple downloads to remove entries or delete completed files. Up to three downloads run at once.
 - **Manual updates:** removed app update checks and installer downloads. New builds are installed manually.
 - **Android Auto:** documented sideload discovery, checked the media-browser service in an emulator, and confirmed playback in a car. Support was already present upstream.
 
-The track-transition fixes, Google Nest stereo-pair playback, signed-in rating synchronization, and the final car layout still need testing on the actual devices and account. The Cast picker crash was reproduced and corrected in an Android emulator.
+Live track transitions, Google Nest stereo-pair playback, signed-in rating synchronization, and the final car layout still need device confirmation. The Play on picker and This device selection were checked in an Android emulator.
 
 ## 4.0.16
 

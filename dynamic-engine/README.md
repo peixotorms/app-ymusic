@@ -72,3 +72,5 @@ Module detail for the one-line summary in the root [`AGENTS.md`](../AGENTS.md) �
 - **Targets** — pure commonMain; targets = `:quickjs`'s (jvm/android/ios/macos/linux).
 
 - **Protocol spec** — [`quickjs/HOST_PROTOCOLS.md`](../quickjs/HOST_PROTOCOLS.md).
+
+- **Music ratings** — `extractMusicVideoRating` / `rateMusicVideo` call the additive `ytmusic/video-rating` / `ytmusic/video/rate` commands. The result is a song-specific status plus `canRate`; no WEB rating tokens are reused. The original WEB commands remain available to older hosts.

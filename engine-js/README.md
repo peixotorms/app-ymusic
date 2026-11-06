@@ -100,3 +100,7 @@ Module detail for the one-line summary in the root [`AGENTS.md`](../AGENTS.md) �
   media in segments; an in-flight segment can extend past the target.
 
   `player/load` explicitly applies play or pause after loading, including when YouTube reuses a prepared item. This keeps the requested playback intent across queue handoffs without changing command arguments or response fields.
+
+- **Media-source handoff** — assigning a different MSE resource clears ended/seeking/stall/loop state. A native pipeline reset stops decoding, so an unpaused element explicitly restores native play intent after attaching the replacement; a paused element remains paused. This uses only existing native calls.
+
+- **YouTube Music ratings** — `logic/yt/musicRatings.ts` uses WEB_REMIX on music.youtube.com for both song status and mutations. Mutations carry only `target.videoId`, matching [ytmusicapi rate_song](https://github.com/sigma67/ytmusicapi/blob/main/ytmusicapi/mixins/library.py). Signed-out writes and rejected responses fail explicitly. Existing WEB rating commands retain their wire contract.

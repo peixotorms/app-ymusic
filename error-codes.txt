@@ -98,9 +98,9 @@ E20161 D subscribing/unsubscribing from a channel row menu failed with an uncode
 E20162 D player/setAudioTrack: the video has no audio track with the requested id, or base.js lacks setAudioTrack (engine-js logic/player/boot.ts)
 E20163 D player/setAudioTrack called without an id (engine-js logic/player.ts)
 E20164 D player/setAudioTrack before Application.create (no movie_player) (engine-js logic/player/boot.ts)
-E20165 - YouTube Music next omitted the requested song's rating
-E20166 - YouTube Music rating write attempted without a signed-in session
-E20167 - YouTube Music rejected a rating write in its response body
+E20165 D YouTube Music next omitted the requested song's rating
+E20166 D YouTube Music rating write attempted without a signed-in session
+E20167 D YouTube Music rejected a rating write in its response body
 E24242 - (example) dynamic-engine HostCommandTest fixture
 E29999 - (example) EngineErrorDecodeTest / HOST_PROTOCOLS.md fixture
 
@@ -180,8 +180,8 @@ E91015 D android update install refused by the device: SD-card install it can't 
 
 E60070 D Cast audio preparation or receiver playback failed
 E60071 D Cast playback route transfer failed
-E60072 - Preparing the Cast audio file failed
-E60073 - Starting a receiver-reachable Cast audio server failed
-E60074 - Cast receiver rejected the media load or did not acknowledge it
-E60075 - Cast receiver entered its media playback error state
+E60072 D Preparing the Cast audio file failed
+E60073 D Starting a receiver-reachable Cast audio server failed
+E60074 D Cast receiver rejected the media load or did not acknowledge it
+E60075 D Cast receiver entered its media playback error state
 E70072 D Bulk deletion of downloaded files failed

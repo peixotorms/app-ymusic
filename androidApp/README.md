@@ -65,10 +65,10 @@ release builds already log without throwing. This flag does not change playback 
 
 ## Google Cast audio
 
-The Cast picker requires `MainActivity` to extend `AppCompatActivity` and both activity theme variants to inherit `Theme.AppCompat.DayNight.NoActionBar`. Theme-wrapping only the button leaves the dialog with the activity's incompatible colors and can crash with `background can not be translucent`. Preserve the activity/theme setup when merging upstream. A temporary Android emulator probe reproduced the old dynamic picker crash and opened the corrected picker; this does not verify a physical Cast connection.
+Keep `MainActivity` on `AppCompatActivity` and both activity themes on `Theme.AppCompat.DayNight.NoActionBar` when merging upstream. The earlier SDK picker crashed with the incompatible activity theme. The current output selector uses a Compose sheet; an Android emulator check opened it and selected This device while speaker discovery was unavailable. This checks the local UI path, not a physical Cast connection.
 
-The Cast button in Now Playing uses Google's device picker and default media receiver, including
-Cast audio devices and speaker groups. The Nest stereo pair should be discovered as its configured
+The Cast button in Now Playing opens a Play on sheet with This device and discovered Cast routes, including
+Cast audio devices and speaker groups. Discovery uses the Cast selector and the SDK's default media receiver. Choosing This device ends the Cast session and transfers the queue item, position, and play/pause intent back to the phone; a receiver failure preserves that intent too. The Nest stereo pair should be discovered as its configured
 pair name when phone and speakers share a reachable Wi-Fi network; guest-network isolation or a VPN
 can prevent the receiver from reaching the phone.
 
@@ -78,9 +78,9 @@ play intent; disconnecting restores local playback. Receiver suspension keeps th
 selected to avoid starting a second audible copy on the phone. Local playback retains its native
 audio-session handle for system effects; casting exposes audio-only capabilities.
 
-YouTube audio uses the existing authenticated SABR resolver and downloads AAC/M4A to app cache,
-then an HTTP server bound to the phone's receiver-facing address serves that one file at an
-unguessable URL with byte-range support. Cookies and account tokens stay on the phone. The server
+YouTube audio uses the existing authenticated SABR resolver to select default-track AAC-LC/HE-AAC in an MP4 container, then downloads it to app cache.
+Then an HTTP server bound to the phone's receiver-facing address serves that one file at an
+unguessable URL with byte-range support and body-free HEAD responses. Cookies and account tokens stay on the phone. The server
 and temporary audio are retired on replacement, stop, or disconnect. Cast SDK notifications and
 media sessions are disabled because `PlaybackService` already supplies those controls.
 
@@ -91,6 +91,10 @@ remote audio. The phone must remain reachable while casting. Runtime errors surf
 existing player error UI. Real Nest playback, pair discovery, reconnect, screen-off playback, and
 long queues need hardware validation; HTTP/routing checks and Android compilation alone cannot
 establish receiver compatibility.
+
+Cast failures distinguish audio preparation (E60072), local server/address setup (E60073), rejected or unanswered receiver loads (E60074), and receiver media errors (E60075). Local logs record receiver HTTP request and served-byte counts to distinguish an unreachable sender from a media decoding failure. Real Nest playback still requires device verification.
+
+Implementation references: [Google Cast sender integration](https://developers.google.com/cast/docs/android_sender/integrate), [supported media](https://developers.google.com/cast/docs/media), [SessionManager](https://developers.google.com/android/reference/com/google/android/gms/cast/framework/SessionManager), [UAMP player switching](https://github.com/android/uamp/blob/main/common/src/main/java/com/example/android/uamp/media/MusicService.kt), and [storage-cast local HTTP serving](https://github.com/ak800i/storage-cast).
 
 ## App updates
 
@@ -105,9 +109,9 @@ configuration is separate from app installation; it cannot replace the APK.
 
 ## Car controls and navigation
 
-YouTube Music is the first browse root, followed by Library and Discover. Android Auto controls its own remembered tab selection and presentation. Home uses the same section arrangement as the phone, while the car renders the cards in its native layout.
+YouTube Music is the first browse root, followed by Library and Discover. Android Auto controls its own remembered tab selection and presentation. Home uses the same initial section-list expansion and section arrangement as the phone, while the car renders the cards in its native layout.
 
-The custom action order starts with Like/Unlike, then Shuffle, then Repeat (or Close while paused). Standard Media3 thumb icons let the host use consistent sizing and tint. The thumb is filled when liked and outlined when unliked or a write is pending; duplicate pending taps are ignored. Actions include the video ID so an outdated control cannot rate the next song. Shared process rating state keeps the phone and car synchronized. These are authenticated YouTube ratings, not a local favorites list; YouTube Music's settings determine how YouTube likes appear in its library.
+The custom action order starts with Like/Unlike, then Shuffle, then Repeat (or Close while paused). Standard Media3 thumb icons let the host use consistent sizing and tint. The thumb is filled when liked and outlined when unliked or a write is pending; duplicate pending taps are ignored. Actions include the video ID so an outdated control cannot rate the next song. Shared process rating state keeps the phone and car synchronized. These are authenticated YouTube Music ratings, read and written through the WEB_REMIX music client.
 
 ## Privacy and project links
 
