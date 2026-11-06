@@ -63,3 +63,6 @@ Module detail for the one-line summary in the root [`AGENTS.md`](../AGENTS.md) �
   [`JS_FEATURES.md`](JS_FEATURES.md) (pinned by `JsFeatureMatrixTest`).
 
 - **Design** — [`PIPE_STREAMING.md`](PIPE_STREAMING.md).
+
+- **Teardown** — cancellation cleanup for a reaped pipe checks the runtime's closed latch before
+  entering native code; a pipe can outlive the native engine after leaving the routing map.

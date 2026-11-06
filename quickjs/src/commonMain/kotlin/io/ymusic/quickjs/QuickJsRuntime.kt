@@ -636,7 +636,7 @@ class QuickJsRuntime private constructor(
         /** [cause] is the aborted receive's failure when the abort path (not an explicit
          *  [closeRead]) closes the read side. */
         private fun closeReadNow(cause: Throwable?) {
-            if (readClosed) return
+            if (readClosed || closed.load()) return
             readClosed = true
             inbound.clear()
             engine.closeRead(id) // tell the peer writer: EPIPE
