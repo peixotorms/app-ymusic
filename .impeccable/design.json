@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-06T22:43:14Z",
+  "title": "Design System: YMusic",
+  "extensions": {
+    "colorMeta": {
+      "accent-default": {
+        "role": "primary",
+        "displayName": "Saved-theme orange fallback"
+      },
+      "artwork-fallback": {
+        "role": "primary",
+        "displayName": "Artwork sampling fallback"
+      },
+      "artwork-ink-strong": {
+        "role": "neutral",
+        "displayName": "Warm artwork headline"
+      },
+      "artwork-ink": {
+        "role": "neutral",
+        "displayName": "Warm artwork body"
+      },
+      "artwork-on-accent": {
+        "role": "neutral",
+        "displayName": "Dark artwork transport icon"
+      },
+      "dark-surface": {
+        "role": "neutral",
+        "displayName": "Dark browsing ground"
+      },
+      "dark-surface-dim": {
+        "role": "neutral",
+        "displayName": "Dark tonal bar"
+      },
+      "dark-surface-elevated": {
+        "role": "neutral",
+        "displayName": "Dark floating surface"
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Light ground and on-accent white"
+      },
+      "black": {
+        "role": "neutral",
+        "displayName": "Music and AMOLED ground"
+      },
+      "skip-segment": {
+        "role": "secondary",
+        "displayName": "Skip-interval amber"
+      }
+    },
+    "typographyMeta": {
+      "headline-playlist": {
+        "displayName": "Playlist headline",
+        "purpose": "Centered hero title, at most three lines."
+      },
+      "headline-track": {
+        "displayName": "Current track",
+        "purpose": "Left-aligned player title, at most two lines."
+      },
+      "title-section": {
+        "displayName": "Section and dialog title",
+        "purpose": "Up next and dialog context."
+      },
+      "title-list": {
+        "displayName": "Compact music title",
+        "purpose": "One-line playlist row titles with ellipsis."
+      },
+      "label-chip": {
+        "displayName": "Chip label",
+        "purpose": "Shared filter, tag, and action-pill size."
+      }
+    },
+    "shadows": [
+      {
+        "name": "queue-drag",
+        "value": "Modifier.shadow(4.dp)",
+        "purpose": "Lift only the queue row being dragged."
+      },
+      {
+        "name": "dialog-scroll-bar",
+        "value": "animateDpAsState(if (canScroll) 6.dp else 0.dp)",
+        "purpose": "Separate dialog bars from content that can scroll underneath."
+      },
+      {
+        "name": "seek-thumb",
+        "value": "Modifier.shadow(1.dp, CircleShape)",
+        "purpose": "Give the small seek thumb local separation."
+      },
+      {
+        "name": "mini-player-top",
+        "value": "8dp vertical gradient from transparent to black at alpha 0.10 + 0.08 * pullFraction",
+        "purpose": "Thin top separation at rest, strengthened during downward pull."
+      }
+    ],
+    "motion": [
+      {
+        "name": "artwork-tint",
+        "value": "animateColorAsState(tint, tween(600))",
+        "purpose": "Transition the sampled artwork tint and its derived roles."
+      },
+      {
+        "name": "playing-seek-wave",
+        "value": "infiniteRepeatable(tween(1600, easing = LinearEasing), RepeatMode.Restart)",
+        "purpose": "Animate the played track while playing and windowVisible(); wavelength 22dp, amplitude 3dp, zero amplitude while paused. Compose motion scale governs disabled animations."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "feed-wide-list",
+        "value": "320dp"
+      },
+      {
+        "name": "feed-regular-title",
+        "value": "380dp"
+      },
+      {
+        "name": "feed-grid",
+        "value": "470dp"
+      },
+      {
+        "name": "expanded-spacing",
+        "value": "840dp"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Filter chip — dark browsing",
+      "kind": "chip",
+      "refersTo": "filter-chip-dark",
+      "description": "Unselected FeedChip. The native component uses accent-tinted Material indication; this panel retains browser focus feedback.",
+      "html": "<button class=\"ds-chip\" type=\"button\" aria-pressed=\"false\">Songs</button>",
+      "css": ".ds-chip{border-radius:999px;padding:7px 12px;font:13.5px sans-serif;color:#B2B2B2;background:transparent;border:1px solid #5C5C5C}.ds-chip:hover{cursor:pointer}.ds-chip:focus-visible{outline:auto}.ds-chip:active{border-color:#5C5C5C}"
+    },
+    {
+      "name": "Selected filter button — default accent",
+      "kind": "button",
+      "refersTo": "filter-chip-selected-default",
+      "description": "Selected FeedChip, which exposes native button and selection semantics. The saved user accent replaces this default orange.",
+      "html": "<button class=\"ds-chip-selected\" type=\"button\" aria-pressed=\"true\">Songs</button>",
+      "css": ".ds-chip-selected{border-radius:999px;padding:7px 12px;font:13.5px sans-serif;color:#FFFFFF;background:#E8732A;border:1px solid #E8732A}.ds-chip-selected:hover{cursor:pointer}.ds-chip-selected:focus-visible{outline:auto}.ds-chip-selected:active{border-color:#E8732A}"
+    },
+    {
+      "name": "Search field — dark browsing",
+      "kind": "input",
+      "refersTo": "search-input-dark",
+      "description": "SearchInputBar pill with empty-field insets and an accent cursor. Native IME Search, autofocus, and conditional clear remain Compose behavior.",
+      "html": "<input class=\"ds-search\" type=\"search\" aria-label=\"Search\" placeholder=\"Search\"/>",
+      "css": ".ds-search{height:40px;border:0;border-radius:999px;padding:0 16px;background:#292929;color:#E2E2E2;caret-color:#E8732A;font:15px sans-serif}.ds-search::placeholder{color:#7E7E7E}.ds-search:hover{cursor:text}.ds-search:focus-visible{outline:auto}"
+    },
+    {
+      "name": "Discover tabs — default accent",
+      "kind": "nav",
+      "refersTo": "discover-tabs-default",
+      "description": "Two representative icon tabs illustrate active color and the 2dp underline. Production supplies the available destinations and animates the indicator with Compose.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\" aria-label=\"Discover\"><button class=\"ds-tab ds-tab-selected\" role=\"tab\" aria-selected=\"true\" aria-label=\"Home\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 3 2 12h3v8h6v-6h2v6h6v-8h3L12 3zm5 15h-2v-6H9v6H7v-7.1l5-4.5 5 4.5V18z\"/></svg></button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\" aria-label=\"Music\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 3v9.55A4 4 0 1 0 14 16V7h4V3h-6z\"/></svg></button></div>",
+      "css": ".ds-tabs{display:flex}.ds-tab{position:relative;flex:1;border:0;background:transparent;color:#7E7E7E;padding:8px 0}.ds-tab svg{display:block;width:24px;height:24px;margin:auto}.ds-tab-selected{color:#E8732A}.ds-tab-selected::after{content:\"\";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;background:#E8732A}.ds-tab:hover{cursor:pointer}.ds-tab:focus-visible{outline:auto}.ds-tab:active{background:transparent}"
+    },
+    {
+      "name": "Mini-player — saved dark palette",
+      "kind": "card",
+      "refersTo": "mini-player-dark",
+      "description": "AppRoot mini-player geometry and saved dark colors. Generic text and an empty black artwork slot avoid embedding cover assets. The native progress value and controls remain live.",
+      "html": "<div class=\"ds-mini\"><div class=\"ds-mini-art\" aria-hidden=\"true\"></div><div class=\"ds-mini-content\"><div class=\"ds-mini-progress\"></div><div class=\"ds-mini-row\"><div class=\"ds-mini-copy\"><div class=\"ds-mini-title\">Track title</div><div class=\"ds-mini-artist\">Artist</div></div><button class=\"ds-mini-action\" aria-label=\"Pause\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M6 19h4V5H6v14zm8-14v14h4V5h-4z\"/></svg></button><button class=\"ds-mini-action\" aria-label=\"Next\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M6 18l8.5-6L6 6v12zm10-12v12h2V6h-2z\"/></svg></button></div></div></div>",
+      "css": ".ds-mini{display:flex;align-items:center;overflow:hidden;margin:8px 12px;border-radius:18px;background:#202020;color:#E2E2E2;font-family:sans-serif}.ds-mini-art{width:64px;height:64px;flex:none;background:#000000}.ds-mini-content{flex:1;min-width:0}.ds-mini-progress{height:2px;background:#E8732A}.ds-mini-row{display:flex;align-items:center;padding:6px 8px 8px 12px}.ds-mini-copy{flex:1;min-width:0}.ds-mini-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ds-mini-artist{font-size:12px;color:#9A9A9A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ds-mini-action{border:0;background:transparent;color:#C6C6C6;min-width:48px;min-height:48px;padding:0}.ds-mini-action svg{width:24px;height:24px}.ds-mini-action:hover{cursor:pointer}.ds-mini-action:focus-visible{outline:auto}.ds-mini-action:active{background:transparent}"
+    },
+    {
+      "name": "Elevated dialog — saved dark palette",
+      "kind": "custom",
+      "refersTo": "elevated-dialog",
+      "description": "ElevatedBarDialog frame and choice-row spacing. Native dialogs constrain the body to window height and add bar shadows only when content can scroll beneath them.",
+      "html": "<div class=\"ds-dialog\" role=\"group\" aria-label=\"Options\"><div class=\"ds-dialog-title\">Options</div><div class=\"ds-dialog-choice\">Available option</div><div class=\"ds-dialog-footer\">Actions</div></div>",
+      "css": ".ds-dialog{min-width:280px;max-width:560px;border-radius:24px;overflow:hidden;background:#101010;color:#E2E2E2;font-family:sans-serif}.ds-dialog-title{font-size:17px;font-weight:700;padding:16px 24px;background:#1B1B1B;border-bottom:1px solid #2A2A2A}.ds-dialog-choice{padding:12px 24px}.ds-dialog-footer{padding:2px 12px;background:#1B1B1B;border-top:1px solid #2A2A2A;color:#9A9A9A}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Artwork Leads",
+    "overview": "YMusic uses real cover artwork as the focal material, with readable native typography and direct playback controls. The player and playlist composition follows the supplied Symfonium references while retaining YMusic's actions and navigation.\n\nThis is a Compose Multiplatform system with Android as the primary surface. Measurements are native dp and sp. The tokens describe implemented values; runtime palette roles remain authoritative where colors depend on artwork or user settings.",
+    "keyCharacteristics": [
+      "Large artwork, rounded geometry, and restrained tonal surfaces.",
+      "One prominent circular transport control with compact secondary actions.",
+      "Dark music surfaces alongside browsing that respects the saved theme.",
+      "Native interaction, scalable text, and retained loading and error states."
+    ],
+    "rules": [
+      {
+        "name": "The Theme Boundary Rule",
+        "body": "Player and playlist surfaces stay dark. Browsing and the production mini-player inherit the saved app palette; the mini-player is outside the per-screen artwork theme.",
+        "section": "colors"
+      },
+      {
+        "name": "The Native Type Rule",
+        "body": "Keep text in sp and retain the existing wrapping and ellipsis behavior so larger system text remains usable.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tonal Depth Rule",
+        "body": "Preserve the uninterrupted player ground and reserve elevation for the existing floating, dragging, and scrolling states.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do resolve colors through the active palette and preserve the artwork-theme boundary.",
+      "Do retain safe insets, scalable text, native Back, and accessible playback actions.",
+      "Do use real loaded artwork and preserve placeholders, buffering, and error states.",
+      "Do keep the primary transport prominent and secondary controls grouped."
+    ],
+    "donts": [
+      "Don't turn one cover's accent into a fixed brand palette.",
+      "Don't apply the player's dark theme to all browsing or to AppRoot's mini-player.",
+      "Don't replace native video with a cropped cover or remove its captions and fullscreen access.",
+      "Don't add decorative containers or typography that compete with the artwork."
+    ]
+  }
+}
