@@ -184,5 +184,5 @@ E60072 D Preparing the Cast audio file failed
 E60073 D Starting a receiver-reachable Cast audio server failed
 E60074 D Cast receiver rejected the media load or did not acknowledge it
 E60075 D Cast receiver entered its media playback error state
-E60076 - Changing the Cast device volume failed
+E60076 D Changing the Cast device volume failed
 E70072 D Bulk deletion of downloaded files failed
