@@ -29,7 +29,7 @@ compose.resources {
 
 val desktopVersion = appVersionName()
 // Every platform shares one versionCode; bump it with each release.
-val desktopVersionCode = 22
+val desktopVersionCode = 23
 version = desktopVersion
 
 /** The first candidate JDK that carries jpackage — the marker for "full JDK, not a JBR/JRE". */

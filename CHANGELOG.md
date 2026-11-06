@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.0.18
+
+### 2026-11-06
+
+- Fixed a crash when canceled work finishes after the player’s engine has closed.
+- Release builds can reuse the default branch’s dependency caches.
+
 ## 4.0.17
 
 Based on upstream YMusic 4.0.16. Builds target Android, Windows, and Linux.
