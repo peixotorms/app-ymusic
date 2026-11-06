@@ -3,7 +3,7 @@
 #   flag  -  = not deployed — free to remove, renumber, or reallocate elsewhere.
 # On release, flip every `-` row of the shipped module to D; from then on those numbers are permanent.
 # Mint = grep this file for a free number, add a `-` row in the same commit as the throw site.
-# NOTHING is deployed yet, so every row below is `-` (free).
+# Example and fixture codes remain unshipped; release codes are marked D.
 # Ranges: E1xxxx :quickjs | E2xxxx :dynamic-engine + engine-js | E3xxxx :kmpHttp
 #         E4xxxx :kmpFfmpeg | E5xxxx :media-store / :media-scanner | E6xxxx :player | E7xxxx :download
 #         E8xxxx :mse | E91xxx app updater (desktopApp / androidApp)
@@ -175,6 +175,6 @@ E91013 D android update APK could not be handed to PackageInstaller (AndroidAppU
 E91014 D android update APK download failed: the device doesn't trust the host's TLS chain (AndroidAppUpdates.download)
 E91015 D android update install refused by the device: SD-card install it can't move, policy/FRP restriction, or no installer session (AndroidAppUpdates.installAndRestart)
 
-E60070 - Cast audio preparation or receiver playback failed
-E60071 - Cast playback route transfer failed
-E70072 - Bulk deletion of downloaded files failed
+E60070 D Cast audio preparation or receiver playback failed
+E60071 D Cast playback route transfer failed
+E70072 D Bulk deletion of downloaded files failed

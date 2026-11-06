@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.0.17 — personal fork (2026-11-06)
+
+- Choose 30 seconds, one minute, or two minutes of audio buffer ahead. Playback starts normally;
+  the larger target begins after five seconds of listening. Video targets 30 seconds.
+- Prepare about 15 seconds of the next queued song in the final minute, once the current song is
+  buffered through its end. Skips and queue changes cancel obsolete fetching.
+- SponsorBlock uses the public service first and falls back to YMusic on lookup failures.
+- Like, dislike, or remove a rating directly from Now Playing using the signed-in YouTube account.
+- Android: Google Cast audio support for compatible speakers and groups.
+- Select multiple downloads to remove entries or delete completed files. Download concurrency stays at three.
+- Removed app update checks and installer downloads; install new personal builds manually.
+- Release targets: Android, Windows, and Linux. macOS packaging is skipped.
+- Android Auto support is inherited from upstream. Sideload discovery and the media-browser service
+  were checked in an emulator; car, speaker, and signed-in account testing remain necessary.
+
 ## 4.0.16
 
 ### NEW
