@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.17 — personal fork
+## 4.0.17
 
 Based on upstream YMusic 4.0.16. Builds target Android, Windows, and Linux.
 

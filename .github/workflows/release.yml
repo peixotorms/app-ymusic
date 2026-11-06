@@ -165,7 +165,11 @@ jobs:
         chmod 600 "$RUNNER_TEMP/ymusic-release.p12"
     - name: Assemble release APKs
       working-directory: YMusicV4
-      run: ./gradlew -Pproduction=true :androidApp:assembleRelease :engine-js:closureJs :engine-js:closurePlayerJs spotlessCheck
+      run: |
+        test -n "$YMUSIC_ANDROID_STORE_PASSWORD"
+        test -n "$YMUSIC_ANDROID_KEY_ALIAS"
+        test -n "$YMUSIC_ANDROID_KEY_PASSWORD"
+        ./gradlew -Pproduction=true :androidApp:assembleRelease :engine-js:closureJs :engine-js:closurePlayerJs spotlessCheck
       env:
         YMUSIC_ANDROID_STORE_FILE: ${{ runner.temp }}/ymusic-release.p12
         YMUSIC_ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
