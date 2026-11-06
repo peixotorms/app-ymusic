@@ -54,7 +54,7 @@ class AppNavigationTest {
         try {
             runComposeUiTest {
                 val graph = AppGraph(settings = InMemorySettingsStore(), engines = engines, player = StubPlayer(), playerSurface = {})
-                setContent { App(graph) }
+                setContent { App(graph, androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(AppSection.Discover) }) }
 
                 onNodeWithActionLabel("Search").performClick()
                 onNode(hasSetTextAction()).performTextInput("son tung")
@@ -105,7 +105,7 @@ class AppNavigationTest {
         try {
             runComposeUiTest {
                 val graph = AppGraph(settings = InMemorySettingsStore(), engines = engines, player = StubPlayer(), playerSurface = {})
-                setContent { App(graph) }
+                setContent { App(graph, androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(AppSection.Discover) }) }
 
                 // Search → results → a result's detail page.
                 onNodeWithActionLabel("Search").performClick()
@@ -205,7 +205,7 @@ class AppNavigationTest {
         try {
             runComposeUiTest {
                 val graph = AppGraph(settings = InMemorySettingsStore(), engines = engines, player = StubPlayer(), playerSurface = {})
-                setContent { App(graph) }
+                setContent { App(graph, androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(AppSection.Discover) }) }
 
                 // Home loads once, then the desktop F5 path (AppGraph.requestRefresh) refetches it.
                 waitUntil(timeoutMillis = 20_000) { browseCalls.get() == 1 }

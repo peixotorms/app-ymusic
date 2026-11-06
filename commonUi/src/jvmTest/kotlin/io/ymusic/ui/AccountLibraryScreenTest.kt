@@ -158,7 +158,7 @@ class AccountLibraryScreenTest {
         runBlocking { engines.start() }
         try {
             runComposeUiTest {
-                setContent { App(AppGraph(settings = InMemorySettingsStore(), engines = engines, player = StubPlayer(), playerSurface = {})) }
+                setContent { App(AppGraph(settings = InMemorySettingsStore(), engines = engines, player = StubPlayer(), playerSurface = {}), androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(AppSection.Discover) }) }
                 onNodeWithActionLabel("Library").performClick()
                 waitUntilAtLeastOneExists(hasText("Sign in with YouTube"), 20_000)
                 onAllNodesWithText("Watch history").assertCountEquals(0)
@@ -179,7 +179,7 @@ class AccountLibraryScreenTest {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         try {
             runComposeUiTest {
-                setContent { App(AppGraph(settings = InMemorySettingsStore(), engines = engines, player = StubPlayer(), playerSurface = {})) }
+                setContent { App(AppGraph(settings = InMemorySettingsStore(), engines = engines, player = StubPlayer(), playerSurface = {}), androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(AppSection.Discover) }) }
                 onNodeWithActionLabel("Library").performClick()
 
                 // The account card (from account_menu) over the cookie gate.

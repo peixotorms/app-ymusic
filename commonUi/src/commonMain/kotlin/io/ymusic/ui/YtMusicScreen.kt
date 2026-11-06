@@ -45,6 +45,7 @@ import io.ymusic.dynamicengine.yt.extractMusicLibrary
 import io.ymusic.dynamicengine.yt.extractMusicNewReleases
 import io.ymusic.ui.resources.Res
 import io.ymusic.ui.resources.detail_playlist
+import io.ymusic.ui.resources.library_tab_playlists
 import io.ymusic.ui.resources.play_all
 import io.ymusic.ui.resources.shuffle_all
 import io.ymusic.ui.resources.ytmusic_explore_empty
@@ -99,6 +100,7 @@ fun YtMusicScreen(
     onDeeplink: ((link: String, title: String?) -> Unit)? = null,
 ) {
     var tab by rememberSaveable { mutableStateOf(YtMusicTab.Home) }
+    val playlistsTitle = stringResource(Res.string.library_tab_playlists)
     val tabs = remember(graph) { YtMusicTab.entries.filter { !graph.guest || it != YtMusicTab.Library } }
     DisposableEffect(tabs) {
         val remove = GlobalShortcutActions.pushTabHandler { i ->
@@ -134,6 +136,9 @@ fun YtMusicScreen(
                         FeedSession(
                             scope,
                             log,
+                            arrangeSections = { sections ->
+                                if (current == YtMusicTab.Home) musicHomeSections(sections, playlistsTitle) else sections
+                            },
                             reloadFetch = if (current == YtMusicTab.Home) {
                                 { continuation -> graph.engines.extractMusicHome(continuation, log, refresh = true) }
                             } else {

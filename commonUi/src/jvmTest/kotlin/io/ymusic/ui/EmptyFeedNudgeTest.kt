@@ -64,7 +64,7 @@ class EmptyFeedNudgeTest {
         runBlocking { engines.start() }
         try {
             runComposeUiTest {
-                setContent { App(AppGraph(settings = InMemorySettingsStore(), engines = engines, player = StubPlayer(), playerSurface = {})) }
+                setContent { App(AppGraph(settings = InMemorySettingsStore(), engines = engines, player = StubPlayer(), playerSurface = {}), androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(AppSection.Discover) }) }
                 onNodeWithActionLabel("Home").performClick()
                 waitUntilAtLeastOneExists(hasText("Try searching to get started"), 20_000)
                 onNodeWithText("Start watching videos to help us build a feed of videos you'll love.")

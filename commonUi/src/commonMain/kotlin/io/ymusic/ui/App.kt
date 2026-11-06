@@ -207,11 +207,10 @@ private val DownloadActions = setOf(LinkAction.DOWNLOAD, LinkAction.DOWNLOAD_M4A
 /** The sections a restart resumes; anything else (Settings, Downloads, …) resumes the last of these. */
 private val ResumableSections = setOf(AppSection.Discover, AppSection.Library, AppSection.YtMusic)
 
-/** The section state a shell hands to [App]: starts on the last resumable section the user had open. */
+/** A fresh launch opens YouTube Music; saveable state still preserves an activity recreation. */
 @Composable
 fun rememberStartSection(graph: AppGraph): androidx.compose.runtime.MutableState<AppSection> = rememberSaveable {
-    val saved = graph.settings.flow(AppSettings.lastSection).value
-    mutableStateOf(ResumableSections.firstOrNull { it.id == saved } ?: AppSection.Discover)
+    mutableStateOf(AppSection.YtMusic)
 }
 
 /** [sectionState] hoisted for tests and for shells that deep-link from platform surfaces (a
@@ -819,12 +818,8 @@ private fun AppRoot(
         )
         val premium by graph.premium.collectAsState()
         var updateRecheck by remember { mutableStateOf(0) }
-        // The system back gesture/button walks the same path as the in-app back arrows: overlays
-        // close first (drawer, Now Playing); the search input steps back to its results; then one
-        // layer of the CURRENT section's stack pops. A lateral section with nothing left to unwind
-        // steps back to Discover — which restores its own retained stack — and only from Discover's
-        // root is back left to the OS to exit the app.
-        val backEnabled = drawer.isOpen || nowPlayingOpen || layers.isNotEmpty() || section != AppSection.Discover
+        // Back unwinds overlays and section layers before returning to YouTube Music.
+        val backEnabled = drawer.isOpen || nowPlayingOpen || layers.isNotEmpty() || section != AppSection.YtMusic
         val onBack: () -> Unit = {
             val top = layers.lastOrNull()
             when {
@@ -837,7 +832,7 @@ private fun AppRoot(
                 top is AppLayer.Login && top.state.canGoBack -> top.state.goBack()
                 top is AppLayer.Verify && top.state.canGoBack -> top.state.goBack()
                 layers.isNotEmpty() -> popLayer()
-                else -> onSection(AppSection.Discover)
+                else -> onSection(AppSection.YtMusic)
             }
         }
         PlatformBackHandler(enabled = backEnabled, onBack = onBack)
@@ -1135,7 +1130,7 @@ private fun AppRoot(
                                                     signedIn = signedIn,
                                                     onLogin = openLogin,
                                                 )
-                                                AppSection.Feedback -> FeedbackScreen(graph, onDismiss = { onSection(AppSection.Discover) })
+                                                AppSection.Feedback -> FeedbackScreen(graph, onDismiss = { onSection(AppSection.YtMusic) })
                                                 AppSection.Catalogue ->
                                                     if (catalogue != null) catalogue() else ComingSoon(section)
                                                 else -> ComingSoon(section)

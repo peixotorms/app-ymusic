@@ -121,6 +121,7 @@ class Pager(
     private val fetchTimeoutMs: Long = 15_000,
     private val logger: Logger? = null,
     private val reloadFetch: (suspend (continuation: String?) -> io.ymusic.dynamicengine.yt.YtFeedPage)? = null,
+    private val arrangeSections: (List<YtSection>) -> List<YtSection> = { it },
     private val fetch: suspend (continuation: String?) -> io.ymusic.dynamicengine.yt.YtFeedPage,
 ) {
     sealed interface State {
@@ -153,6 +154,7 @@ class Pager(
     }
 
     private val _state = MutableStateFlow<State>(State.Loading)
+    private var sourceSections: List<YtSection> = emptyList()
     val state: StateFlow<State> = _state.asStateFlow()
 
     /** Error codes from a keep-content [reload] (the list stays put) or a page's failed part — the UI shows a snackbar. */
@@ -247,8 +249,9 @@ class Pager(
             chipToken != null -> rawChips.map { it.copy(selected = it.token == chipToken) }
             else -> rawChips
         }
+        sourceSections = page.sections
         return State.Ready(
-            sections = page.sections,
+            sections = arrangeSections(sourceSections),
             chips = chips,
             selectedChipToken = chips.firstOrNull { it.selected }?.token ?: chipToken,
             sort = page.sort.ifEmpty { previousSort },
@@ -267,9 +270,10 @@ class Pager(
 
     /** Drop the loaded items matching [predicate] in place (a confirmed server-side removal) — no refetch. */
     fun removeItems(predicate: (YtFeedItem) -> Boolean) {
+        sourceSections = sourceSections.map { it.copy(items = it.items.filterNot(predicate)) }
         _state.update { state ->
             if (state !is State.Ready) return@update state
-            state.copy(sections = state.sections.map { section -> section.copy(items = section.items.filterNot(predicate)) })
+            state.copy(sections = arrangeSections(sourceSections))
         }
     }
 
@@ -281,8 +285,9 @@ class Pager(
         job = scope.launch {
             _state.value = try {
                 val page = withTimeout(fetchTimeoutMs) { fetch(token) }
+                sourceSections = appendSections(sourceSections, page.sections)
                 current.copy(
-                    sections = appendSections(current.sections, page.sections),
+                    sections = arrangeSections(sourceSections),
                     continuation = page.continuation,
                     loadingMore = false,
                 )
@@ -327,9 +332,10 @@ class FeedSession(
     scope: CoroutineScope,
     logger: Logger? = null,
     reloadFetch: (suspend (continuation: String?) -> io.ymusic.dynamicengine.yt.YtFeedPage)? = null,
+    arrangeSections: (List<YtSection>) -> List<YtSection> = { it },
     fetch: suspend (continuation: String?) -> io.ymusic.dynamicengine.yt.YtFeedPage,
 ) {
-    val pager = Pager(scope, logger = logger, reloadFetch = reloadFetch, fetch = fetch)
+    val pager = Pager(scope, logger = logger, reloadFetch = reloadFetch, arrangeSections = arrangeSections, fetch = fetch)
     val listState = LazyListState()
 
     fun close() {
@@ -571,8 +577,7 @@ private fun FeedSections(
     hoistedListState: LazyListState? = null,
     onDeeplink: ((link: String, title: String?) -> Unit)? = null,
 ) {
-    // Collapsible sections start collapsed; the map survives recomposition, keyed by section slot.
-    val expanded = remember { mutableStateMapOf<Int, Boolean>() }
+    val expanded = remember { mutableStateMapOf<String, Boolean>() }
     BoxWithConstraints(modifier.fillMaxSize()) {
         val metrics = gridMetricsFor(maxWidth)
         val layout = feedLayoutFor(maxWidth)
@@ -593,6 +598,7 @@ private fun FeedSections(
                 item { Spacer(Modifier.height(6.dp)) }
             }
             state.sections.forEachIndexed { index, section ->
+                val expansionKey = (section.header?.titleKey ?: section.header?.title).orEmpty() + ":" + section.items.firstOrNull()?.id.orEmpty()
                 if (index > 0) {
                     // The section separator: a hairline centered in the inter-section air (the
                     // header's own top inset supplies the space below it).
@@ -613,8 +619,8 @@ private fun FeedSections(
                     metrics = metrics,
                     wide = wide,
                     compactTitle = compactTitle,
-                    expanded = expanded[index] ?: !section.collapsible,
-                    onToggle = { expanded[index] = !(expanded[index] ?: !section.collapsible) },
+                    expanded = expanded[expansionKey] ?: !section.collapsible,
+                    onToggle = { expanded[expansionKey] = !(expanded[expansionKey] ?: !section.collapsible) },
                     coordinator = coordinator,
                     onOpen = onOpen,
                     onPlayItem = onPlayItem,

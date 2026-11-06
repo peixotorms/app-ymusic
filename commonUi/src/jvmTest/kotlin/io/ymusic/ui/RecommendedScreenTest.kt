@@ -56,7 +56,7 @@ class RecommendedScreenTest {
             runComposeUiTest {
                 val player = StubPlayer()
                 val graph = AppGraph(settings = InMemorySettingsStore(), engines = engines, player = player, playerSurface = {})
-                setContent { App(graph) }
+                setContent { App(graph, androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(AppSection.Discover) }) }
 
                 onNodeWithActionLabel("Recommended").performClick()
 

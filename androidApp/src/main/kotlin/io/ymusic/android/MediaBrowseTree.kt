@@ -107,9 +107,9 @@ class MediaBrowseTree(private val context: Context, private val graph: AppGraph)
     suspend fun children(parentId: String, page: Int, pageSize: Int): List<MediaItem> {
         val all = when {
             parentId == ROOT -> listOf(
+                browsable(TAB_YTMUSIC, getString(Res.string.section_yt_music)),
                 browsable(TAB_LIBRARY, getString(Res.string.section_library)),
                 browsable(TAB_DISCOVER, getString(Res.string.section_discover)),
-                browsable(TAB_YTMUSIC, getString(Res.string.section_yt_music)),
             )
             parentId == TAB_LIBRARY -> listOf(
                 browsable(LIB_SONGS, getString(Res.string.library_tab_songs)),
@@ -141,7 +141,10 @@ class MediaBrowseTree(private val context: Context, private val graph: AppGraph)
                     .map { song -> song.toMediaItem(parentId) }
             parentId == DISC_TRENDING -> feedChildren(graph.engines.extractTrendingMusicFeed())
             parentId == DISC_HOME -> feedChildren(graph.engines.extractHomeFeed())
-            parentId == YTM_HOME -> feedChildren(graph.engines.extractMusicHome())
+            parentId == YTM_HOME -> {
+                val page = graph.engines.extractMusicHome()
+                feedChildren(page.copy(sections = io.ymusic.ui.musicHomeSections(page.sections, getString(Res.string.library_tab_playlists))))
+            }
             parentId == YTM_EXPLORE -> feedChildren(graph.engines.extractMusicExplore())
             parentId == YTM_NEW -> feedChildren(graph.engines.extractMusicNewReleases())
             parentId == YTM_CHARTS -> feedChildren(graph.engines.extractMusicCharts())

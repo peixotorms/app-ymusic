@@ -70,7 +70,7 @@ class DeeplinkTest {
         try {
             runComposeUiTest {
                 val graph = AppGraph(settings = InMemorySettingsStore(), engines = engines, player = StubPlayer(), playerSurface = {})
-                setContent { App(graph) }
+                setContent { App(graph, androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(AppSection.Discover) }) }
                 onNodeWithActionLabel("Home").performClick()
 
                 waitUntilAtLeastOneExists(hasText("Sky Decade"), 20_000)

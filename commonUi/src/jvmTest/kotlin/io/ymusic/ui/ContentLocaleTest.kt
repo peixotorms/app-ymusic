@@ -67,7 +67,7 @@ class ContentLocaleTest {
             runComposeUiTest {
                 val settings = InMemorySettingsStore()
                 val graph = AppGraph(engines = engines, player = StubPlayer(), settings = settings, playerSurface = {})
-                setContent { App(graph) }
+                setContent { App(graph, androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(AppSection.Discover) }) }
 
                 onNodeWithActionLabel("Trending music").performClick()
                 waitUntilAtLeastOneExists(hasText("Trending Music Videos"), 20_000)
@@ -95,7 +95,7 @@ class ContentLocaleTest {
             runComposeUiTest {
                 val settings = InMemorySettingsStore()
                 val graph = AppGraph(engines = engines, player = StubPlayer(), settings = settings, playerSurface = {})
-                setContent { App(graph) }
+                setContent { App(graph, androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(AppSection.Discover) }) }
 
                 onNodeWithActionLabel("Trending music").performClick()
                 waitUntilAtLeastOneExists(hasText("Trending Music Videos"), 20_000)
