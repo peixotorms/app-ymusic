@@ -41,6 +41,7 @@ internal class PlayerImpl(
     /** Bumped on every load; the Ended auto-advance fires at most once per generation. */
     private var loadGeneration = 0
     private var advancedGeneration = -1
+    private var startupRetriedGeneration = -1
 
     /** Next queue index ([QueueController.peekNext]); [prepareNextArmed] once preload (or skip) ran. */
     private var prepareNextIndex: Int? = null
@@ -804,6 +805,20 @@ internal class PlayerImpl(
             // An engine stays Ended until the next load reaches it; only entering Ended ends a track.
             var ended = engine.status.value.state.isEnded()
             engine.status.collect { snapshot ->
+                val error = (snapshot.state as? PlaybackState.Error)?.error
+                val item = controller.state.currentItem
+                if (engine is YtEngine && item is PlayableItem.YtMedia && playWhenReadyIntent &&
+                    error?.code == "E60051" && error.canRetry && error.needReset &&
+                    startupRetriedGeneration != loadGeneration
+                ) {
+                    startupRetriedGeneration = loadGeneration
+                    val position = engine.progress.value.positionMs
+                    preloadedItem = null
+                    prepareNextArmed = false
+                    engine.reset("startup stall recovery")
+                    requestLoad(engine, item, position, loadGeneration)
+                    return@collect
+                }
                 if (holdPrepareTimeout && snapshot.state.notYetLoaded()) {
                     maybePreloadNext()
                     return@collect

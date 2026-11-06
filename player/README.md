@@ -109,3 +109,5 @@ The cross-platform playback layer.
   lead. Queue changes clear obsolete preloads; promoting the prepared item preserves its data.
 
   The buffer-end comparison allows one second for segment/duration rounding. MSE loads requesting playback retain their startup deadline until the playhead advances, including after an intro seek; metadata and a zero-position tick do not prove playback started. An explicit pause cancels this deadline. A startup stall reports E60051 after 15 seconds rather than remaining indefinitely at zero.
+
+  The facade recovers one retryable E60051 per track load by resetting the YouTube session and loading the same queue item again at its current position. It preserves playback intent; a second failure is surfaced. Skipping or stopping cancels preparation through the existing load-generation checks.
