@@ -637,4 +637,7 @@
     <string name="cast_this_device">Este dispositivo</string>
     <string name="cast_searching">A procurar altifalantes…</string>
     <string name="cast_discovery_unavailable">Não foi possível procurar altifalantes. Pode continuar a ouvir neste dispositivo.</string>
+    <string name="cast_volume_feedback">%1$s · %2$d%</string>
+    <string name="cast_volume_muted_feedback">%1$s · Sem som</string>
+    <string name="cast_volume_error">Não foi possível alterar o volume do dispositivo (%1$s).</string>
 </resources>

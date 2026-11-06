@@ -621,4 +621,7 @@
     <string name="cast_this_device">此裝置</string>
     <string name="cast_searching">正在尋找喇叭…</string>
     <string name="cast_discovery_unavailable">無法尋找喇叭。仍可在此裝置上播放。</string>
+    <string name="cast_volume_feedback">%1$s · %2$d%</string>
+    <string name="cast_volume_muted_feedback">%1$s · Muted</string>
+    <string name="cast_volume_error">Could not change the device volume (%1$s).</string>
 </resources>

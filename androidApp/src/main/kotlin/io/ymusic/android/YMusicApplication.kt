@@ -159,6 +159,8 @@ class SharedServices(
 )
 
 class YMusicApplication : Application() {
+    internal var castController: io.ymusic.android.cast.CastController? = null
+        private set
 
     private val _premium = MutableStateFlow(false)
 
@@ -531,6 +533,7 @@ class YMusicApplication : Application() {
             applicationContext, appScope, ytResolver, sabrClient,
             WebSettings.getDefaultUserAgent(applicationContext), rootLogger.fork("cast"),
         )
+        castController = cast
         player = createPlayer(
             PlayerEngines(
                 local = { cast.route(createLocalPlayer(LocalPlayerContext(this, videoContainer))) },

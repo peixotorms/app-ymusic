@@ -55,6 +55,8 @@ internal class CastController(
     userAgent: String,
     private val logger: Logger,
 ) {
+    private val preferences = CastDevicePreferences(context.getSharedPreferences("cast_devices", Context.MODE_PRIVATE))
+    val volume = CastVolumeController(context, scope, preferences, logger)
     private val connected = MutableStateFlow(false)
     private val routeRevision = MutableStateFlow(0L)
     private val remote = CastAudioEngine(scope, CastAudioSource(context, resolver, client, userAgent, logger), logger)
@@ -63,7 +65,10 @@ internal class CastController(
         override fun onSessionStarted(session: CastSession, sessionId: String) = attach(session)
         override fun onSessionResumed(session: CastSession, wasSuspended: Boolean) = attach(session)
         override fun onSessionEnded(session: CastSession, error: Int) = attach(null)
-        override fun onSessionSuspended(session: CastSession, reason: Int) = remote.attach(null)
+        override fun onSessionSuspended(session: CastSession, reason: Int) {
+            remote.attach(null)
+            volume.suspendSession()
+        }
         override fun onSessionStarting(session: CastSession) = Unit
         override fun onSessionStartFailed(session: CastSession, error: Int) = attach(null)
         override fun onSessionEnding(session: CastSession) = Unit
@@ -81,6 +86,7 @@ internal class CastController(
     private fun changed() { routeRevision.value++ }
 
     private fun attach(session: CastSession?) {
+        volume.attach(session)
         remote.attach(session)
         connected.value = session != null
         changed()

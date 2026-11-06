@@ -629,4 +629,7 @@
     <string name="cast_this_device">Ez az eszköz</string>
     <string name="cast_searching">Hangszórók keresése…</string>
     <string name="cast_discovery_unavailable">A hangszórók keresése nem érhető el. Ezen az eszközön továbbra is lejátszhat zenét.</string>
+    <string name="cast_volume_feedback">%1$s · %2$d%</string>
+    <string name="cast_volume_muted_feedback">%1$s · Muted</string>
+    <string name="cast_volume_error">Could not change the device volume (%1$s).</string>
 </resources>

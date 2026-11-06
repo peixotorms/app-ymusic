@@ -645,4 +645,7 @@
     <string name="cast_this_device">Toto zařízení</string>
     <string name="cast_searching">Hledání reproduktorů…</string>
     <string name="cast_discovery_unavailable">Vyhledávání reproduktorů není dostupné. Stále můžete přehrávat na tomto zařízení.</string>
+    <string name="cast_volume_feedback">%1$s · %2$d%</string>
+    <string name="cast_volume_muted_feedback">%1$s · Muted</string>
+    <string name="cast_volume_error">Could not change the device volume (%1$s).</string>
 </resources>

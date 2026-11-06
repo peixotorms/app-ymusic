@@ -629,4 +629,7 @@
     <string name="cast_this_device">این دستگاه</string>
     <string name="cast_searching">در حال جستجوی بلندگوها…</string>
     <string name="cast_discovery_unavailable">جستجوی بلندگو در دسترس نیست. همچنان می‌توانید در این دستگاه پخش کنید.</string>
+    <string name="cast_volume_feedback">%1$s · %2$d%</string>
+    <string name="cast_volume_muted_feedback">%1$s · Muted</string>
+    <string name="cast_volume_error">Could not change the device volume (%1$s).</string>
 </resources>

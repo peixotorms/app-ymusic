@@ -629,4 +629,7 @@
     <string name="cast_this_device">இந்தச் சாதனம்</string>
     <string name="cast_searching">ஒலிபெருக்கிகளைத் தேடுகிறது…</string>
     <string name="cast_discovery_unavailable">ஒலிபெருக்கிகளைத் தேட முடியவில்லை. இந்தச் சாதனத்தில் தொடர்ந்து இயக்கலாம்.</string>
+    <string name="cast_volume_feedback">%1$s · %2$d%</string>
+    <string name="cast_volume_muted_feedback">%1$s · Muted</string>
+    <string name="cast_volume_error">Could not change the device volume (%1$s).</string>
 </resources>

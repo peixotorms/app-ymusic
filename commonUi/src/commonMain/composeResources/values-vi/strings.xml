@@ -743,4 +743,7 @@
     <string name="cast_this_device">Thiết bị này</string>
     <string name="cast_searching">Đang tìm loa…</string>
     <string name="cast_discovery_unavailable">Không thể tìm loa. Bạn vẫn có thể phát trên thiết bị này.</string>
+    <string name="cast_volume_feedback">%1$s · %2$d%</string>
+    <string name="cast_volume_muted_feedback">%1$s · Muted</string>
+    <string name="cast_volume_error">Could not change the device volume (%1$s).</string>
 </resources>

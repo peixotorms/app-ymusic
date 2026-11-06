@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.provider.OpenableColumns
 import android.provider.Settings
 import android.util.Rational
+import android.view.KeyEvent
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -76,6 +77,9 @@ import org.jetbrains.compose.resources.stringResource as resString
  * Activity contributes only what needs one: the SAF folder pick and the notification permission.
  */
 class MainActivity : AppCompatActivity() {
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean =
+        (application as YMusicApplication).castController?.volume?.dispatchKeyEvent(event) == true || super.dispatchKeyEvent(event)
+
     /** A section requested by a platform surface (download notification tap), consumed by the
      *  composition once the graph is up — survives arriving before the app finishes booting. */
     private val pendingSection = mutableStateOf<AppSection?>(null)

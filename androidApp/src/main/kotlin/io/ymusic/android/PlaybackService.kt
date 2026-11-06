@@ -197,7 +197,8 @@ class PlaybackService : MediaLibraryService() {
                 sessionArtworkLimit(),
             )
         }
-        session?.player = adapter
+        val castVolume = (application as YMusicApplication).castController?.volume
+        session?.player = if (castVolume != null) io.ymusic.android.cast.CastSessionPlayer(adapter, castVolume) else adapter
         pendingPlayer?.release()
         pendingPlayer = null
         serviceScope.launch {

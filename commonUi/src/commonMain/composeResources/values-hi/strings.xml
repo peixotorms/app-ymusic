@@ -629,4 +629,7 @@
     <string name="cast_this_device">यह डिवाइस</string>
     <string name="cast_searching">स्पीकर खोजे जा रहे हैं…</string>
     <string name="cast_discovery_unavailable">स्पीकर की खोज उपलब्ध नहीं है। आप इस डिवाइस पर चला सकते हैं।</string>
+    <string name="cast_volume_feedback">%1$s · %2$d%</string>
+    <string name="cast_volume_muted_feedback">%1$s · Muted</string>
+    <string name="cast_volume_error">Could not change the device volume (%1$s).</string>
 </resources>

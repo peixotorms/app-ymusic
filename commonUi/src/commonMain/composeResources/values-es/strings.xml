@@ -637,4 +637,7 @@
     <string name="cast_this_device">Este dispositivo</string>
     <string name="cast_searching">Buscando altavoces…</string>
     <string name="cast_discovery_unavailable">La búsqueda de altavoces no está disponible. Puedes seguir reproduciendo en este dispositivo.</string>
+    <string name="cast_volume_feedback">%1$s · %2$d%</string>
+    <string name="cast_volume_muted_feedback">%1$s · Muted</string>
+    <string name="cast_volume_error">Could not change the device volume (%1$s).</string>
 </resources>
