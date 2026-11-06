@@ -1,8 +1,10 @@
 package io.ymusic.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -114,11 +116,6 @@ val DarkDesignColors = DesignPalette(
     IconDots = Color(0xFF8E8E8E),
     OnInk = Color(0xFF141414),
     OnAccent = Color.White,
-    // The legacy YMusic grounds (#303030 / #343434 / #383838, from the v3 app) and their
-    // companions, each keeping roughly the lift it had over the old near-black trio
-    // (0xFF121212 / 0xFF171717 / 0xFF1F1F1F): placeholders/stacks/pills sit clearly above the
-    // surface, outlines lift further, and dividers stay the legacy way — slightly DARKER lines
-    // cut into the grey rather than light hairlines on black.
     Placeholder = Color(0xFF454545),
     PlaceholderDim = Color(0xFF414141),
     PlaceholderIcon = Color(0xFF767676),
@@ -129,11 +126,11 @@ val DarkDesignColors = DesignPalette(
     OutlineSoft = Color(0xFF525252),
     Divider = Color(0xFF2A2A2A),
     DividerMini = Color(0xFF2D2D2D),
-    Surface = Color(0xFF272727),
-    SurfaceDim = Color(0xFF313131),
-    SurfaceElevated = Color(0xFF292929),
-    SettingsCard = Color(0xFF333333),
-    FieldPill = Color(0xFF3F3F3F),
+    Surface = Color(0xFF101010),
+    SurfaceDim = Color(0xFF1B1B1B),
+    SurfaceElevated = Color(0xFF202020),
+    SettingsCard = Color(0xFF202020),
+    FieldPill = Color(0xFF292929),
     BrandGreen = Color(0xFF1DB954),
 )
 
@@ -306,7 +303,16 @@ fun YMusicTheme(palette: DesignPalette, content: @Composable () -> Unit) {
     val scheme = remember(palette) { schemeFor(palette) }
     CompositionLocalProvider(LocalDesignColors provides palette) {
         SyncSystemBars(palette.isDark)
-        MaterialTheme(colorScheme = scheme) {
+        MaterialTheme(
+            colorScheme = scheme,
+            shapes = Shapes(
+                extraSmall = RoundedCornerShape(12.dp),
+                small = RoundedCornerShape(16.dp),
+                medium = RoundedCornerShape(20.dp),
+                large = RoundedCornerShape(24.dp),
+                extraLarge = RoundedCornerShape(28.dp),
+            ),
+        ) {
             // No root Surface sets it, so an uncolored Text would fall back to black in dark theme.
             CompositionLocalProvider(LocalContentColor provides palette.Ink) { AccentRipple(palette.Accent, content) }
         }

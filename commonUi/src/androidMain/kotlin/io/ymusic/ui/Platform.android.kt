@@ -52,13 +52,18 @@ internal actual fun PlatformBackHandler(enabled: Boolean, onBack: () -> Unit) {
 internal actual fun SyncSystemBars(dark: Boolean) {
     val view = LocalView.current
     if (view.isInEditMode) return
-    androidx.compose.runtime.SideEffect {
-        val window = view.activityWindow() ?: return@SideEffect
-        WindowCompat.getInsetsController(window, view).apply {
-            isAppearanceLightStatusBars = !dark
-            isAppearanceLightNavigationBars = !dark
+    DisposableEffect(view, dark) {
+        val window = view.activityWindow()
+        val controller = window?.let { WindowCompat.getInsetsController(it, view) }
+        val previousStatus = controller?.isAppearanceLightStatusBars
+        val previousNavigation = controller?.isAppearanceLightNavigationBars
+        controller?.isAppearanceLightStatusBars = !dark
+        controller?.isAppearanceLightNavigationBars = !dark
+        if (window != null && Build.VERSION.SDK_INT >= 29) window.isNavigationBarContrastEnforced = false
+        onDispose {
+            if (previousStatus != null) controller?.isAppearanceLightStatusBars = previousStatus
+            if (previousNavigation != null) controller?.isAppearanceLightNavigationBars = previousNavigation
         }
-        if (Build.VERSION.SDK_INT >= 29) window.isNavigationBarContrastEnforced = false
     }
 }
 

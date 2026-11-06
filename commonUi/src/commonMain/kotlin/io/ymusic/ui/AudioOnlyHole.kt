@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,7 +79,7 @@ private const val WAVE_BARS = 40
 
 /** STARTED while the window is on screen, focused or not; drops when minimized/backgrounded. */
 @Composable
-private fun windowVisible(): Boolean {
+internal fun windowVisible(): Boolean {
     val state by LocalLifecycleOwner.current.lifecycle.currentStateAsState()
     return state.isAtLeast(Lifecycle.State.STARTED)
 }
@@ -111,7 +113,7 @@ internal fun AudioOnlyCover(
         modifier.clip(RectangleShape).background(Color.Black),
         contentAlignment = Alignment.Center,
     ) {
-        ArtImage(url, RectangleShape)
+        ArtImage(url, RectangleShape) { ThumbPlaceholder(Icons.Outlined.MusicNote, 48.dp, DesignColors.SurfaceDim) }
     }
 }
 

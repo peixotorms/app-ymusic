@@ -102,7 +102,7 @@ fun ElevatedBarDialog(
             var titleFocusable by remember { mutableStateOf(true) }
             LaunchedEffect(Unit) { titleFocus.requestFocus() }
             Surface(
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(24.dp),
                 color = DesignColors.Surface,
                 modifier = Modifier
                     .then(if (wide) Modifier.padding(horizontal = 24.dp) else Modifier)
