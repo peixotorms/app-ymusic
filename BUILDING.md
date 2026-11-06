@@ -54,8 +54,9 @@ The iOS app builds from `iosApp/iosApp.xcodeproj` in Xcode; its Kotlin framework
 ## Personal releases
 
 The release workflow builds one Android ARM64 APK, one Windows x64 EXE installer, and one Linux x64 Debian package. It does not publish separate JavaScript bundles, checksums, or other architectures.
-macOS packaging is disabled. It runs for a `release-v…` tag and creates a draft
-in this repository’s GitHub Releases.
+macOS packaging is disabled. It runs for a `release-v…` tag and publishes the three installers in this repository's GitHub Releases after the required checks pass.
+
+Android uses the fork's `io.github.peixotorms.ymusic` application ID and the launcher name **YMusic**, allowing installation alongside upstream. Preserve this identity and the signing key when merging upstream; see [Android fork identity](androidApp/README.md#fork-identity-and-upstream-merges) for the settings and storage behavior.
 
 Android uses a separate signing identity. Set these repository Actions secrets before
 running the workflow: `ANDROID_KEYSTORE_BASE64`, `ANDROID_STORE_PASSWORD`,

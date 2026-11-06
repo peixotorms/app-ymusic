@@ -6,6 +6,7 @@
 
 Based on upstream YMusic 4.0.16. Builds target Android ARM64, Windows x64, and Linux x64.
 
+- **Separate Android installation:** named YMusic, with its own app ID and private storage so the original YMusic V4 can remain installed.
 - **Audio buffering:** choose 30 seconds, one minute, or two minutes ahead. Playback starts normally and expands the buffer after five seconds of listening. Video targets 30 seconds.
 - **Next song:** prepare about 15 seconds of the next queued song once the current song is buffered through its end and has at most one minute left. Skips, seeks, and queue changes cancel obsolete fetching.
 - **SponsorBlock:** use the public service first, with YMusic as a fallback if the lookup fails. Existing category controls still apply.

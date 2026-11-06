@@ -27,6 +27,8 @@ Download from [release-v4.0.17](https://github.com/peixotorms/app-ymusic/release
 
 Updates are installed manually. The app does not check for or download app updates.
 
+On Android, this fork appears as **YMusic** and installs alongside the original **YMusic V4**, with separate settings, sign-in, and cache. Sign in and choose a download folder in the new installation; select a different folder if you want separate downloaded files too.
+
 For sideloaded Android builds, Android Auto may require **Unknown sources** in its
 developer settings on the phone. Google Cast requires the phone and speakers to
 be on the same network.

@@ -11,6 +11,25 @@ Module detail for the one-line summary in the root [`AGENTS.md`](../AGENTS.md) â
 
 - **Not wired yet** â€” media store/SAF scanner.
 
+## Fork identity and upstream merges
+
+Preserve these settings when merging upstream changes:
+
+| Setting | This fork | Upstream |
+| --- | --- | --- |
+| Launcher/application label (`src/main/res/values/strings.xml`) | `YMusic` | `YMusic V4` |
+| Release application ID (`build.gradle.kts`) | `io.github.peixotorms.ymusic` | `io.ymusic.android` |
+| Debug application ID | `io.github.peixotorms.ymusic.debug` | `io.ymusic.android.debug` |
+| Kotlin/resource namespace | `io.ymusic.android` | `io.ymusic.android` |
+
+The application ID identifies the installation and isolates Android-managed storage: private files, databases, preferences, WebView cookies, and caches. A typical private data root is `/data/user/0/io.github.peixotorms.ymusic/`; use Android's context APIs rather than hardcoding it. The artwork provider authority follows `${applicationId}.artwork` in the manifest and `context.packageName` at runtime. Dependency providers and the default task affinity must follow the fork's application ID too; inspect the merged release manifest after upstream merges.
+
+Keep the source namespace and Kotlin directory structure unchanged so upstream code can merge without a package-wide rename. Manifest components resolve to their existing `io.ymusic.android` classes inside the separately identified app. Internal action strings are used with explicit app components or media sessions and do not identify the installed package. Both apps may offer to handle the same YouTube links; Android's app preferences choose the handler.
+
+This is a new installation, with no migration or deletion of upstream data. The user signs in again, grants permissions, chooses a download folder, and enables the fork in Android Auto's launcher. Download folders selected through the system picker are shared storage: choose different folders to keep the two apps' downloaded files separate. Keep this fork's application ID and signing key stable for subsequent APK updates; version name and code do not need to differ from upstream when the application IDs differ.
+
+Windows and Linux retain their existing installation identities and data paths; the separate-installation behavior above applies to Android.
+
 ## Android Auto discovery and testing
 
 The app already exports `PlaybackService` as a Media3 library service and legacy media browser,
