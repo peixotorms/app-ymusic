@@ -404,9 +404,6 @@ class AppGraph(
         }
     }
 
-    /** Fullscreen only: stretch the picture to the hole. Mini / Now Playing always fit. */
-    val videoFillScreen = mutableStateOf(false)
-
     /** Fullscreen only: hold the current orientation regardless of the sensor and the system lock. */
     val videoRotationLocked = mutableStateOf(false)
 
