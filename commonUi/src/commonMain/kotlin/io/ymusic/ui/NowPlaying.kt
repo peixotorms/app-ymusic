@@ -37,6 +37,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.outlined.PlaylistAdd
 import androidx.compose.material.icons.automirrored.outlined.QueueMusic
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.ClosedCaption
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.FastForward
@@ -57,6 +58,7 @@ import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.outlined.Bedtime
+import androidx.compose.material.icons.outlined.ClosedCaptionOff
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Equalizer
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -162,6 +164,9 @@ import io.ymusic.ui.resources.a11y_playback_position
 import io.ymusic.ui.resources.a11y_x_of_y
 import io.ymusic.ui.resources.audio_only
 import io.ymusic.ui.resources.badge_live
+import io.ymusic.ui.resources.captions_auto_translate
+import io.ymusic.ui.resources.captions_off
+import io.ymusic.ui.resources.cd_captions
 import io.ymusic.ui.resources.cd_collapse
 import io.ymusic.ui.resources.cd_download
 import io.ymusic.ui.resources.cd_exit_fullscreen
@@ -561,6 +566,7 @@ private fun FullscreenVideo(graph: AppGraph, coordinator: PlaybackCoordinator, o
                 )
             }
             status.error?.let { PlaybackErrorText(graph, it, VideoOverlayNative.showing) }
+            PlayerCaptionOverlay(graph, graph.player, VideoOverlayNative.showing)
         }
     }
 }
@@ -684,6 +690,7 @@ private fun PlayerArtwork(graph: AppGraph, coordinator: PlaybackCoordinator, onF
         if (!audioOnly && !pictureReady) Box(Modifier.fillMaxSize().background(Color.Black))
         VideoOverlayHost(Modifier.fillMaxSize()) {
             if (audioOnly) BufferingIndicator(status)
+            PlayerCaptionOverlay(graph, player, !audioOnly && VideoOverlayNative.showing)
             if (!audioOnly) {
                 AutoHidingOverlay {
                     Row(Modifier.align(Alignment.BottomEnd).padding(4.dp).background(Color.Black.copy(alpha = 0.55f), RoundedCornerShape(16.dp))) {
@@ -899,6 +906,7 @@ private fun BoxScope.VideoOverlayControls(
             }
             DurationLabel(player, progress, overlayStyle)
             Box(Modifier.weight(1f))
+            CaptionToggle(player, offTint = Color(0xFFEEEEEE), iconSize = iconSize, hitSize = hitSize)
             if (onToggleRotationLock != null) {
                 ActionIcon(
                     if (rotationLocked) Icons.Default.ScreenLockRotation else Icons.Default.ScreenRotation,
@@ -928,13 +936,13 @@ private fun BoxScope.VideoOverlayControls(
     }
 }
 
-/** Height of the video controls' bottom strip at 1× overlay scale; errors stay above it while it shows. */
+/** Height of the video controls' bottom strip at 1× overlay scale; captions and errors stay above it while it shows. */
 private val VideoControlsStrip = 72.dp
 
 /** How much the video overlay chrome scales: 1× up to a 400dp short side, growing with the video area to 1.3×. */
 private val LocalVideoOverlayScale = compositionLocalOf { 1f }
 
-/** The box over the video picture: sets [LocalVideoOverlayScale] from its own size for the overlay and errors. */
+/** The box over the video picture: sets [LocalVideoOverlayScale] from its own size for the overlay, captions and errors. */
 @Composable
 private fun VideoOverlayHost(modifier: Modifier, content: @Composable BoxScope.() -> Unit) {
     BoxWithConstraints(modifier) {
@@ -942,6 +950,148 @@ private fun VideoOverlayHost(modifier: Modifier, content: @Composable BoxScope.(
         CompositionLocalProvider(LocalVideoOverlayScale provides scale) { content() }
     }
 }
+
+/**
+ * Captions centered on the picture (the video's contain-fit rect, as [VideoHole] lays it out): in the bar
+ * below it when that bar fits two rows clear of the controls strip, otherwise over the picture's bottom.
+ */
+@Composable
+private fun BoxScope.PlayerCaptionOverlay(
+    graph: AppGraph,
+    player: io.ymusic.player.Player,
+    overlayVisible: Boolean,
+    fill: Boolean = false,
+) {
+    val lines by player.captionLines.collectAsState()
+    if (lines.isEmpty()) return
+    val queue by player.queue.collectAsState()
+    val captions by player.captions.collectAsState()
+    key(queue.queueId, queue.currentIndex, queue.currentItem, captions.selectedLanguage) {
+        val status by player.status.collectAsState()
+        val audioOnly = showsAudioOnly(player)
+        val strip = VideoControlsStrip * LocalVideoOverlayScale.current
+        val controlsInset by animateDpAsState(if (overlayVisible) strip else 12.dp)
+        val look = rememberCaptionLook(graph)
+        val twoRows = captionTwoRowHeight(look.scale)
+        BoxWithConstraints(Modifier.matchParentSize()) {
+            val ratio = status.videoSize?.aspectRatio?.takeIf { it > 0f } ?: (16f / 9f)
+            val pictureWidth: Dp
+            val pictureHeight: Dp
+            if (fill || audioOnly || maxWidth / maxHeight <= ratio) {
+                pictureWidth = maxWidth
+                pictureHeight = if (fill || audioOnly) maxHeight else maxWidth / ratio
+            } else {
+                pictureWidth = maxHeight * ratio
+                pictureHeight = maxHeight
+            }
+            val bar = (maxHeight - pictureHeight) / 2
+            if (bar >= twoRows + strip + DesignSpacing.Space8) {
+                CaptionOverlay(
+                    lines,
+                    look,
+                    Modifier.align(Alignment.TopCenter)
+                        .padding(top = bar + pictureHeight + DesignSpacing.Space8)
+                        .width(pictureWidth),
+                )
+            } else {
+                CaptionOverlay(
+                    lines,
+                    look,
+                    Modifier.align(Alignment.BottomCenter)
+                        .padding(bottom = maxOf(bar + 12.dp, controlsInset))
+                        .width(pictureWidth),
+                )
+            }
+        }
+    }
+}
+
+/**
+ * The video CC control: hidden when the source has no caption tracks. Tapping opens a menu of
+ * Off + every available language (checkmark on the active one); the glyph is accent-filled while
+ * captions are on. Picking a language turns captions on and selects it; Off hides them.
+ */
+@Composable
+private fun CaptionToggle(player: io.ymusic.player.Player, offTint: Color, iconSize: Dp = 24.dp, hitSize: Dp = 40.dp, menuOnly: Boolean = false, onDismiss: () -> Unit = {}) {
+    val captions by player.captions.collectAsState()
+    val config by player.config.collectAsState()
+    if (captions.tracks.isEmpty()) return
+    var open by remember { mutableStateOf(menuOnly) }
+    var translateOpen by remember { mutableStateOf(false) }
+    HoldVideoOverlay(open || translateOpen)
+    val (translations, tracks) = captions.tracks.partition { it.kind == AUTO_TRANSLATE_KIND }
+    fun isOn(track: io.ymusic.player.CaptionTrack) = config.captionVisible &&
+        (track.id == captions.selectedLanguage || track.languageCode == captions.selectedLanguage)
+    fun pick(track: io.ymusic.player.CaptionTrack) {
+        player.selectCaption(track.id)
+        player.setCaptionVisible(true)
+        open = false
+        translateOpen = false
+        onDismiss()
+    }
+    val onTrack = tracks.firstOrNull { isOn(it) } ?: translations.firstOrNull { isOn(it) }
+    val captionState = onTrack?.displayName ?: stringResource(Res.string.captions_off)
+    Box {
+        if (!menuOnly) ActionIcon(
+            if (config.captionVisible) Icons.Default.ClosedCaption else Icons.Outlined.ClosedCaptionOff,
+            "${stringResource(Res.string.cd_captions)}, $captionState",
+            iconSize = iconSize,
+            hitSize = hitSize,
+            tint = if (config.captionVisible) DesignColors.Accent else offTint,
+            onClick = { open = true },
+        )
+        if (open) {
+            DropdownMenu(expanded = true, onDismissRequest = { open = false; onDismiss() }) {
+                val off = !config.captionVisible
+                DropdownMenuItem(
+                    text = { Text(stringResource(Res.string.captions_off)) },
+                    onClick = { player.setCaptionVisible(false); open = false; onDismiss() },
+                    modifier = Modifier.menuChoice(off),
+                    trailingIcon = selectedCheck(off),
+                )
+                tracks.forEach { track ->
+                    DropdownMenuItem(
+                        text = { Text(track.displayName) },
+                        onClick = { pick(track) },
+                        modifier = Modifier.menuChoice(isOn(track)),
+                        trailingIcon = selectedCheck(isOn(track)),
+                    )
+                }
+                if (translations.isNotEmpty()) {
+                    val label = stringResource(Res.string.captions_auto_translate)
+                    val current = translations.firstOrNull { isOn(it) }
+                    DropdownMenuItem(
+                        text = { Text(if (current != null) "$label · ${current.displayName}" else "$label ›") },
+                        onClick = {
+                            open = false
+                            translateOpen = true
+                        },
+                        modifier = Modifier.menuChoice(current != null),
+                        trailingIcon = selectedCheck(current != null),
+                    )
+                }
+            }
+        }
+        // ~150 languages: a lazy list, so opening it does not compose every row.
+        if (translateOpen) {
+            DropdownMenu(expanded = true, onDismissRequest = { translateOpen = false; onDismiss() }) {
+                LazyColumn(Modifier.size(width = 240.dp, height = 360.dp)) {
+                    items(translations, key = { it.id }) { track ->
+                        DropdownMenuItem(
+                            text = { Text(track.displayName) },
+                            onClick = { pick(track) },
+                            modifier = Modifier.menuChoice(isOn(track)),
+                            trailingIcon = selectedCheck(isOn(track)),
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** Engine track kind for YouTube auto-translate languages (clones of a source track, one per language). */
+private const val AUTO_TRANSLATE_KIND = "asrt"
 
 /** A playback failure for the user: a known category, the text the source gave for it (YouTube's own words
  *  for a playability verdict), else our message for the verdict, else "Playback failed (code)". */
@@ -1159,8 +1309,8 @@ private fun MoreMenuDivider() {
     HorizontalDivider(Modifier.padding(vertical = DesignSpacing.Space4), color = DesignColors.Divider)
 }
 
-/** The ⋮ menu, grouped: this video + queue · sound · player.
- * Audio-only is a quality-chip option, not a toggle here. */
+/** The ⋮ menu, grouped: this video + queue · sound · player. Captions live on the video CC control;
+ *  audio-only is a quality-chip option, not a toggle here. */
 @Composable
 private fun PlayerMoreMenu(coordinator: PlaybackCoordinator, iconOffset: Dp = 0.dp) {
     val player = coordinator.player
@@ -1181,6 +1331,8 @@ private fun PlayerMoreMenu(coordinator: PlaybackCoordinator, iconOffset: Dp = 0.
     val noVideos = stringResource(Res.string.yt_playlist_queue_empty)
     val scope = rememberCoroutineScope()
     var tracksOpen by remember { mutableStateOf(false) }
+    var captionsOpen by remember { mutableStateOf(false) }
+    val captions by player.captions.collectAsState()
     val config by player.config.collectAsState()
     var sleepOpen by remember { mutableStateOf(false) }
     val sleepMs by player.sleepTimerMs.collectAsState()
@@ -1269,6 +1421,7 @@ private fun PlayerMoreMenu(coordinator: PlaybackCoordinator, iconOffset: Dp = 0.
                 eqOpen = true
                 open = false
             }
+            if (captions.tracks.isNotEmpty()) MoreMenuItem(Icons.Default.ClosedCaption, stringResource(Res.string.cd_captions)) { captionsOpen = true; open = false }
             if (audioTracks.tracks.size > 1) {
                 MoreMenuItem(
                     Icons.Outlined.GraphicEq,
@@ -1306,6 +1459,7 @@ private fun PlayerMoreMenu(coordinator: PlaybackCoordinator, iconOffset: Dp = 0.
             }
         }
     }
+    if (captionsOpen) CaptionToggle(player, DesignColors.Ink, menuOnly = true, onDismiss = { captionsOpen = false })
     if (sleepOpen) {
         SleepTimerDialog(sleepMs, afterCurrent, lastMinutes, onDismiss = { sleepOpen = false }) { choice ->
             sleepOpen = false
