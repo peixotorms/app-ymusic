@@ -250,7 +250,7 @@
     "donts": [
       "Don't turn one cover's accent into a fixed brand palette.",
       "Don't apply the player's dark theme to all browsing or to AppRoot's mini-player.",
-      "Don't replace native video with a cropped cover or remove its fullscreen access.",
+      "Don't replace native video with a cropped cover or remove its captions and fullscreen access.",
       "Don't add decorative containers or typography that compete with the artwork.",
       "Don't duplicate title, seek, or transport controls over inline video, or add queue rows and filter chips to the player viewport."
     ]
