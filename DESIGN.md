@@ -120,10 +120,10 @@ components:
     size: "52dp"
   queue-surface:
     backgroundColor: "{colors.dark-surface}"
-    textColor: "{colors.dark-ink}"
+    textColor: "{colors.player-ink}"
   queue-current-row:
     backgroundColor: "{colors.dark-surface-elevated}"
-    textColor: "{colors.dark-ink}"
+    textColor: "{colors.player-ink}"
     typography: "{typography.title-queue}"
   queue-artwork:
     rounded: "{rounded.queue-artwork}"
@@ -261,7 +261,7 @@ Playlist rows use `music-artwork`, 16dp between artwork and text, and `ListRowVe
 
 ### Queue
 
-The queue is a separate full-size surface with safe insets, a fixed header, and an independently scrolling list. Collapse, Back, Escape, or a downward pull returns to the player. There is no search or filter row. Up next locates the current item; the header groups Repeat, Shuffle, and Cast. Repeat, Shuffle, and Cast retain adjacent 48dp targets. Their glyphs form a compact group: Repeat shifts inward by 12dp, Cast by −12dp, and Shuffle by −1.5dp to balance the different vector widths. These actions show active color without a circular press indication or clipping; their touch areas remain separate. Now Playing uses the same indication policy; fullscreen retains its existing behavior. Shuffle permutes the visible queue once and starts at the top; playback then follows that order. Turning it off restores the original session order while keeping the current item, and re-enabling it generates a new order.
+The queue is a separate full-size surface with safe insets, a fixed header, and an independently scrolling list. Collapse, Back, Escape, or a downward pull returns to the player. There is no search or filter row. Up next locates the current item; the header groups Repeat, Shuffle, and Cast. Repeat, Shuffle, and Cast retain adjacent 48dp targets. Their glyphs form a compact group: Repeat shifts inward by 12dp, Cast by −12dp, and Shuffle by −1.5dp to balance the different vector widths. These actions show active color without a circular press indication or clipping; their touch areas remain separate. Ordinary Now Playing retains native press indications; fullscreen retains its existing no-indication behavior. Shuffle permutes the visible queue once and starts at the top; playback then follows that order. Turning it off restores the original session order while keeping the current item, and re-enabling it generates a new order.
 
 Rows use `queue-artwork`, 8dp gaps, 6dp vertical insets, and an 8dp end inset. The drag grip is a 26dp vector centered in `queue-grip`. Title and artist have their own column; duration and the 48dp overflow target follow it. The current row uses `queue-current-row` without an accent wash. Reordering, swipe removal, and loading/error/retry rows remain available.
 
