@@ -32,6 +32,7 @@ import { channelUrl } from "../yt/parse";
 import { get, textOf } from "../yt/scan";
 import {
   captionTrackRows,
+  activateCaptionVideo,
   installCaptionMinter,
   onCaptionSeek,
   onCaptionsChanged,
@@ -159,12 +160,36 @@ function applyPictureFromResponse(): boolean {
   return false;
 }
 
+function sourceHasVideo(player: MoviePlayer): boolean | null {
+  const response = asRec(player["getPlayerResponse"]());
+  const data = response ? asRec(response["streamingData"]) : null;
+  if (!data) return null;
+  let audio = false;
+  for (const key of ["formats", "adaptiveFormats"]) {
+    const formats = data[key];
+    if (!Array.isArray(formats)) continue;
+    for (const value of formats) {
+      const format = asRec(value);
+      if (!format) continue;
+      const mime = String(format["mimeType"] || "");
+      if (
+        mime.indexOf("video/") === 0 ||
+        (Number(format["width"]) > 0 && Number(format["height"]) > 0)
+      )
+        return true;
+      if (mime.indexOf("audio/") === 0) audio = true;
+    }
+  }
+  return audio ? false : null;
+}
+
 function bindPictureSize(player: MoviePlayer): void {
   player["addEventListener"]("onVideoDataChange", function () {
     if (applyPictureFromResponse()) notifyListen("picture");
     notifyListen("details");
     notifyListen("progress");
     notifyListen("state");
+    notifyCatalog();
   });
 }
 
@@ -1034,7 +1059,10 @@ class Player {
     };
     this.ensureCreated(out);
     this.pendingBufferPreload = "";
+    activateCaptionVideo(videoId);
     playbackBuffer.load(videoId, ao, options.audioBufferSeconds);
+    pictureW = 0;
+    pictureH = 0;
     out["buffering"] = playbackBuffer.enabled;
     /* Chrome /player uses watch URL as originalUrl / currentUrl / graftUrl. */
     setLocation(ORIGIN + "/watch?v=" + videoId, "/watch", "?v=" + videoId);
@@ -1205,6 +1233,7 @@ class Player {
 
   stop(): void {
     playbackBuffer.stop();
+    activateCaptionVideo("");
     const player = moviePlayer();
     if (!player) throw new JsEngineErrorImpl("player not created", "E20084");
     player["stopVideo"]();
@@ -1421,6 +1450,7 @@ class Player {
 
   picture(): Record<string, unknown> {
     return {
+      "videoId": this.currentVideoId(),
       "videoWidth": pictureW,
       "videoHeight": pictureH,
     };
@@ -1473,6 +1503,8 @@ class Player {
       "preferQuality": pref,
       "audioOnly": isAudioOnly(),
       "qualities": this.qualityOptions(),
+      "videoId": this.currentVideoId(),
+      "hasVideo": sourceHasVideo(player),
       "caption": selectedCaptionVss(),
       "captionTracks": captionTrackRows(),
       "audioTrack": selectedAudioTrackId(player),

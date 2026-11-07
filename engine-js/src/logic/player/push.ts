@@ -74,7 +74,11 @@ function sameState(a: Record<string, unknown>, b: Record<string, unknown>): bool
 }
 
 function samePicture(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
-  return a["videoWidth"] === b["videoWidth"] && a["videoHeight"] === b["videoHeight"];
+  return (
+    a["videoId"] === b["videoId"] &&
+    a["videoWidth"] === b["videoWidth"] &&
+    a["videoHeight"] === b["videoHeight"]
+  );
 }
 
 function sameDetails(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
@@ -87,6 +91,8 @@ function sameDetails(a: Record<string, unknown>, b: Record<string, unknown>): bo
 
 function sameCatalog(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
   if (
+    a["videoId"] !== b["videoId"] ||
+    a["hasVideo"] !== b["hasVideo"] ||
     a["quality"] !== b["quality"] ||
     a["preferQuality"] !== b["preferQuality"] ||
     a["audioOnly"] !== b["audioOnly"] ||

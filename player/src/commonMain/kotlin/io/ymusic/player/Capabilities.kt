@@ -23,6 +23,7 @@ data class VideoQualityState(
     val options: List<VideoQualityOption>,
     val actualQuality: String,
     val preferredQuality: String,
+    val hasVideo: Boolean? = null,
 ) {
     companion object {
         const val AUTO = "auto"

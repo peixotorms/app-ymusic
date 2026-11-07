@@ -217,7 +217,10 @@ class MsePlayer internal constructor(
         awaitingPlaybackStart = playWhenReady
         loadStartPositionMs = startPositionMs
         _progress.value = Progress(positionMs = startPositionMs)
-        _status.update { it.copy(details = null) }
+        _status.update { it.copy(details = null, videoSize = null) }
+        _videoQuality.value = VideoQualityState.DEFAULT
+        _captions.value = CaptionState.DEFAULT
+        _captionLines.value = emptyList()
         applySurfaceAudio(previous, config)
         val width = viewportW
         val height = viewportH
@@ -781,6 +784,8 @@ class MsePlayer internal constructor(
     }
 
     private fun applyPicture(json: JsonObject) {
+        val videoId = json.stringOrNull("videoId")
+        if (videoId != null && videoId != (loadingVideoId ?: loadedVideoId)) return
         val videoWidth = json.intOrNull("videoWidth") ?: 0
         val videoHeight = json.intOrNull("videoHeight") ?: 0
         if (videoWidth <= 0 || videoHeight <= 0) return
@@ -789,6 +794,8 @@ class MsePlayer internal constructor(
     }
 
     private fun applyCatalog(json: JsonObject) {
+        val videoId = json.stringOrNull("videoId")
+        if (videoId != null && videoId != (loadingVideoId ?: loadedVideoId)) return
         val audioOnly = json.boolOrNull("audioOnly") ?: false
         val actual = if (audioOnly) {
             VideoQualityState.AUDIO_ONLY
@@ -809,6 +816,7 @@ class MsePlayer internal constructor(
             options = options,
             actualQuality = actual,
             preferredQuality = prefer,
+            hasVideo = json.boolOrNull("hasVideo"),
         )
         _captions.value = CaptionState(tracks = json.captionTracks(), selectedLanguage = json.stringOrNull("caption"))
         _audioTracks.value = AudioTrackState(tracks = json.audioTracks(), selectedId = json.stringOrNull("audioTrack"))

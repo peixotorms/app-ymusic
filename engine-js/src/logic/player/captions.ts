@@ -22,6 +22,7 @@ type Line = { id: number; text: string };
 
 let tracks: CaptionTrack[] = [];
 let videoId = "";
+const captionResponses = new Map<string, Record<string, unknown>>();
 let selectedVss: string | null = null;
 /* The viewer's pick outlives the video: each ingest re-selects from it, like youtube.com. */
 let captionOn = false;
@@ -81,12 +82,29 @@ export function installCaptionMinter(fn: (id: string) => Promise<string>): void 
   mintPo = fn;
 }
 
+export function activateCaptionVideo(id: string): void {
+  if (id === videoId) return;
+  videoId = id;
+  const cached = captionResponses.get(id);
+  applyCaptionResponse(cached || { "videoDetails": { "videoId": id } });
+}
+
 export function ingestPlayerCaptions(rec: Record<string, unknown>): void {
+  const details = asRec(rec["videoDetails"]);
+  const id =
+    details && typeof details["videoId"] === "string" ? (details["videoId"] as string) : "";
+  if (!id) return;
+  captionResponses.delete(id);
+  captionResponses.set(id, rec);
+  if (captionResponses.size > 8) captionResponses.delete(captionResponses.keys().next().value!);
+  if (id !== videoId) return;
+  applyCaptionResponse(rec);
+}
+
+function applyCaptionResponse(rec: Record<string, unknown>): void {
   const caps = asRec(rec["captions"]);
   const list = caps ? asRec(caps["playerCaptionsTracklistRenderer"]) : null;
   const raw = list ? list["captionTracks"] : null;
-  const vid = asRec(rec["videoDetails"]);
-  videoId = vid && typeof vid["videoId"] === "string" ? (vid["videoId"] as string) : videoId;
   const out: CaptionTrack[] = [];
   if (Array.isArray(raw)) {
     for (let i = 0; i < raw.length; i++) {
@@ -438,7 +456,7 @@ async function emitWindow(): Promise<void> {
   const sink = sessionSink;
   if (!sink) return;
   const lines = selectedVss ? windowAt(nowMs()) : [];
-  const rec: Record<string, unknown> = { "lines": lines };
+  const rec: Record<string, unknown> = { "videoId": videoId, "lines": lines };
   const js = JSON.stringify(rec);
   if (js === lastLinesJson) return;
   lastLinesJson = js;
@@ -446,7 +464,7 @@ async function emitWindow(): Promise<void> {
   for (let i = 0; i < lines.length; i++) {
     rows.push({ "id": lines[i]!.id, "text": lines[i]!.text });
   }
-  const p = sink.writeObjectAsJson({ "lines": rows });
+  const p = sink.writeObjectAsJson({ "videoId": videoId, "lines": rows });
   if (p) await p;
   const f = sink.flush();
   if (f) await f;
@@ -516,6 +534,7 @@ function onCaptionPause(): void {
 
 /* YouTube refuses auto-translate fetches (429, or 200 with an empty body); the source language beats no captions. */
 async function reloadCues(untranslated = false): Promise<void> {
+  const g = ++fetchGen;
   stopTimer();
   cues = [];
   lastLinesJson = "";
@@ -529,7 +548,8 @@ async function reloadCues(untranslated = false): Promise<void> {
     await emitWindow();
     return;
   }
-  const g = ++fetchGen;
+  await emitWindow();
+  if (g !== fetchGen) return;
   let url = withFmtJson3(tr.baseUrl);
   const translate = !!tr.tlang && !untranslated;
   if (translate) url = setQuery(url, "tlang", tr.tlang!);
@@ -638,8 +658,10 @@ export async function runCaptionSession(pipe: Pipe): Promise<void> {
   sessionSink = pipe.sink;
   lastLinesJson = "";
   try {
-    await reloadCues();
     bindMedia();
+    void reloadCues().catch((error: unknown) =>
+      console.warn("caption session fetch failed", error),
+    );
     try {
       const r = pipe.source.readJsonObject();
       if (r && typeof (r as Promise<unknown>).then === "function") await r;
