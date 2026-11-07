@@ -201,7 +201,7 @@ The player backdrop begins at `lerp(tint, Black, 0.25)`, darkened further until 
 
 Saved dark browsing uses `dark-surface`, `dark-surface-dim`, and `dark-surface-elevated`. Light browsing uses white with the corresponding light surfaces. Text, fields, outlines, and dividers resolve through `DesignColors`. AMOLED sets Surface, SurfaceDim, SurfaceElevated, and SettingsCard to black; it retains the other dark roles. `skip-segment` identifies SponsorBlock intervals.
 
-The queue uses the fixed `PlayerControlColors` palette over `DarkDesignColors`: `dark-surface` ground, `dark-surface-elevated` current-row highlight, and neutral text. Selected repeat and shuffle and a connected Cast route use `accent-default`; this palette is independent of artwork and the user's saved accent. Other controls remain near-white, with grey reserved for disabled states.
+The queue uses the fixed `PlayerControlColors` palette over `DarkDesignColors`: `dark-surface` ground, `dark-surface-elevated` current-row highlight, and neutral text. Selected repeat and shuffle and a connected Cast route use `accent-default`; this palette is independent of artwork and the user's saved accent. Main and header controls remain near-white, with grey for disabled states. Queue row overflow keeps the quieter dark-icon-dots role.
 
 **The Theme Boundary Rule.** Player and playlist surfaces stay dark with artwork-derived backdrops. Player controls use fixed white/orange roles; fullscreen retains its original overlay palette. The queue uses the fixed dark palette. Browsing and the production mini-player inherit the saved app palette; the mini-player is outside the per-screen artwork theme.
 
