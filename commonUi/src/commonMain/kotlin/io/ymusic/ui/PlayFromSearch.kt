@@ -45,7 +45,7 @@ suspend fun PlaybackCoordinator.playFromSearch(query: String, focus: SearchFocus
     if (pick.kind == YtFeedItem.KIND_CHANNEL) {
         playNow(songs.first())
     } else {
-        playAll(songs, source = NextQueueSource.playlist(engines, url, songs, page.pageHeader?.itemCount, log?.fork("queue-source")))
+        playAll(songs, source = PlaylistQueueSource.create(engines, url, songs, page.pageHeader?.itemCount, page.continuation, log?.fork("queue-source")))
     }
     return true
 }

@@ -171,12 +171,15 @@ class PlaybackCoordinator(
     /** Play [videos] as the queue (a playlist page), starting at [startIndex]; [source] loads the rest of
      *  the list as the queue goes. [shuffle] null keeps the user's shuffle mode. */
     fun playAll(videos: List<YtFeedItem>, startIndex: Int = 0, shuffle: Boolean? = null, source: QueueSource? = null) {
-        val playable = videos.filter { it.kind == YtFeedItem.KIND_VIDEO }
-        if (playable.isEmpty()) return
+        val all = videos.filter { it.kind == YtFeedItem.KIND_VIDEO }
+        if (all.isEmpty()) return
+        val selected = startIndex.coerceIn(0, all.lastIndex)
+        val offset = if (selected >= PlaylistQueueSource.LIMIT) minOf(selected, all.size - PlaylistQueueSource.LIMIT) else 0
+        val playable = all.drop(offset).take(PlaylistQueueSource.LIMIT)
         shuffle?.let(player::setShuffle)
         player.setQueue(
             playable.map { it.toYtMedia() },
-            playIndex = startIndex.coerceIn(0, playable.size - 1),
+            playIndex = selected - offset,
             source = source,
             origin = QueueOrigin.Playlist,
         )
@@ -191,7 +194,7 @@ class PlaybackCoordinator(
         playAll(
             videos,
             startIndex = index,
-            source = NextQueueSource.playlist(graph.engines, url, videos, page.pageHeader?.itemCount, log?.fork("queue-source")),
+            source = PlaylistQueueSource.create(graph.engines, url, videos, page.pageHeader?.itemCount, page.continuation, log?.fork("queue-source")),
         )
         return true
     }

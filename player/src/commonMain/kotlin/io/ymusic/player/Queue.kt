@@ -44,6 +44,9 @@ data class QueueState(
  * [Player.loadMore]. Calls never overlap.
  */
 interface QueueSource {
+    /** Metadata to load ahead without waiting for playback to approach the last page. */
+    val eagerLoadTarget: Int get() = 0
+
     /** The whole list's length, loaded or not, when the source knows it; weighs shuffle picks. Read
      *  again after every page, so a source may learn it from its first page. */
     val totalCount: Int?

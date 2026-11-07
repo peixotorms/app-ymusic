@@ -3,6 +3,8 @@ package io.ymusic.ui
 import io.ymusic.dynamicengine.DynamicEngineManager
 import io.ymusic.dynamicengine.yt.YtFeedItem
 import io.ymusic.dynamicengine.yt.YtFeedPage
+import io.ymusic.dynamicengine.yt.extractMusicBrowse
+import io.ymusic.dynamicengine.yt.extractPlaylistDetail
 import io.ymusic.dynamicengine.yt.playlistQueue
 import io.ymusic.dynamicengine.yt.queueContinuation
 import io.ymusic.dynamicengine.yt.startRadioQueue
@@ -14,9 +16,11 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import projectcommon.error.TechnicalException
 import projectcommon.json.int
 import projectcommon.json.intOrNull
 import projectcommon.json.string
+import projectcommon.json.stringOrNull
 
 /**
  * A queue growing through the engine's `yt/queue` (/next) pages: a video's radio, or a playlist page's
@@ -121,6 +125,7 @@ internal class NextQueueSource private constructor(
                 log?.log(Logger.Level.WARN, "unreadable queue resume token", e)
                 return null
             }
+            if (json.string("step") == "browse") return PlaylistQueueSource.resume(engines, json, queued, log)
             val step = when (json.string("step")) {
                 STEP_RADIO -> Step.Radio(json.string("videoId"))
                 STEP_PLAYLIST -> Step.Playlist(json.string("url"), json.string("videoId"), json.int("index"))
@@ -134,12 +139,78 @@ internal class NextQueueSource private constructor(
 }
 
 /**
- * The queue source continuing this playlist page's list past [loaded]. Always given, whatever the
- * page's own paging reports: /next answers an empty page at the list's end.
+ * Continues the playlist browse pages rather than the shorter watch-panel queue.
  */
 internal fun Pager.State.Ready?.queueSource(
     engines: DynamicEngineManager,
     url: String,
     loaded: List<YtFeedItem>,
     log: Logger?,
-): QueueSource? = NextQueueSource.playlist(engines, url, loaded, this?.pageHeader?.itemCount, log?.fork("queue-source"))
+): QueueSource? = PlaylistQueueSource.create(engines, url, loaded, this?.pageHeader?.itemCount, this?.continuation, log?.fork("queue-source"))
+
+internal class PlaylistQueueSource private constructor(
+    private val engines: DynamicEngineManager,
+    private val url: String,
+    private var continuation: String?,
+    override val totalCount: Int?,
+    queuedIds: Collection<String>,
+    private val log: Logger?,
+) : QueueSource {
+    override val eagerLoadTarget: Int = LIMIT
+    private val seen = queuedIds.toMutableSet()
+    private val completedTokens = mutableSetOf<String>()
+
+    override val resumeToken: String?
+        get() = continuation?.let {
+            buildJsonObject {
+                put("step", "browse")
+                put("url", url)
+                put("continuation", it)
+                put("total", totalCount)
+            }.toString()
+        }
+
+    override suspend fun loadMore(): QueueSource.Page {
+        val token = continuation ?: return QueueSource.Page(emptyList(), false)
+        val page = if (url.startsWith(MusicBrowsePrefix)) {
+            engines.extractMusicBrowse(url, token, log)
+        } else {
+            engines.extractPlaylistDetail(url, token, log)
+        }
+        if (page.continuation == token || page.continuation in completedTokens) {
+            throw TechnicalException("E60077", "Playlist continuation did not advance").also { log?.log(Logger.Level.WARN, "playlist pagination failed", it) }
+        }
+        completedTokens += token
+        val items = page.sections.asSequence().flatMap { it.items }
+            .filter { it.kind == YtFeedItem.KIND_VIDEO && it.id !in seen }
+            .distinctBy { it.id }
+            .take((LIMIT - seen.size).coerceAtLeast(0))
+            .map { it.toYtMedia() }.toList()
+        seen.addAll(items.map { it.videoId })
+        continuation = page.continuation.takeIf { seen.size < LIMIT }
+        return QueueSource.Page(items, continuation != null)
+    }
+
+    companion object {
+        const val LIMIT = 1000
+
+        fun create(
+            engines: DynamicEngineManager,
+            url: String,
+            loaded: List<YtFeedItem>,
+            total: Int?,
+            continuation: String?,
+            log: Logger?,
+        ): QueueSource? {
+            if (loaded.isEmpty() || loaded.size >= LIMIT || continuation == null) return null
+            return PlaylistQueueSource(engines, url, continuation, total?.coerceAtMost(LIMIT), loaded.map { it.id }, log)
+        }
+
+        fun resume(engines: DynamicEngineManager, json: JsonObject, queued: List<PlayableItem>, log: Logger?): QueueSource? {
+            val token = json.stringOrNull("continuation") ?: return null
+            val ids = queued.mapNotNull { (it as? PlayableItem.YtMedia)?.videoId }
+            if (ids.size >= LIMIT) return null
+            return PlaylistQueueSource(engines, json.string("url"), token, json.intOrNull("total")?.coerceAtMost(LIMIT), ids, log)
+        }
+    }
+}

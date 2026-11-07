@@ -538,6 +538,7 @@ internal class PlayerImpl(
     /** Known-length shuffle: the pick lands on the unloaded part with probability unloaded / (unplayed +
      *  unloaded). It then plays from the ONE next page — later pages are under-weighted; accepted. */
     private fun shufflePickLandsUnloaded(): Boolean {
+        if ((source?.eagerLoadTarget ?: 0) > 0) return false
         val state = more ?: return false
         val total = state.totalCount ?: return false
         if (!controller.state.shuffle || controller.hasUpNext || !state.hasMore || state.loading || state.error != null) return false
@@ -552,7 +553,9 @@ internal class PlayerImpl(
         if (!state.hasMore || state.loading || state.error != null) return
         val queue = controller.state
         if (queue.currentIndex < 0) return
-        if (queue.items.lastIndex - queue.currentIndex < LOAD_AHEAD) startLoad(pickNext = false)
+        if (queue.items.size < (source?.eagerLoadTarget ?: 0) || queue.items.lastIndex - queue.currentIndex < LOAD_AHEAD) {
+            startLoad(pickNext = false)
+        }
     }
 
     private fun startLoad(pickNext: Boolean) {
@@ -591,7 +594,8 @@ internal class PlayerImpl(
                 publishQueue(refreshNext = false)
                 maybePreloadNext()
             } else {
-                publishQueue()
+                val keepPrepared = src.eagerLoadTarget > 0 && preloadedItem != null && prepareNextArmed
+                publishQueue(refreshNext = !keepPrepared)
             }
         }
     }

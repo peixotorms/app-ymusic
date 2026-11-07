@@ -30,11 +30,9 @@ The cross-platform playback layer.
   start then seeks to the end (ranges under 1 s are dropped). "Previous" restarts after a 0s intro
   skip when one is armed.
 
-- **Queue growth** — `setQueue(…, source = QueueSource)` lets a queue grow past its first items (a playlist's next
-  pages); `QueueState.more` carries total/loading/error/end for the UI, `Player.loadMore()` is its button/retry.
-  Whenever the current item is within the queue's last 10, the next page loads (every mode). Known-length
-  shuffle also rolls once per track: with probability unloaded / (unplayed + unloaded) it loads ONE page and
-  plays the next track from it (later pages are under-weighted — accepted for simplicity). A failed page is retried once per track or by `loadMore`.
+- **Queue growth** — `setQueue(…, source = QueueSource)` grows a queue beyond its initial items. `QueueState.more` reports total/loading/error/end, and `Player.loadMore()` retries failures. A source can opt into `eagerLoadTarget`; playlist browse sources use 1,000 metadata entries and are loaded serially in the background. Once present, all entries participate in the normal shuffle cycle without repeats. Page arrivals preserve an already prepared next item. Replacing the queue cancels its pending source request.
+
+  Sources without an eager target retain loading within the last ten items. Their known-length shuffle can load one extra page with probability unloaded / (unplayed + unloaded); later unloaded pages are still underweighted. This older radio/watch-panel behavior is separate from eagerly loaded playlists. A failed page is retried once per track or by `loadMore`.
 
 - **PlayableItem** — the sealed source type (`LocalUri` | `YtVideoId`; the router picks an engine by variant).
 
