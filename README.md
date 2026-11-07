@@ -17,7 +17,7 @@ Automatic crash reporting and anonymous usage statistics are removed.
 
 Download builds from [Releases](https://github.com/peixotorms/app-ymusic/releases).
 
-See the [changelog](CHANGELOG.md) for dated changes and [build instructions](BUILDING.md) for development.
+See the [changelog](CHANGELOG.md) for dated changes, [build instructions](BUILDING.md) for development, and the [fork maintenance guide](UPSTREAM_MERGING.md) before merging upstream updates.
 
 ## License
 

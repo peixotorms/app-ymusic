@@ -241,13 +241,13 @@ Material's five corner roles use the `material-*` tokens. Music artwork, the min
 
 The transport order is Repeat, Previous, Play/Pause, Next, Shuffle. Its play circle uses `player-play` in portrait and `player-play-landscape` in landscape. The main icon is 38dp, and outlined skip icons are 32dp inside 48dp targets. Active repeat and shuffle use the fixed default orange; the active main playback control also turns orange. Inactive controls are near-white.
 
-The bottom strip has five stable slots: Sleep timer, Speed, queue chevrons, Equalizer, Cast. Each has a 48dp target within `player-footer`; an unavailable Cast action leaves its slot empty. Sleep, speed/pitch, audio effects, and connected Cast tint with the fixed default orange when active; the queue chevrons remain neutral. Download, captions, SponsorBlock, fast seek, and other secondary actions remain in overflow.
+The bottom strip has five stable slots: Sleep timer, Speed, queue chevrons, Equalizer, Cast. Each has a 48dp target within `player-footer`; an unavailable Cast action leaves its slot empty. Sleep, speed/pitch, audio effects, and connected Cast tint with the fixed default orange when active; the queue chevrons remain neutral. Download, SponsorBlock, fast seek, and other secondary actions remain in overflow.
 
 Heart and overflow keep separate 48dp targets while their glyphs shift inward by 6dp each. The player has no top toolbar. The chevrons or an upward swipe open the queue; system Back or a downward dismissal returns from the queue before closing the player. Desktop Escape follows the same queue/fullscreen priority.
 
 ### Inline video
 
-The native video region shows rotation where supported and fullscreen viewing controls, each with a separate `music-action` target (48dp). Inline fit/fill is absent. Viewing icons hide after three seconds of ready playback and a tap restores them. Inline loading and paused states do not start this timer; fullscreen keeps its existing timing. The square black region masks the previous picture until the new video begins; a play/pause glyph sits inside the loading ring. Captions, buffering, and errors remain inside the region, and enabled captions also appear over audio artwork. Track details, seeking, and transport appear once on the page. Caption selection is available through overflow and fullscreen. Fullscreen keeps its complete video overlay.
+The native video region shows rotation where supported and fullscreen viewing controls, each with a separate `music-action` target (48dp). Fit/fill controls are absent in inline and fullscreen video. Viewing icons hide after three seconds of ready playback and a tap restores them. Inline loading and paused states do not start this timer; fullscreen keeps its existing timing. The square black region masks the previous picture until the new video begins; a play/pause glyph sits inside the loading ring. Buffering and errors remain inside the region. Track details, seeking, and transport appear once on the page. Playback captions, their settings, and CC controls are absent. Fullscreen keeps transport, seeking, rotation, and exit controls.
 
 ### Seek and format
 
@@ -291,6 +291,6 @@ Source of truth: [Theme.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/Theme.kt
 
 - **Don't** turn one cover's accent into a fixed brand palette.
 - **Don't** apply the player's dark theme to all browsing or to AppRoot's mini-player.
-- **Don't** replace native video with a cropped cover or remove its captions and fullscreen access.
+- **Don't** replace native video with a cropped cover or remove its fullscreen access.
 - **Don't** add decorative containers or typography that compete with the artwork.
 - **Don't** duplicate title, seek, or transport controls over inline video, or add queue rows and filter chips to the player viewport.

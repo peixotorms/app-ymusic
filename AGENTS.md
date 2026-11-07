@@ -36,6 +36,10 @@ Each module has a one-line summary here; deeper detail lives in the module's own
 - **`:settings`** — typed key-value `SettingsStore` (StateFlow reads, per-key distinct), in-memory + JVM Properties-file impls, `AppSettings` descriptors (hl/gl/theme accent/uiLanguage — hl/gl is InnerTube content language/region, uiLanguage is the app chrome; kept independent). Android persistence = the shell's SharedPreferences-backed store (`androidApp/PrefsSettingsStore`).
 - **`:playground`** — Compose MP MSE YouTube lab (`YtMsePlayerScreen` + native blit hole) on JVM, iOS, and Android (`:playground-android`). → [`playground/README.md`](playground/README.md)
 
+## Fork maintenance
+
+Before integrating upstream changes, read [UPSTREAM_MERGING.md](UPSTREAM_MERGING.md). Preserve its intentional fork behavior and removals, and update the guide when those decisions change.
+
 ## Coding Rules
 
 ### Why questions
