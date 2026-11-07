@@ -19,6 +19,7 @@ colors:
   dark-ink-soft: "#B2B2B2"
   dark-ink-muted: "#C6C6C6"
   dark-ink-faint: "#7E7E7E"
+  dark-icon-dots: "#8E8E8E"
   dark-outline: "#5C5C5C"
   dark-divider: "#2A2A2A"
   light-surface-dim: "#FAFAFA"
@@ -51,6 +52,9 @@ typography:
     fontSize: "12.5sp"
     fontWeight: 600
     lineHeight: "16sp"
+  title-queue:
+    fontSize: "15sp"
+    fontWeight: 600
   body-artist:
     fontSize: "15sp"
   body-metadata:
@@ -58,6 +62,8 @@ typography:
     lineHeight: "19sp"
   body-list:
     fontSize: "11.5sp"
+  body-queue:
+    fontSize: "13sp"
   label-chip:
     fontSize: "13.5sp"
   label-quality:
@@ -94,13 +100,34 @@ components:
     rounded: "{rounded.player-artwork}"
   player-play:
     rounded: "{rounded.circle}"
-    size: "80dp"
+    size: "76dp"
+  player-play-landscape:
+    rounded: "{rounded.circle}"
+    size: "72dp"
+  player-footer:
+    height: "56dp"
   playlist-play:
     rounded: "{rounded.circle}"
-    size: "56dp"
+    size: "48dp"
+  music-action:
+    rounded: "{rounded.circle}"
+    size: "48dp"
   music-artwork:
     rounded: "{rounded.music-artwork}"
     size: "52dp"
+  queue-surface:
+    backgroundColor: "{colors.dark-surface}"
+    textColor: "{colors.dark-ink}"
+  queue-current-row:
+    backgroundColor: "{colors.dark-surface-elevated}"
+    textColor: "{colors.dark-ink}"
+    typography: "{typography.title-queue}"
+  queue-artwork:
+    rounded: "{rounded.queue-artwork}"
+    size: "56dp"
+  queue-grip:
+    width: "48dp"
+    height: "56dp"
   mini-player-dark:
     backgroundColor: "{colors.dark-surface-elevated}"
     textColor: "{colors.dark-ink}"
@@ -134,20 +161,20 @@ components:
 
 **Creative North Star: "Artwork Leads"**
 
-YMusic uses real cover artwork as the focal material, with readable native typography and direct playback controls. The player and playlist composition follows the supplied Symfonium references while retaining YMusic's actions and navigation.
+YMusic uses real cover artwork as the focal material, with readable native typography and direct playback controls. Playback occupies a fixed viewport, with a separate queue reached by a gesture or button. The player and playlist composition follows the supplied Symfonium references and the user's device feedback.
 
 This is a Compose Multiplatform system with Android as the primary surface. Measurements are native dp and sp. The tokens describe implemented values; runtime palette roles remain authoritative where colors depend on artwork or user settings.
 
 **Key Characteristics:**
 
 - Large artwork, rounded geometry, and restrained tonal surfaces.
-- One prominent circular transport control with compact secondary actions.
+- One prominent circular transport control, compact secondary actions, and a separate neutral queue.
 - Dark music surfaces alongside browsing that respects the saved theme.
 - Native interaction, scalable text, and retained loading and error states.
 
 ## Colors
 
-The saved palette is neutral with a configurable accent; music surfaces derive their accent from the current artwork.
+The saved palette is neutral with a configurable accent; player and playlist surfaces derive their accent from the current artwork. The separate queue uses a fixed neutral dark palette.
 
 ### Primary
 
@@ -171,13 +198,15 @@ The player backdrop begins at `lerp(tint, Black, 0.25)`, darkened further until 
 
 Saved dark browsing uses `dark-surface`, `dark-surface-dim`, and `dark-surface-elevated`. Light browsing uses white with the corresponding light surfaces. Text, fields, outlines, and dividers resolve through `DesignColors`. AMOLED sets Surface, SurfaceDim, SurfaceElevated, and SettingsCard to black; it retains the other dark roles. `skip-segment` identifies SponsorBlock intervals.
 
-**The Theme Boundary Rule.** Player and playlist surfaces stay dark. Browsing and the production mini-player inherit the saved app palette; the mini-player is outside the per-screen artwork theme.
+The queue uses `DarkDesignColors` directly: `dark-surface` ground, `dark-surface-elevated` current-row highlight, and neutral text. Selected repeat and shuffle use `accent-default`; this palette is independent of artwork and the user's saved accent.
+
+**The Theme Boundary Rule.** Player and playlist surfaces stay dark and artwork-derived. The queue uses the fixed dark palette. Browsing and the production mini-player inherit the saved app palette; the mini-player is outside the per-screen artwork theme.
 
 ## Typography
 
 The system uses the platform sans-serif face through Compose and Material defaults: Roboto on Android, with the platform default elsewhere. There is no separate decorative display font. Explicit music roles are recorded above; unspecified weight, tracking, and line height inherit native defaults.
 
-The playlist headline is centered over the hero and permits three lines. The track headline is left aligned and permits two. Compact playlist rows use `title-list` and `body-list`, each limited to one line with ellipsis. Queue rows use a semibold 12.5sp title and 11sp secondary line in their compact form; the mini-player pairs `title-mini` with 12sp secondary text. Section and dialog headings share `title-section`.
+The playlist headline is centered over the hero and permits three lines. The track headline is left aligned and permits two. Compact playlist rows use `title-list` and `body-list`; the separate queue uses the larger `title-queue` and `body-queue`. Both list styles limit each text line to one line with ellipsis. Queue duration sits in its own 12sp column. The mini-player pairs `title-mini` with 12sp secondary text. Section and dialog headings share `title-section`.
 
 **The Native Type Rule.** Keep text in sp and retain the existing wrapping and ellipsis behavior so larger system text remains usable.
 
@@ -185,7 +214,11 @@ The playlist headline is centered over the hero and permits three lines. The tra
 
 The shared spacing steps live in `DesignSpacing`. Browsing uses a 16dp edge margin and 8dp gutter, increasing to 24dp and 16dp at 840dp. Standard feeds switch from square rows below 320dp to wide rows below 470dp, then to a grid whose cards stay at most 324dp wide. Compact music lists remain single-column.
 
-The portrait player respects safe drawing insets. Artwork has 20dp horizontal and 12dp vertical outer padding and caps at 520dp; track details and seeking cap at 560dp. Transport caps at 480dp. When width exceeds height, artwork and the scrolling controls/queue occupy equal columns. Audio artwork is square; inline video uses a 16:9 slot with the existing native aspect-fit renderer.
+The portrait player does not scroll. A shared 16dp horizontal gutter and 8dp vertical padding sit inside safe drawing insets. The centered content column caps at 520dp; track details and seeking fill that column. Transport caps at 480dp without another horizontal inset. Flexible gaps keep the footer at the bottom.
+
+Artwork adapts to both viewport height and font scale. After safe insets and outer padding, controls reserve `250dp + 92dp × fontScale`. Available art height is the remaining height, clamped to zero. Audio artwork is square and no wider than the content column or available art height. Inline video uses a 16:9 slot with its width limited by the same height budget.
+
+The shared player uses two equal columns only when width is at least 600dp and exceeds height: artwork on the left, fixed controls on the right, with 16dp outer padding and a 24dp gap. Android ordinary screens stay portrait below 600dp smallest width, except TV devices. Tablets and TV retain system rotation. Explicit fullscreen video can use sensor rotation or the user's rotation lock; exiting restores the ordinary device policy.
 
 Playlist hero artwork spans the available width with height capped at 440dp. Overlay navigation respects the status bar. Metadata and actions follow the hero; action rows wrap when needed. Lists reserve the measured mini-player inset. Dialogs normally span 280–560dp and constrain their scrolling body to the available window height.
 
@@ -197,21 +230,37 @@ Depth comes primarily from tonal fills, artwork fades, and scrims. Playlist artw
 
 ## Shapes
 
-Material's five corner roles use the `material-*` tokens. Music artwork, the mini-player, and queue artwork use their named exceptions. Transport buttons are circular; search and filter controls are pills. Playlist hero artwork remains rectangular and full width. Reuse native vector icons, including the outlined previous/next vectors, with no text-glyph substitutes.
+Material's five corner roles use the `material-*` tokens. Music artwork, the mini-player, and queue artwork use their named exceptions. The primary transport is circular; playlist action icons are bare within circular interaction bounds. Search and filter controls remain pills. Playlist hero artwork remains rectangular and full width, and the current queue highlight has no rounded container. Reuse native vector icons, including the outlined previous/next vectors, with no text-glyph substitutes.
 
 ## Components
 
 ### Playback controls
 
-The portrait play/pause circle uses `player-play`; landscape reduces it to 72dp. The main icon is 38dp, and outlined skip icons are 32dp inside 48dp targets. Heart, overflow, repeat, shuffle, and Cast have 48dp targets. Active toggles use the artwork accent. The player has no top toolbar; system Back and swipe-down dismissal remain available. Download, sleep timer, and other secondary actions stay in overflow.
+The transport order is Repeat, Previous, Play/Pause, Next, Shuffle. Its play circle uses `player-play` in portrait and `player-play-landscape` in landscape. The main icon is 38dp, and outlined skip icons are 32dp inside 48dp targets. Active repeat and shuffle use the artwork accent.
+
+The bottom strip has five stable slots: Sleep timer, Speed, queue chevrons, Equalizer, Cast. Each has a 48dp target within `player-footer`; an unavailable Cast action leaves its slot empty. Sleep, speed, and audio effects tint with the accent when active. Download, captions, SponsorBlock, fast seek, and other secondary actions remain in overflow.
+
+Heart and overflow keep separate 48dp targets while their glyphs shift inward by 6dp each. The player has no top toolbar. The chevrons or an upward swipe open the queue; system Back or a downward dismissal returns from the queue before closing the player. Desktop Escape follows the same queue/fullscreen priority.
+
+### Inline video
+
+The native video region shows fit/fill, rotation where supported, and fullscreen viewing controls, each with a separate `music-action` target (48dp). Captions, buffering, and errors remain inside the video region. Track details, seeking, and transport appear once on the page. Caption selection is available through overflow and fullscreen. Fullscreen keeps its complete video overlay.
 
 ### Seek and format
 
 The played track is a wave during playback and straight while paused. Its stroke is 3dp, wavelength 22dp, amplitude 3dp, and cycle 1600 ms with linear easing. The 13dp thumb sits in a 40dp bar. Animation runs only while playback is active and the window is visible, and respects Compose's motion scale. Timestamps flank the centered quality selector. Seeking commits on release; keyboard and accessibility seeking, buffering, and skip markers remain available.
 
-### Playlist and queue rows
+### Playlist actions and rows
 
-Playlist rows use `music-artwork`, 16dp between artwork and text, and `ListRowVertical` insets; duration and overflow follow the text. Compact queue artwork is 48dp with `queue-artwork` corners. The current queue row uses accent at 0.10 alpha and a 12dp corner. The sticky Up next header groups repeat, shuffle, and Cast and locates the current item when tapped. Reordering and removal remain native interactions.
+The action row uses equally sized bare 24dp icons in 48dp targets: Save and Download when applicable, then Repeat, Shuffle, and Play. Selected Save, Repeat, and Shuffle use the artwork accent; Play uses Ink without a filled circle. Share and Create local playlist are absent from this header, and playlist pages omit the feed filter strip. Overlay Back, Search, and Cast retain their artwork scrims.
+
+Playlist rows use `music-artwork`, 16dp between artwork and text, and `ListRowVertical` insets; duration and overflow follow the text.
+
+### Queue
+
+The queue is a separate full-size surface with safe insets, a fixed header, and an independently scrolling list. Collapse, Back, Escape, or a downward pull returns to the player. There is no search or filter row. Up next locates the current item; the header groups Repeat, Shuffle, and Cast. Repeat and Cast glyphs shift toward Shuffle by 12dp each while their 48dp targets remain separate.
+
+Rows use `queue-artwork`, 8dp gaps, 6dp vertical insets, and an 8dp end inset. The drag grip is a 26dp vector centered in `queue-grip`. Title and artist have their own column; duration and the 48dp overflow target follow it. The current row uses `queue-current-row` without an accent wash. Reordering, swipe removal, and loading/error/retry rows remain available.
 
 ### Mini-player
 
@@ -221,9 +270,9 @@ The mini-player is inset 12dp horizontally and 8dp vertically, with 64dp artwork
 
 Search uses a filled pill with an accent cursor and a clear action when nonempty. Filter chips have a 1dp outline; selected chips use the saved accent and white text. Native Material indication supplies interaction feedback. Drawer navigation and section tabs remain the browsing navigation; selected tabs use an accent icon and a 2dp accent indicator. Elevated dialogs use a Surface body, tonal title/action bars, and dividers, with scroll-dependent shadows.
 
-The sidecar includes compact illustrations of these saved-theme primitives. Its preview CSS maps 1dp/sp to 1px only for display; it does not define native layout, font scaling, ripple behavior, or artwork colors. Synthesized tonal ramps are omitted because the implementation supplies role palettes and runtime interpolation instead.
+The sidecar includes compact illustrations of the saved-theme primitives and neutral queue row. Its preview CSS maps 1dp/sp to 1px only for display; it does not define native layout, font scaling, ripple behavior, or artwork colors. Synthesized tonal ramps are omitted because the implementation supplies role palettes and runtime interpolation instead.
 
-Source of truth: [Theme.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/Theme.kt), [ArtworkTheme.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/ArtworkTheme.kt), [NowPlaying.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/NowPlaying.kt), [SlimSeekBar.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/SlimSeekBar.kt), [DetailScreens.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/DetailScreens.kt), and the shared browsing components referenced by [App.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/App.kt).
+Source of truth: [Theme.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/Theme.kt), [ArtworkTheme.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/ArtworkTheme.kt), [NowPlaying.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/NowPlaying.kt), [ActionIcon.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/ActionIcon.kt), [SlimSeekBar.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/SlimSeekBar.kt), [DetailScreens.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/DetailScreens.kt), Android orientation in [Platform.android.kt](commonUi/src/androidMain/kotlin/io/ymusic/ui/Platform.android.kt), and the shared browsing components referenced by [App.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/App.kt).
 
 ## Do's and Don'ts
 
@@ -233,6 +282,7 @@ Source of truth: [Theme.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/Theme.kt
 - **Do** retain safe insets, scalable text, native Back, and accessible playback actions.
 - **Do** use real loaded artwork and preserve placeholders, buffering, and error states.
 - **Do** keep the primary transport prominent and secondary controls grouped.
+- **Do** keep playback fixed in the viewport, with a shared safe gutter and a separately reachable queue.
 
 ### Don't:
 
@@ -240,3 +290,4 @@ Source of truth: [Theme.kt](commonUi/src/commonMain/kotlin/io/ymusic/ui/Theme.kt
 - **Don't** apply the player's dark theme to all browsing or to AppRoot's mini-player.
 - **Don't** replace native video with a cropped cover or remove its captions and fullscreen access.
 - **Don't** add decorative containers or typography that compete with the artwork.
+- **Don't** duplicate title, seek, or transport controls over inline video, or add queue rows and filter chips to the player viewport.

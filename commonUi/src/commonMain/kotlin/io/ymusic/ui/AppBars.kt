@@ -705,6 +705,7 @@ private val DismissDragDistance = 120.dp
 internal fun SwipeDownDismissBox(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    onSwipeUp: (() -> Unit)? = null,
     /** When set, visual max is this fraction of height; release at half of that commits. */
     commitFractionOfHeight: Float? = null,
     /** True while a downward pull is in progress (so a parent clickable does not fire). */
@@ -751,15 +752,20 @@ internal fun SwipeDownDismissBox(
                 }
             }
             .nestedScroll(drag.connection)
-            .pointerInput(Unit) {
+            .pointerInput(onSwipeUp) {
+                var upward = 0f
                 detectVerticalDragGestures(
+                    onDragStart = { upward = 0f },
                     onVerticalDrag = { change, amount ->
-                        if (amount > 0f || drag.raw > 0f) {
+                        if (onSwipeUp != null && (amount < 0f || upward > 0f) && drag.raw == 0f) {
+                            change.consume()
+                            upward = (upward - amount).coerceAtLeast(0f)
+                        } else if (amount > 0f || drag.raw > 0f) {
                             change.consume()
                             drag.report(amount)
                         }
                     },
-                    onDragEnd = { if (drag.raw > 0f) drag.settle() },
+                    onDragEnd = { if (upward >= defaultCommit) onSwipeUp?.invoke() else if (drag.raw > 0f) drag.settle() },
                     onDragCancel = { if (drag.raw > 0f) drag.settle() },
                 )
             }

@@ -2,18 +2,21 @@
 
 ## 4.0.17
 
-### 2026-11-06
+### 2026-11-07
 
 Based on upstream YMusic 4.0.16. Builds target Android ARM64, Windows x64, and Linux x64.
 
+- **Now Playing:** artwork colors fade into black behind a rounded square cover, or the video player in video mode. Keep the player on one screen, align artwork and controls to shared side margins, and bring related icons closer together. Use left-aligned song details, a heart toggle, larger playback controls, and an animated wave seek bar. Put format selection below seeking, repeat and shuffle beside playback, and sleep timer, speed, queue, equalizer, and Cast along the bottom. Download and existing actions remain in the overflow menu.
+- **Queue:** open it with the bottom arrows or a swipe up, and close it with Back or a downward pull. Use a neutral background, clearer drag handles, and separate track durations. Load up to 1,000 playlist songs for shuffle without downloading their audio.
+- **Video:** remove duplicate inline titles and playback controls while retaining resize, rotation, fullscreen, captions, and the page controls.
+- **Playlists and browsing:** large artwork headers with overlay navigation and Cast, consistent bare action icons, repeat and active colors, compact song rows, and an inset rounded mini-player. Remove Share and Create local playlist from the header and hide the filter tags. Shared dark surfaces match the quieter player styling.
+- **Screen orientation:** keep phones in portrait outside fullscreen video; retain landscape on larger screens.
 - **Separate Android installation:** named YMusic, with its own app ID and private storage so the original YMusic V4 can remain installed.
 - **Track transitions:** fix a buffer stall that left a prepared next song at 0:00 until playback restarted. Preserve the buffered audio and playback intent during handoffs, keep the decoder running when the media source changes, and clear the previous song's ended/seeking state. Startup recovery remains available for genuine failures.
 - **Audio buffering:** choose 30 seconds, one minute, or two minutes ahead. Playback starts normally and expands the buffer after five seconds of listening. Video targets 30 seconds.
 - **Next song:** prepare about 15 seconds of the next queued song once the current song is buffered through its end and has at most one minute left. Skips, seeks, and queue changes cancel obsolete fetching.
 - **SponsorBlock:** use the public service first, with YMusic as a fallback if the lookup fails. Existing category controls still apply.
 - **Stability:** fixed a crash when canceled work finishes after the player’s engine has closed, and an audio-effects cleanup race when closing the local player.
-- **Now Playing:** artwork colors fade into black behind a rounded square cover, or the video player in video mode. Left-aligned song details, a heart toggle, larger playback controls, and an animated wave seek bar replace the top toolbar. Format selection moves below the seek bar; Cast joins repeat and shuffle beside Up next. Download, sleep timer, and existing actions remain in the overflow menu.
-- **Playlists and browsing:** large artwork headers with overlay navigation and Cast, playlist actions below, compact song rows, and an inset rounded mini-player. Shared dark surfaces match the quieter player styling.
 - **Ratings:** like, dislike, or remove a rating through the signed-in YouTube Music account. Unlike/re-like refreshes music lists, and failures restore the previous state. Phone and Android Auto share the rating; Like/Unlike appears before Shuffle in the car.
 - **Casting:** play audio on Google Cast speakers and groups, with Local device to return playback to the phone at the current position. Preserve play/pause intent when switching outputs and recover failed local sessions. The Play on picker has two-line device cards, TV/speaker icons, active-output highlighting, configure/hide controls, sorting, and access to hidden devices. Phone volume buttons control the receiver in configurable steps, defaulting to 5%, with percentage feedback, a slider, and mute. Save settings per device and restore defaults when needed. Select compatible AAC audio, correct receiver HTTP probes, and report preparation, receiver, and volume failures separately.
 - **YouTube Music Home:** make it the app's opening screen and the first car tab. Combine favorites and personalized mixes first, show playlist cards together, arrange the named recommendation sections, and move Listen again to the bottom without duplicate liked-music/Supermix shortcuts. Automatically load the next set of sections on opening Home so the order applies without tapping Show more. Keep individual shelves collapsed, other dynamic sections, and further paging.

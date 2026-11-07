@@ -43,7 +43,7 @@ internal actual fun SyncSystemBars(dark: Boolean) {
 }
 
 @Composable
-internal actual fun SyncSensorRotation(locked: Boolean) = Unit
+internal actual fun SyncAppOrientation(fullscreen: Boolean, locked: Boolean) = Unit
 
 internal actual val rotationLockSupported: Boolean = false
 

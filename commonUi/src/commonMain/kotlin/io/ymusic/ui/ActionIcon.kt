@@ -2,11 +2,13 @@ package io.ymusic.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,6 +18,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+
+val LocalActionGlyphOffset = staticCompositionLocalOf { 0.dp }
 
 /**
  * A small icon action: the glyph centered in a [hitSize] circular hover/press target — the standard
@@ -38,7 +42,7 @@ fun ActionIcon(
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick),
         hitSize,
     ) {
-        Icon(icon, null, Modifier.size(iconSize), tint = tint)
+        Icon(icon, null, Modifier.size(iconSize).offset(x = LocalActionGlyphOffset.current), tint = tint)
     }
 }
 
@@ -59,7 +63,7 @@ fun ActionIcon(
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick),
         hitSize,
     ) {
-        Icon(painter, null, Modifier.size(iconSize), tint = tint)
+        Icon(painter, null, Modifier.size(iconSize).offset(x = LocalActionGlyphOffset.current), tint = tint)
     }
 }
 
@@ -82,7 +86,7 @@ fun ToggleActionIcon(
             .toggleable(value = checked, enabled = enabled, role = Role.Switch, onValueChange = onCheckedChange),
         hitSize,
     ) {
-        Icon(icon, null, Modifier.size(iconSize), tint = tint)
+        Icon(icon, null, Modifier.size(iconSize).offset(x = LocalActionGlyphOffset.current), tint = tint)
     }
 }
 

@@ -9,6 +9,7 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.unit.dp
@@ -38,14 +39,17 @@ class NowPlayingQueueTest {
                 setContent {
                     val graph = AppGraph(settings = InMemorySettingsStore(), engines = engines, player = player, playerSurface = {})
                     val coordinator = PlaybackCoordinator(graph, rememberCoroutineScope())
-                    // Portrait bounds: the phone layout with the sticky Up-next header above the rows.
+
                     Box(Modifier.requiredSize(400.dp, 800.dp)) {
                         NowPlayingScreen(graph, coordinator, onClose = {})
                     }
                 }
                 waitForIdle()
 
-                // The handle is the row's unlabelled leading icon: 16dp row padding, then 18dp of glyph.
+                onNodeWithActionLabel("Up next").performClick()
+                waitForIdle()
+
+                // The 48dp leading drag target is separate from the clickable song body.
                 onAllNodes(hasText("song0.mp3", substring = true) and hasClickAction()).onFirst().performTouchInput {
                     down(centerLeft + Offset(25.dp.toPx(), 0f))
                     repeat(8) { moveBy(Offset(0f, 30f)) }

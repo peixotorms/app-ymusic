@@ -1,12 +1,14 @@
 package io.ymusic.android.cast
 
 import android.content.Context
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cast
 import androidx.compose.material.icons.outlined.CastConnected
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -15,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.mediarouter.media.MediaRouter
 import com.google.android.gms.cast.CastDevice
 import com.google.android.gms.cast.framework.CastContext
@@ -23,6 +26,7 @@ import com.google.android.gms.cast.framework.SessionManagerListener
 import io.ymusic.download.SabrSpecResolver
 import io.ymusic.player.LocalPlayer
 import io.ymusic.player.YtEngine
+import io.ymusic.ui.LocalActionGlyphOffset
 import io.ymusic.ui.resources.Res
 import io.ymusic.ui.resources.cast_play_on
 import kmpcommon.log.Logger
@@ -96,6 +100,12 @@ internal class CastController(
 
     @Composable
     fun Button(modifier: Modifier) {
+        val offset = LocalActionGlyphOffset.current
+        CompositionLocalProvider(LocalActionGlyphOffset provides 0.dp) { ButtonContent(modifier, offset) }
+    }
+
+    @Composable
+    private fun ButtonContent(modifier: Modifier, iconOffset: androidx.compose.ui.unit.Dp) {
         var show by remember { mutableStateOf(false) }
         var discoveryFailed by remember { mutableStateOf(false) }
         val casting by connected.collectAsState()
@@ -117,7 +127,7 @@ internal class CastController(
             }
             show = true
         }, modifier = modifier) {
-            Icon(if (casting) Icons.Outlined.CastConnected else Icons.Outlined.Cast, stringResource(Res.string.cast_play_on))
+            Icon(if (casting) Icons.Outlined.CastConnected else Icons.Outlined.Cast, stringResource(Res.string.cast_play_on), Modifier.offset(x = iconOffset))
         }
         if (!show) return
         val router = remember { MediaRouter.getInstance(context) }

@@ -228,6 +228,8 @@ fun App(
     sectionState: androidx.compose.runtime.MutableState<AppSection>,
     catalogue: (@Composable () -> Unit)? = null,
 ) {
+    val fullscreen by graph.pip.videoFullscreen.collectAsState()
+    SyncAppOrientation(fullscreen, graph.videoRotationLocked.value)
     val tag by graph.uiLanguage.collectAsState()
     val themePref by remember(graph) { graph.settings.flow(AppSettings.theme) }.collectAsState()
     val accentPref by remember(graph) { graph.settings.flow(AppSettings.themeAccent) }.collectAsState()

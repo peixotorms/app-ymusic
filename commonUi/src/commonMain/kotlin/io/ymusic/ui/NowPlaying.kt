@@ -1,7 +1,6 @@
 package io.ymusic.ui
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,6 +45,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FitScreen
 import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material.icons.filled.FullscreenExit
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -96,6 +97,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -111,7 +113,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.pointerInput
@@ -161,6 +165,7 @@ import io.ymusic.ui.resources.badge_live
 import io.ymusic.ui.resources.captions_auto_translate
 import io.ymusic.ui.resources.captions_off
 import io.ymusic.ui.resources.cd_captions
+import io.ymusic.ui.resources.cd_collapse
 import io.ymusic.ui.resources.cd_download
 import io.ymusic.ui.resources.cd_exit_fullscreen
 import io.ymusic.ui.resources.cd_fill_video
@@ -379,7 +384,11 @@ fun NowPlayingScreen(
         videoId?.let { VideoDetailsState(graph, scope, it, graph.logger) }
     }
     LaunchedEffect(videoDetails) { videoDetails?.load(includeComments = false) }
-    var fullscreen by remember { mutableStateOf(false) }
+    var fullscreen by rememberSaveable { mutableStateOf(false) }
+    var queueOpen by rememberSaveable { mutableStateOf(false) }
+    PlatformBackHandler(queueOpen || fullscreen) {
+        if (queueOpen) queueOpen = false else fullscreen = false
+    }
     DisposableEffect(fullscreen) {
         graph.pip.videoFullscreen.value = fullscreen
         if (!fullscreen) graph.videoFillScreen.value = false
@@ -406,36 +415,45 @@ fun NowPlayingScreen(
     DisposableEffect(Unit) {
         onDispose { VideoOverlayNative.armed = false }
     }
-    val shell = @Composable {
-        BoxWithConstraints {
-            when {
-                fullscreen -> FullscreenVideo(graph, coordinator, onExit = { fullscreen = false })
-                maxWidth > maxHeight -> LandscapeNowPlaying(graph, coordinator, onClose, onFullscreen = { fullscreen = true })
-                else -> PortraitNowPlaying(graph, coordinator, onClose, onFullscreen = { fullscreen = true })
-            }
-        }
-    }
-    SwipeDownDismissBox(
-        onDismiss = onClose,
-        modifier = Modifier.fillMaxSize(),
-        onPeek = onPeek,
-        enabled = !desktopLayoutHole,
+    CompositionLocalProvider(
+        LocalOpenChannel provides onOpenChannel,
+        LocalOpenLogin provides onLogin,
+        LocalNowPlayingDetails provides videoDetails,
     ) {
-        CompositionLocalProvider(
-            LocalOpenChannel provides onOpenChannel,
-            LocalOpenLogin provides onLogin,
-            LocalNowPlayingDetails provides videoDetails,
-        ) {
-            // A key press brings back auto-hidden video controls, so Tab can reach them again.
-            Box(
-                Modifier.fillMaxSize().onPreviewKeyEvent { event ->
-                    if (event.type == KeyEventType.KeyDown && VideoOverlayNative.armed) VideoOverlayNative.show()
-                    false
-                },
-                content = {
-                    ArtworkTheme(queue.currentItem?.displayThumbnailUrl, paintBackground = !fullscreen, nativeVideoCutout = desktopLayoutHole) { shell() }
-                },
-            )
+        Box(Modifier.fillMaxSize().onPreviewKeyEvent { event ->
+            if (event.type == KeyEventType.KeyDown && event.key == Key.Escape && (queueOpen || fullscreen)) {
+                if (queueOpen) queueOpen = false else fullscreen = false
+                true
+            } else {
+                if (event.type == KeyEventType.KeyDown && VideoOverlayNative.armed) VideoOverlayNative.show()
+                false
+            }
+        }) {
+            if (queueOpen) {
+                YMusicTheme(DarkDesignColors) {
+                    SwipeDownDismissBox(onDismiss = { queueOpen = false }, modifier = Modifier.fillMaxSize(), enabled = platformUsesTouch) {
+                        QueuePanel(coordinator, onClose = { queueOpen = false })
+                    }
+                }
+            } else {
+                SwipeDownDismissBox(
+                    onDismiss = onClose,
+                    onSwipeUp = if (fullscreen) null else { { queueOpen = true } },
+                    modifier = Modifier.fillMaxSize(),
+                    onPeek = onPeek,
+                    enabled = !desktopLayoutHole && !fullscreen,
+                ) {
+                    ArtworkTheme(queue.currentItem?.displayThumbnailUrl, paintBackground = !fullscreen, nativeVideoCutout = desktopLayoutHole) {
+                        BoxWithConstraints(Modifier.fillMaxSize()) {
+                            when {
+                                fullscreen -> FullscreenVideo(graph, coordinator, onExit = { fullscreen = false })
+                                maxWidth >= 600.dp && maxWidth > maxHeight -> LandscapeNowPlaying(graph, coordinator, onQueue = { queueOpen = true }, onFullscreen = { fullscreen = true })
+                                else -> PortraitNowPlaying(graph, coordinator, onQueue = { queueOpen = true }, onFullscreen = { fullscreen = true })
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -509,7 +527,6 @@ private fun FullscreenVideo(graph: AppGraph, coordinator: PlaybackCoordinator, o
     LaunchedEffect(Unit) { VideoOverlayNative.show() }
     SyncImmersiveSystemBars(immersive = true)
     val rotationLocked by graph.videoRotationLocked
-    SyncSensorRotation(locked = rotationLocked)
     val fillScreen by graph.videoFillScreen
     Box(Modifier.fillMaxSize()) {
         PlayerSurfaceHole(
@@ -543,45 +560,82 @@ private fun FullscreenVideo(graph: AppGraph, coordinator: PlaybackCoordinator, o
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PortraitNowPlaying(
     graph: AppGraph,
     coordinator: PlaybackCoordinator,
-    onClose: () -> Unit,
+    onQueue: () -> Unit,
     onFullscreen: () -> Unit,
 ) {
     val player = coordinator.player
-    val queue by player.queue.collectAsState()
-    val listState = rememberLazyListState()
-    val dragState = rememberReorderDragState(listState, indexOffset = 2) { from, to -> player.move(from, to) }
-    val locateCurrent = rememberLocateCurrent(listState, queue.currentIndex, indexOffset = 2)
     val audioOnly = showsAudioOnly(player)
+    val status by player.status.collectAsState()
+    val progress by player.progress.collectAsState()
     SideEffect { VideoOverlayNative.armed = !audioOnly }
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
-        overscrollEffect = null,
-    ) {
-        item {
-            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                PlayerArtwork(graph, coordinator, onFullscreen, Modifier.padding(horizontal = 20.dp, vertical = 12.dp).widthIn(max = 520.dp).fillMaxWidth())
-                PlayerTrackInfo(coordinator, Modifier.widthIn(max = 560.dp))
-                val progress by player.progress.collectAsState()
-                SeekBar(player, progress, Modifier.widthIn(max = 560.dp))
-                val status by player.status.collectAsState()
-                TransportRow(coordinator, status.showsPause(), playBackground = DesignColors.Accent, playForeground = DesignColors.OnAccent, playSize = 80.dp, simple = true)
-            }
+    BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().padding(horizontal = 16.dp, vertical = 8.dp), contentAlignment = Alignment.TopCenter) {
+        val fontScale = LocalDensity.current.fontScale
+        val controlReserve = 250.dp + (92f * fontScale).dp
+        val artHeight = (maxHeight - controlReserve).coerceAtLeast(0.dp)
+        val contentWidth = minOf(maxWidth, 520.dp)
+        val artWidth = minOf(contentWidth, if (audioOnly) artHeight else artHeight * 16f / 9f)
+        Column(Modifier.width(contentWidth).fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally) {
+            PlayerArtwork(graph, coordinator, onFullscreen, Modifier.width(artWidth))
+            PlayerTrackInfo(coordinator)
+            Spacer(Modifier.weight(1f))
+            SeekBar(player, progress)
+            TransportRow(coordinator, status.showsPause(), playBackground = DesignColors.Accent, playForeground = DesignColors.OnAccent, playSize = 76.dp, simple = true)
+            Spacer(Modifier.weight(1f))
+            PlayerFooter(coordinator, onQueue)
         }
-        stickyHeader {
-            Box(Modifier.background(DesignColors.Surface)) {
-                QueueHeader(coordinator, queue.currentIndex, queue.displayTotal, queue.shuffle, queue.loopMode, locateCurrent)
-            }
+    }
+}
+
+@Composable
+private fun PlayerFooter(coordinator: PlaybackCoordinator, onQueue: () -> Unit) {
+    val player = coordinator.player
+    val config by player.config.collectAsState()
+    val sleepMs by player.sleepTimerMs.collectAsState()
+    val afterCurrent by player.sleepAfterCurrent.collectAsState()
+    val settings = coordinator.graph.settings
+    val lastMinutes by remember(settings) { settings.flow(AppSettings.sleepTimerMinutes) }.collectAsState()
+    val scope = rememberCoroutineScope()
+    var sleepOpen by remember { mutableStateOf(false) }
+    var speedOpen by remember { mutableStateOf(false) }
+    var eqOpen by remember { mutableStateOf(false) }
+    Row(Modifier.fillMaxWidth().height(56.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        ActionIcon(Icons.Outlined.Bedtime, stringResource(Res.string.cd_sleep_timer), hitSize = 48.dp, tint = if (sleepMs != null || afterCurrent) DesignColors.Accent else DesignColors.Ink, onClick = { sleepOpen = true })
+        ActionIcon(Icons.Outlined.Speed, stringResource(Res.string.menu_speed_pitch), hitSize = 48.dp, tint = if (config.speed != 1f) DesignColors.Accent else DesignColors.Ink, onClick = { speedOpen = true })
+        ActionIcon(Icons.Default.KeyboardDoubleArrowUp, stringResource(Res.string.up_next), hitSize = 48.dp, onClick = onQueue)
+        ActionIcon(Icons.Outlined.Equalizer, stringResource(Res.string.sound_eq), hitSize = 48.dp, tint = if (config.inAppAudioFx) DesignColors.Accent else DesignColors.Ink, onClick = { eqOpen = true })
+        coordinator.graph.castButton?.invoke(Modifier.size(48.dp)) ?: Spacer(Modifier.size(48.dp))
+    }
+    if (sleepOpen) SleepTimerDialog(sleepMs, afterCurrent, lastMinutes, onDismiss = { sleepOpen = false }) { choice ->
+        sleepOpen = false
+        when (choice) {
+            is SleepChoice.Timer -> { player.setSleepTimer(choice.minutes * 60_000L); scope.launch { settings.put(AppSettings.sleepTimerMinutes, choice.minutes) } }
+            SleepChoice.EndOfTrack -> player.setSleepAfterCurrent(true)
+            SleepChoice.Off -> player.setSleepTimer(null)
         }
-        itemsIndexed(queue.items) { index, item ->
-            QueueRow(coordinator, index, item, current = index == queue.currentIndex, dragState)
+    }
+    if (speedOpen) PlaybackFxSheet(player, onDismiss = { speedOpen = false })
+    if (eqOpen) EqualizerFxSheet(coordinator.graph, onDismiss = { eqOpen = false })
+}
+
+@Composable
+private fun QueuePanel(coordinator: PlaybackCoordinator, onClose: () -> Unit) {
+    val player = coordinator.player
+    val queue by player.queue.collectAsState()
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = queue.currentIndex.coerceAtLeast(0))
+    val dragState = rememberReorderDragState(listState, indexOffset = 0) { from, to -> player.move(from, to) }
+    val locateCurrent = rememberLocateCurrent(listState, queue.currentIndex, indexOffset = 0)
+    FollowCurrentQueueItem(listState, queue.currentIndex, indexOffset = 0)
+    SideEffect { VideoOverlayNative.armed = false }
+    Column(Modifier.fillMaxSize().background(DesignColors.Surface).safeDrawingPadding()) {
+        QueueHeader(coordinator, queue.currentIndex, queue.displayTotal, locateCurrent, onClose)
+        LazyColumn(state = listState, modifier = Modifier.weight(1f).fillMaxWidth().listKeyboardNavigation(), overscrollEffect = null) {
+            itemsIndexed(queue.items) { index, item -> QueueRow(coordinator, index, item, index == queue.currentIndex, dragState, large = true) }
+            queue.more?.let { more -> item { QueueMoreRow(player, more) } }
         }
-        queue.more?.let { more -> item { QueueMoreRow(player, more) } }
     }
 }
 
@@ -591,15 +645,15 @@ private fun PlayerTrackInfo(coordinator: PlaybackCoordinator, modifier: Modifier
     val queue by player.queue.collectAsState()
     val status by player.status.collectAsState()
     Row(
-        modifier.fillMaxWidth().padding(start = 24.dp, end = 12.dp, top = 12.dp, bottom = 4.dp),
+        modifier.fillMaxWidth().padding(top = 16.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
             Text(queue.currentItem?.displayTitle.orEmpty(), style = TextStyle(fontSize = 23.sp, lineHeight = 29.sp, fontWeight = FontWeight.Bold, color = DesignColors.InkStrong), maxLines = 2, overflow = TextOverflow.Ellipsis)
             ArtistLine(queue.currentItem, status, TextStyle(fontSize = 15.sp, color = DesignColors.InkSecondary), Modifier.padding(top = 6.dp))
         }
-        NowPlayingRating()
-        PlayerMoreMenu(coordinator)
+        CompositionLocalProvider(LocalActionGlyphOffset provides 6.dp) { NowPlayingRating() }
+        PlayerMoreMenu(coordinator, iconOffset = (-6).dp)
     }
 }
 
@@ -608,22 +662,20 @@ private fun PlayerArtwork(graph: AppGraph, coordinator: PlaybackCoordinator, onF
     val player = coordinator.player
     val queue by player.queue.collectAsState()
     val status by player.status.collectAsState()
-    val progress by player.progress.collectAsState()
     val audioOnly = showsAudioOnly(player)
+    var fill by remember { mutableStateOf(false) }
     val cutout = LocalArtworkCutout.current
     DisposableEffect(cutout) { onDispose { cutout?.invoke(null) } }
     Box(modifier.aspectRatio(if (audioOnly) 1f else 16f / 9f).onGloballyPositioned { cutout?.invoke(it.boundsInWindow()) }.clip(RoundedCornerShape(22.dp))) {
-        PlayerSurfaceHole(player, graph.playerSurface, queue.currentItem?.displayThumbnailUrl, Modifier.fillMaxSize(), wave = false, settings = graph.settings)
+        PlayerSurfaceHole(player, graph.playerSurface, queue.currentItem?.displayThumbnailUrl, Modifier.fillMaxSize(), wave = false, fill = fill, settings = graph.settings)
         VideoOverlayHost(Modifier.fillMaxSize()) {
             BufferingIndicator(status)
             if (!audioOnly) {
-                AutoHidingOverlay { VideoOverlayControls(coordinator, status, progress, queue.currentItem, onToggleFullscreen = onFullscreen) }
-                PlayerCaptionOverlay(graph, player, VideoOverlayNative.showing)
-                if (!VideoOverlayNative.showing) {
-                    Row(Modifier.align(Alignment.BottomEnd).padding(4.dp)) {
-                        CaptionToggle(player, offTint = Color.White)
-                        ActionIcon(Icons.Default.Fullscreen, stringResource(Res.string.cd_fullscreen), tint = Color.White, onClick = onFullscreen)
-                    }
+                PlayerCaptionOverlay(graph, player, false, fill = fill)
+                Row(Modifier.align(Alignment.BottomEnd).padding(4.dp).background(Color.Black.copy(alpha = 0.55f), RoundedCornerShape(16.dp))) {
+                    ActionIcon(if (fill) Icons.Default.FitScreen else Icons.Default.CropFree, stringResource(if (fill) Res.string.cd_fit_video else Res.string.cd_fill_video), hitSize = 48.dp, tint = Color.White, onClick = { fill = !fill })
+                    if (rotationLockSupported) ActionIcon(Icons.Default.ScreenRotation, stringResource(Res.string.cd_unlock_rotation), hitSize = 48.dp, tint = Color.White, onClick = { graph.videoRotationLocked.value = false; onFullscreen() })
+                    ActionIcon(Icons.Default.Fullscreen, stringResource(Res.string.cd_fullscreen), hitSize = 48.dp, tint = Color.White, onClick = onFullscreen)
                 }
             }
             status.error?.let { PlaybackErrorText(graph, it, true) }
@@ -635,36 +687,23 @@ private fun PlayerArtwork(graph: AppGraph, coordinator: PlaybackCoordinator, onF
 private fun LandscapeNowPlaying(
     graph: AppGraph,
     coordinator: PlaybackCoordinator,
-    onClose: () -> Unit,
+    onQueue: () -> Unit,
     onFullscreen: () -> Unit,
 ) {
     val player = coordinator.player
-    val queue by player.queue.collectAsState()
     val status by player.status.collectAsState()
     val progress by player.progress.collectAsState()
     val audioOnly = showsAudioOnly(player)
     SideEffect { VideoOverlayNative.armed = !audioOnly }
-    Row(Modifier.fillMaxSize().safeDrawingPadding().padding(horizontal = 12.dp)) {
+    Row(Modifier.fillMaxSize().safeDrawingPadding().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
         BoxWithConstraints(Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-            PlayerArtwork(graph, coordinator, onFullscreen, Modifier.widthIn(max = if (audioOnly) maxHeight - 24.dp else maxWidth).fillMaxWidth().padding(12.dp))
+            PlayerArtwork(graph, coordinator, onFullscreen, Modifier.width(minOf(maxWidth, if (audioOnly) maxHeight else maxHeight * 16f / 9f)))
         }
-        val listState = rememberLazyListState()
-        FollowCurrentQueueItem(listState, queue.currentIndex, indexOffset = 2)
-        val dragState = rememberReorderDragState(listState, indexOffset = 2) { from, to -> player.move(from, to) }
-        val locateCurrent = rememberLocateCurrent(listState, queue.currentIndex, indexOffset = 2)
-        LazyColumn(state = listState, modifier = Modifier.weight(1f).fillMaxHeight().listKeyboardNavigation()) {
-            item {
-                PlayerTrackInfo(coordinator)
-                SeekBar(player, progress)
-                TransportRow(coordinator, status.showsPause(), playBackground = DesignColors.Accent, playForeground = DesignColors.OnAccent, playSize = 72.dp, simple = true)
-            }
-            stickyHeader {
-                Box(Modifier.background(DesignColors.Surface)) {
-                    QueueHeader(coordinator, queue.currentIndex, queue.displayTotal, queue.shuffle, queue.loopMode, locateCurrent)
-                }
-            }
-            itemsIndexed(queue.items) { index, item -> QueueRow(coordinator, index, item, current = index == queue.currentIndex, dragState) }
-            queue.more?.let { more -> item { QueueMoreRow(player, more) } }
+        Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
+            PlayerTrackInfo(coordinator)
+            SeekBar(player, progress)
+            TransportRow(coordinator, status.showsPause(), playBackground = DesignColors.Accent, playForeground = DesignColors.OnAccent, playSize = 72.dp, simple = true)
+            PlayerFooter(coordinator, onQueue)
         }
     }
 }
@@ -954,11 +993,11 @@ private fun BoxScope.PlayerCaptionOverlay(
  * captions are on. Picking a language turns captions on and selects it; Off hides them.
  */
 @Composable
-private fun CaptionToggle(player: io.ymusic.player.Player, offTint: Color, iconSize: Dp = 24.dp, hitSize: Dp = 40.dp) {
+private fun CaptionToggle(player: io.ymusic.player.Player, offTint: Color, iconSize: Dp = 24.dp, hitSize: Dp = 40.dp, menuOnly: Boolean = false, onDismiss: () -> Unit = {}) {
     val captions by player.captions.collectAsState()
     val config by player.config.collectAsState()
     if (captions.tracks.isEmpty()) return
-    var open by remember { mutableStateOf(false) }
+    var open by remember { mutableStateOf(menuOnly) }
     var translateOpen by remember { mutableStateOf(false) }
     HoldVideoOverlay(open || translateOpen)
     val (translations, tracks) = captions.tracks.partition { it.kind == AUTO_TRANSLATE_KIND }
@@ -969,11 +1008,12 @@ private fun CaptionToggle(player: io.ymusic.player.Player, offTint: Color, iconS
         player.setCaptionVisible(true)
         open = false
         translateOpen = false
+        onDismiss()
     }
     val onTrack = tracks.firstOrNull { isOn(it) } ?: translations.firstOrNull { isOn(it) }
     val captionState = onTrack?.displayName ?: stringResource(Res.string.captions_off)
     Box {
-        ActionIcon(
+        if (!menuOnly) ActionIcon(
             if (config.captionVisible) Icons.Default.ClosedCaption else Icons.Outlined.ClosedCaptionOff,
             "${stringResource(Res.string.cd_captions)}, $captionState",
             iconSize = iconSize,
@@ -982,11 +1022,11 @@ private fun CaptionToggle(player: io.ymusic.player.Player, offTint: Color, iconS
             onClick = { open = true },
         )
         if (open) {
-            DropdownMenu(expanded = true, onDismissRequest = { open = false }) {
+            DropdownMenu(expanded = true, onDismissRequest = { open = false; onDismiss() }) {
                 val off = !config.captionVisible
                 DropdownMenuItem(
                     text = { Text(stringResource(Res.string.captions_off)) },
-                    onClick = { player.setCaptionVisible(false); open = false },
+                    onClick = { player.setCaptionVisible(false); open = false; onDismiss() },
                     modifier = Modifier.menuChoice(off),
                     trailingIcon = selectedCheck(off),
                 )
@@ -1015,7 +1055,7 @@ private fun CaptionToggle(player: io.ymusic.player.Player, offTint: Color, iconS
         }
         // ~150 languages: a lazy list, so opening it does not compose every row.
         if (translateOpen) {
-            DropdownMenu(expanded = true, onDismissRequest = { translateOpen = false }) {
+            DropdownMenu(expanded = true, onDismissRequest = { translateOpen = false; onDismiss() }) {
                 LazyColumn(Modifier.size(width = 240.dp, height = 360.dp)) {
                     items(translations, key = { it.id }) { track ->
                         DropdownMenuItem(
@@ -1245,7 +1285,7 @@ private fun MoreMenuDivider() {
 /** The ⋮ menu, grouped: this video + queue · sound · player. Captions live on the video CC control;
  *  audio-only is a quality-chip option, not a toggle here. */
 @Composable
-private fun PlayerMoreMenu(coordinator: PlaybackCoordinator) {
+private fun PlayerMoreMenu(coordinator: PlaybackCoordinator, iconOffset: Dp = 0.dp) {
     val player = coordinator.player
     val audioTracks by player.audioTracks.collectAsState()
     var open by remember { mutableStateOf(false) }
@@ -1264,6 +1304,8 @@ private fun PlayerMoreMenu(coordinator: PlaybackCoordinator) {
     val noVideos = stringResource(Res.string.yt_playlist_queue_empty)
     val scope = rememberCoroutineScope()
     var tracksOpen by remember { mutableStateOf(false) }
+    var captionsOpen by remember { mutableStateOf(false) }
+    val captions by player.captions.collectAsState()
     val config by player.config.collectAsState()
     var sleepOpen by remember { mutableStateOf(false) }
     val sleepMs by player.sleepTimerMs.collectAsState()
@@ -1284,7 +1326,9 @@ private fun PlayerMoreMenu(coordinator: PlaybackCoordinator) {
     HoldVideoOverlay(open || tracksOpen || playbackOpen || eqOpen || detailsOpen || sleepOpen)
 
     Box {
-        ActionIcon(Icons.Default.MoreVert, stringResource(Res.string.cd_more), hitSize = 48.dp, onClick = { open = true })
+        CompositionLocalProvider(LocalActionGlyphOffset provides iconOffset) {
+            ActionIcon(Icons.Default.MoreVert, stringResource(Res.string.cd_more), hitSize = 48.dp, onClick = { open = true })
+        }
         DropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.width(MoreMenuWidth)) {
             if (downloadLauncher != null && downloadable != null) {
                 MoreMenuItem(Icons.Outlined.FileDownload, stringResource(Res.string.cd_download)) { open = false; downloadLauncher.launch(downloadable) }
@@ -1350,6 +1394,7 @@ private fun PlayerMoreMenu(coordinator: PlaybackCoordinator) {
                 eqOpen = true
                 open = false
             }
+            if (captions.tracks.isNotEmpty()) MoreMenuItem(Icons.Default.ClosedCaption, stringResource(Res.string.cd_captions)) { captionsOpen = true; open = false }
             if (audioTracks.tracks.size > 1) {
                 MoreMenuItem(
                     Icons.Outlined.GraphicEq,
@@ -1387,6 +1432,7 @@ private fun PlayerMoreMenu(coordinator: PlaybackCoordinator) {
             }
         }
     }
+    if (captionsOpen) CaptionToggle(player, DesignColors.Ink, menuOnly = true, onDismiss = { captionsOpen = false })
     if (sleepOpen) {
         SleepTimerDialog(sleepMs, afterCurrent, lastMinutes, onDismiss = { sleepOpen = false }) { choice ->
             sleepOpen = false
@@ -1426,7 +1472,7 @@ private fun lyricsSearchUrl(item: PlayableItem): String {
 private fun SeekBar(player: io.ymusic.player.Player, progress: Progress, modifier: Modifier = Modifier) {
     var scrubMs by remember { mutableStateOf<Long?>(null) }
     val labelProgress = scrubMs?.let { progress.copy(positionMs = it) } ?: progress
-    Column(modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
+    Column(modifier.fillMaxWidth()) {
         val status by player.status.collectAsState()
         SeekSlider(player, progress, trackColor = DesignColors.OutlineSoft, onScrubMs = { scrubMs = it }, wave = true, playing = status.state.isPlaying())
         MediaLtr {
@@ -1565,10 +1611,11 @@ private fun TransportButtons(
         Modifier
             .widthIn(max = 480.dp * scale)
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 14.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
+            .padding(horizontal = if (simple) 0.dp else 20.dp, vertical = 14.dp),
+        horizontalArrangement = if (simple) Arrangement.SpaceBetween else Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (simple) RepeatButton(player)
         if (!simple) ActionIcon(
             Icons.Default.FastRewind,
             stringResource(Res.string.cd_rewind10),
@@ -1606,6 +1653,7 @@ private fun TransportButtons(
             tint = iconTint,
             onClick = { player.skipNext() },
         )
+        if (simple) ShuffleButton(player)
         if (!simple) ActionIcon(
             Icons.Default.FastForward,
             stringResource(Res.string.cd_forward10),
@@ -1665,53 +1713,42 @@ private fun QueueMoreRow(player: Player, more: QueueMore) {
 }
 
 @Composable
+internal fun RepeatButton(player: Player) {
+    val queue by player.queue.collectAsState()
+    val mode = queue.loopMode
+    ActionIcon(
+        if (mode == LoopMode.One) Icons.Default.RepeatOne else Icons.Default.Repeat,
+        stringResource(when (mode) { LoopMode.None -> Res.string.cd_repeat_off; LoopMode.All -> Res.string.cd_repeat_all; LoopMode.One -> Res.string.cd_repeat_one }),
+        hitSize = 48.dp,
+        tint = if (mode == LoopMode.None) DesignColors.InkSoft else DesignColors.Accent,
+        onClick = { player.setLoopMode(when (mode) { LoopMode.None -> LoopMode.All; LoopMode.All -> LoopMode.One; LoopMode.One -> LoopMode.None }) },
+    )
+}
+
+@Composable
+private fun ShuffleButton(player: Player) {
+    val queue by player.queue.collectAsState()
+    ToggleActionIcon(Icons.Default.Shuffle, stringResource(Res.string.cd_shuffle), queue.shuffle, hitSize = 48.dp,
+        tint = if (queue.shuffle) DesignColors.Accent else DesignColors.InkSoft, onCheckedChange = player::setShuffle)
+}
+
+@Composable
 private fun QueueHeader(
     coordinator: PlaybackCoordinator,
     currentIndex: Int,
     total: Int,
-    shuffle: Boolean,
-    loopMode: LoopMode,
     onLocateCurrent: (() -> Unit)?,
+    onClose: () -> Unit,
 ) {
-    val player = coordinator.player
-    Row(
-        Modifier.fillMaxWidth().padding(start = 24.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
+    Row(Modifier.fillMaxWidth().padding(start = 4.dp, end = 8.dp, top = 8.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        ActionIcon(Icons.Default.ExpandMore, stringResource(Res.string.cd_collapse), hitSize = 48.dp, onClick = onClose)
         Column(Modifier.weight(1f).heightIn(min = 48.dp).clickable(enabled = onLocateCurrent != null, onClick = { onLocateCurrent?.invoke() }).padding(vertical = 4.dp)) {
             Text(stringResource(Res.string.up_next), style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold, color = DesignColors.Ink), modifier = Modifier.semantics { heading() })
             Text("${currentIndex + 1} / $total", style = TextStyle(fontSize = 12.sp, color = DesignColors.InkSecondary), modifier = Modifier.spokenAs(stringResource(Res.string.play_again_track_of, currentIndex + 1, total)))
         }
-        ActionIcon(
-            if (loopMode == LoopMode.One) Icons.Default.RepeatOne else Icons.Default.Repeat,
-            stringResource(
-                when (loopMode) {
-                    LoopMode.None -> Res.string.cd_repeat_off
-                    LoopMode.All -> Res.string.cd_repeat_all
-                    LoopMode.One -> Res.string.cd_repeat_one
-                },
-            ),
-            hitSize = 48.dp,
-            tint = if (loopMode != LoopMode.None) DesignColors.Accent else DesignColors.InkSoft,
-            onClick = {
-                player.setLoopMode(
-                    when (loopMode) {
-                        LoopMode.None -> LoopMode.All
-                        LoopMode.All -> LoopMode.One
-                        LoopMode.One -> LoopMode.None
-                    },
-                )
-            },
-        )
-        ToggleActionIcon(
-            Icons.Default.Shuffle,
-            stringResource(Res.string.cd_shuffle),
-            checked = shuffle,
-            hitSize = 48.dp,
-            tint = if (shuffle) DesignColors.Accent else DesignColors.InkSoft,
-            onCheckedChange = { player.setShuffle(it) },
-        )
-        coordinator.graph.castButton?.invoke(Modifier.size(48.dp))
+        CompositionLocalProvider(LocalActionGlyphOffset provides 12.dp) { RepeatButton(coordinator.player) }
+        ShuffleButton(coordinator.player)
+        CompositionLocalProvider(LocalActionGlyphOffset provides (-12).dp) { coordinator.graph.castButton?.invoke(Modifier.size(48.dp)) }
     }
 }
 
@@ -1784,7 +1821,7 @@ private fun QueueRowContent(
     focusRequester: FocusRequester? = null,
 ) {
     var menuOpen by remember { mutableStateOf(false) }
-    val sub = listOfNotNull(item.displayDuration, item.displaySubtitle).joinToString(" · ")
+    val sub = item.displaySubtitle.orEmpty()
     val playLabel = stringResource(Res.string.cd_play)
     val label = listOfNotNull(
         if (current) stringResource(Res.string.a11y_now_playing) else null,
@@ -1802,34 +1839,31 @@ private fun QueueRowContent(
                     else -> Modifier
                 },
             )
-            .then(if (current) Modifier.background(DesignColors.Accent.copy(alpha = 0.1f), RoundedCornerShape(12.dp)) else Modifier)
+            .then(if (current) Modifier.background(DesignColors.SurfaceElevated) else Modifier)
             .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
             .clickable(role = Role.Button, onClickLabel = playLabel) { coordinator.player.playAt(index) }
             .a11yActionLabel(label)
-            .padding(horizontal = 16.dp, vertical = if (large) 10.dp else 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(if (large) 12.dp else 8.dp),
-        verticalAlignment = Alignment.Top,
+            .padding(end = 8.dp, top = 6.dp, bottom = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(
-            Icons.Default.DragHandle,
-            null,
-            Modifier
-                .align(Alignment.CenterVertically)
-                .size(18.dp)
-                .pointerInput(dragState, index) {
-                    detectDragGestures(
-                        onDragStart = { dragState.start(index) },
-                        onDragEnd = dragState::end,
-                        onDragCancel = dragState::end,
-                    ) { change, amount ->
-                        change.consume()
-                        dragState.drag(amount.y)
-                    }
-                },
-            tint = if (current) DesignColors.Accent else DesignColors.Outline,
-        )
+        Box(Modifier
+            .align(Alignment.CenterVertically)
+            .size(width = 48.dp, height = 56.dp)
+            .pointerInput(dragState, index) {
+                detectDragGestures(
+                    onDragStart = { dragState.start(index) },
+                    onDragEnd = dragState::end,
+                    onDragCancel = dragState::end,
+                ) { change, amount ->
+                    change.consume()
+                    dragState.drag(amount.y)
+                }
+            },
+            contentAlignment = Alignment.Center,
+        ) { Icon(Icons.Default.DragHandle, null, Modifier.size(26.dp), tint = DesignColors.InkSoft) }
         Box(
-            Modifier.size(if (large) 60.dp else 48.dp).clip(RoundedCornerShape(6.dp)).a11ySilent(),
+            Modifier.size(if (large) 56.dp else 48.dp).clip(RoundedCornerShape(6.dp)).a11ySilent(),
             contentAlignment = Alignment.Center,
         ) {
             ArtImage(item.displayThumbnailUrl, RoundedCornerShape(6.dp)) {
@@ -1840,9 +1874,9 @@ private fun QueueRowContent(
             Text(
                 item.displayTitle,
                 style = TextStyle(
-                    fontSize = if (large) 14.sp else 12.5.sp,
+                    fontSize = if (large) 15.sp else 12.5.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = if (current) DesignColors.Accent else DesignColors.Ink,
+                    color = DesignColors.Ink,
                 ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -1850,17 +1884,19 @@ private fun QueueRowContent(
             if (sub.isNotEmpty()) {
                 Text(
                     sub,
-                    style = TextStyle(fontSize = if (large) 12.5.sp else 11.sp, color = DesignColors.InkSecondary),
+                    style = TextStyle(fontSize = if (large) 13.sp else 11.sp, color = DesignColors.InkSecondary),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(top = if (large) 4.dp else 2.dp),
                 )
             }
         }
+        item.displayDuration?.let { Text(it, color = DesignColors.InkSecondary, fontSize = 12.sp, modifier = Modifier.a11ySilent()) }
         Box {
             ActionIcon(
                 Icons.Default.MoreVert,
                 stringResource(Res.string.cd_more),
+                hitSize = 48.dp,
                 tint = DesignColors.IconDots,
                 onClick = { menuOpen = true },
             )

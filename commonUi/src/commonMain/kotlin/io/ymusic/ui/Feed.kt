@@ -375,6 +375,7 @@ fun FeedList(
     topContent: (@Composable () -> Unit)? = null,
     listState: LazyListState? = null,
     onDeeplink: ((link: String, title: String?) -> Unit)? = null,
+    showFilters: Boolean = true,
 ) {
     val state by pager.state.collectAsState()
     val invalidated by pager.invalidated.collectAsState()
@@ -419,7 +420,7 @@ fun FeedList(
                 if (s.sections.all { it.items.isEmpty() }) {
                     Column(modifier) {
                         topContent?.invoke()
-                        FeedChips(s, pager)
+                        if (showFilters) FeedChips(s, pager)
                         // The source's own explainer (anonymous Home's "Try searching to get
                         // started") beats the surface's generic empty text.
                         if (emptyAction != null) {
@@ -438,7 +439,7 @@ fun FeedList(
                         }
                     }
                 } else {
-                    FeedSections(s, pager, coordinator, modifier, onOpen, onPlayItem, topContent, listState, onDeeplink)
+                    FeedSections(s, pager, coordinator, modifier, onOpen, onPlayItem, topContent, listState, onDeeplink, showFilters)
                 }
             }
         }
@@ -595,6 +596,7 @@ private fun FeedSections(
     topContent: (@Composable () -> Unit)? = null,
     hoistedListState: LazyListState? = null,
     onDeeplink: ((link: String, title: String?) -> Unit)? = null,
+    showFilters: Boolean = true,
 ) {
     val expanded = remember { mutableStateMapOf<String, Boolean>() }
     BoxWithConstraints(modifier.fillMaxSize()) {
@@ -609,7 +611,7 @@ private fun FeedSections(
         LazyColumn(Modifier.fillMaxSize().listKeyboardNavigation(), state = listState, contentPadding = PaddingValues(bottom = LocalMiniPlayerInset.current)) {
             if (topContent != null) item { topContent() }
             // A 0-height chip slot at index 0 makes firstVisibleItemIndex > 0 while still at the top.
-            val hasChips = state.chips.isNotEmpty() || state.sort.isNotEmpty()
+            val hasChips = showFilters && (state.chips.isNotEmpty() || state.sort.isNotEmpty())
             if (hasChips) item { FeedChips(state, pager) }
             if (topContent == null && !hasChips) {
                 // Nothing above the first item (search results, channel content tabs) — the

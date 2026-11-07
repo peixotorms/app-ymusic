@@ -27,9 +27,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.Image
-import androidx.compose.material.icons.outlined.LibraryAdd
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -40,7 +38,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,10 +67,8 @@ import io.ymusic.ui.resources.cd_download
 import io.ymusic.ui.resources.cd_remove_playlist_from_library
 import io.ymusic.ui.resources.cd_save_playlist
 import io.ymusic.ui.resources.cd_search
-import io.ymusic.ui.resources.cd_share
 import io.ymusic.ui.resources.cd_shuffle
 import io.ymusic.ui.resources.channel_sign_in_to_subscribe
-import io.ymusic.ui.resources.local_playlist_create
 import io.ymusic.ui.resources.play_all
 import io.ymusic.ui.resources.playlist_removed
 import io.ymusic.ui.resources.playlist_saved
@@ -211,18 +206,13 @@ fun PlaylistDetailScreen(
         }
     }
 
-    val store = coordinator.graph.mediaStore
-    var creatingLocal by remember { mutableStateOf<String?>(null) }
-    if (store != null) {
-        creatingLocal?.let { title -> LocalPlaylistFromDownloadsDialog(store, title, s.feed.pager) { creatingLocal = null } }
-    }
-
     val art = ready?.pageHeader?.thumbs?.largestThumbUrl() ?: item.thumbs.largestThumbUrl() ?: videos.firstOrNull()?.thumbs?.largestThumbUrl()
     ArtworkTheme(art, gradient = false) {
         CompositionLocalProvider(LocalRemoveFromYtPlaylist provides { s.removeVideo(it) }, LocalCompactMusicRows provides true) {
             FeedList(
                 s.feed.pager,
                 coordinator,
+                showFilters = false,
                 onPlayItem = { tapped ->
                     coordinator.playAll(
                         videos,
@@ -233,6 +223,7 @@ fun PlaylistDetailScreen(
                 topContent = {
                     val title = ready?.pageHeader?.title ?: item.title
                     PlaylistHeader(
+                        player = coordinator.player,
                         artUrl = art,
                         onBack = onBack,
                         onSearch = onSearch,
@@ -253,27 +244,15 @@ fun PlaylistDetailScreen(
                             }
                         },
                         onDownload = onDownload?.let { open -> { open(title, s.feed.pager) } },
-                        onCreateLocal = store?.let { { creatingLocal = title } },
                         save = ready?.pageHeader?.savePlaylistId?.let { playlistId ->
                             { SavePlaylistToggle(s.saved, s.saving) { s.toggleSaved(playlistId) } }
                         },
-                        onShare = sharePlaylist(item, ready?.pageHeader),
                     )
                 },
                 listState = s.feed.listState,
             )
         }
     }
-}
-
-/** The playlist page's Share: its id from the page header, else from the row it was opened from (a
- *  deeplink-seeded page carries the link, not an id, until the header answers). */
-@Composable
-internal fun sharePlaylist(item: YtFeedItem, header: YtPageHeader?): (() -> Unit)? {
-    val share = LocalShareYoutube.current ?: return null
-    val playlistId = header?.savePlaylistId ?: item.id.takeIf { item.kind == YtFeedItem.KIND_PLAYLIST && it != item.url } ?: return null
-    if (youtubeShareLink(YtFeedItem.KIND_PLAYLIST, playlistId) == null) return null
-    return { share(YtFeedItem.KIND_PLAYLIST, playlistId) }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -283,15 +262,15 @@ internal fun PlaylistHeader(
     meta: String?,
     onShuffle: (() -> Unit)?,
     onDownload: (() -> Unit)? = null,
-    onCreateLocal: (() -> Unit)? = null,
     save: (@Composable () -> Unit)? = null,
-    onShare: (() -> Unit)? = null,
     artUrl: String? = null,
     onBack: (() -> Unit)? = null,
     onSearch: (() -> Unit)? = null,
     castButton: (@Composable (Modifier) -> Unit)? = null,
     onPlay: (() -> Unit)? = null,
+    player: io.ymusic.player.Player? = null,
 ) {
+    val queue = player?.queue?.collectAsState()?.value
     Column(Modifier.fillMaxWidth()) {
         BoxWithConstraints(Modifier.fillMaxWidth()) {
             val heroHeight = maxWidth.coerceAtMost(440.dp)
@@ -316,11 +295,10 @@ internal fun PlaylistHeader(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             save?.invoke()
-            if (onShare != null) ActionIcon(Icons.Outlined.Share, stringResource(Res.string.cd_share), hitSize = 48.dp, onClick = onShare)
             if (onDownload != null) ActionIcon(Icons.Outlined.FileDownload, stringResource(Res.string.cd_download), hitSize = 48.dp, onClick = onDownload)
-            if (onCreateLocal != null) ActionIcon(Icons.Outlined.LibraryAdd, stringResource(Res.string.local_playlist_create), hitSize = 48.dp, onClick = onCreateLocal)
-            ActionIcon(Icons.Default.Shuffle, stringResource(Res.string.cd_shuffle), hitSize = 48.dp, enabled = onShuffle != null, onClick = { onShuffle?.invoke() })
-            ActionIcon(Icons.Default.PlayArrow, stringResource(Res.string.play_all), modifier = Modifier.background(DesignColors.Accent, CircleShape), iconSize = 30.dp, hitSize = 56.dp, tint = DesignColors.OnAccent, enabled = onPlay != null, onClick = { onPlay?.invoke() })
+            if (player != null) RepeatButton(player)
+            ToggleActionIcon(Icons.Default.Shuffle, stringResource(Res.string.cd_shuffle), checked = queue?.shuffle == true, hitSize = 48.dp, tint = if (queue?.shuffle == true) DesignColors.Accent else DesignColors.InkSoft, enabled = onShuffle != null, onCheckedChange = { enabled -> if (!enabled && player != null) player.setShuffle(false) else onShuffle?.invoke() })
+            ActionIcon(Icons.Default.PlayArrow, stringResource(Res.string.play_all), iconSize = 24.dp, hitSize = 48.dp, tint = DesignColors.Ink, enabled = onPlay != null, onClick = { onPlay?.invoke() })
         }
     }
 }
@@ -633,7 +611,7 @@ private fun SubscribePill(subscribed: Boolean?, subscribing: Boolean, onToggle: 
 @Composable
 private fun SavePlaylistToggle(saved: Boolean?, saving: Boolean, onToggle: () -> Unit) {
     if (saving) {
-        Box(Modifier.size(32.dp), contentAlignment = Alignment.Center) {
+        Box(Modifier.size(48.dp), contentAlignment = Alignment.Center) {
             CircularProgressIndicator(Modifier.size(18.dp), color = DesignColors.InkMuted, strokeWidth = 2.dp)
         }
         return
@@ -643,6 +621,7 @@ private fun SavePlaylistToggle(saved: Boolean?, saving: Boolean, onToggle: () ->
     ActionIcon(
         if (saved == true) Icons.AutoMirrored.Filled.PlaylistAddCheck else Icons.AutoMirrored.Filled.PlaylistAdd,
         stringResource(if (saved == true) Res.string.cd_remove_playlist_from_library else Res.string.cd_save_playlist),
+        hitSize = 48.dp,
         tint = if (saved == true) DesignColors.Accent else DesignColors.InkMuted,
         onClick = { if (saved == null) snackbar(signIn) else onToggle() },
     )

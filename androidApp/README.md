@@ -30,6 +30,10 @@ This is a new installation, with no migration or deletion of upstream data. The 
 
 Windows and Linux retain their existing installation identities and data paths; the separate-installation behavior above applies to Android.
 
+## Screen orientation
+
+Phones (smallest width below 600dp) use portrait for ordinary app screens. Tablets and TV devices retain system orientation. Deliberate fullscreen video follows rotation, or holds its current orientation when locked; closing it restores the device's normal app policy. `SyncAppOrientation` in the shared Android platform layer owns this policy, including configuration changes. Android Auto remains a separate host interface.
+
 ## Android Auto discovery and testing
 
 The app already exports `PlaybackService` as a Media3 library service and legacy media browser,

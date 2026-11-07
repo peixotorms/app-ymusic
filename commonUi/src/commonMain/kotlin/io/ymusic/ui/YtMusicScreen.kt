@@ -236,12 +236,6 @@ fun MusicDetailScreen(
     // A category/feed browse (New releases, Charts, Moods & genres, a mood) vs a track list.
     val isFeed = session.url.contains("id=FEmusic")
 
-    val store = coordinator.graph.mediaStore
-    var creatingLocal by remember { mutableStateOf<String?>(null) }
-    if (store != null) {
-        creatingLocal?.let { title -> LocalPlaylistFromDownloadsDialog(store, title, session.feed.pager) { creatingLocal = null } }
-    }
-
     val art = ready?.pageHeader?.thumbs?.largestThumbUrl() ?: session.item.thumbs.largestThumbUrl() ?: videos.firstOrNull()?.thumbs?.largestThumbUrl()
     val content: @Composable () -> Unit = {
         CompositionLocalProvider(LocalCompactMusicRows provides !isFeed) {
@@ -254,6 +248,7 @@ fun MusicDetailScreen(
                 FeedList(
                     session.feed.pager,
                     coordinator,
+                    showFilters = isFeed,
                     onPlayItem = if (isFeed) {
                         null
                     } else {
@@ -280,6 +275,7 @@ fun MusicDetailScreen(
                         {
                             val title = ready?.pageHeader?.title ?: session.item.title
                             PlaylistHeader(
+                                player = coordinator.player,
                                 artUrl = art,
                                 onBack = onBack,
                                 onSearch = onSearch,
@@ -287,7 +283,6 @@ fun MusicDetailScreen(
                                 onPlay = if (videos.isEmpty()) null else { { coordinator.playAll(videos, shuffle = false, source = ready.queueSource(coordinator.graph.engines, session.url, videos, session.log)) } },
                                 title = title,
                                 meta = ready?.pageHeader?.subtitleLine1 ?: session.item.subtitleLine1,
-                                onShare = sharePlaylist(session.item, ready?.pageHeader),
                                 onShuffle = if (videos.isEmpty()) {
                                     null
                                 } else {
@@ -301,7 +296,6 @@ fun MusicDetailScreen(
                                     }
                                 },
                                 onDownload = onDownload?.let { open -> { open(title, session.feed.pager) } },
-                                onCreateLocal = store?.let { { creatingLocal = title } },
                             )
                         }
                     },

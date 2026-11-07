@@ -3,6 +3,7 @@ package io.ymusic.ui
 import android.app.Activity
 import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Build
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,6 +17,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
@@ -68,7 +70,7 @@ internal actual fun SyncSystemBars(dark: Boolean) {
 }
 
 @Composable
-internal actual fun SyncSensorRotation(locked: Boolean) {
+internal actual fun SyncAppOrientation(fullscreen: Boolean, locked: Boolean) {
     val view = LocalView.current
     if (view.isInEditMode) return
     val activity = remember(view) {
@@ -78,11 +80,16 @@ internal actual fun SyncSensorRotation(locked: Boolean) {
         }
         ctx as? Activity
     }
-    // Toggling must not pass through UNSPECIFIED, or LOCKED could capture the system's orientation.
+    val configuration = LocalConfiguration.current
+    val phone = configuration.smallestScreenWidthDp < 600 &&
+        configuration.uiMode and Configuration.UI_MODE_TYPE_MASK != Configuration.UI_MODE_TYPE_TELEVISION
     SideEffect {
-        activity?.requestedOrientation =
-            if (locked) ActivityInfo.SCREEN_ORIENTATION_LOCKED
-            else ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        activity?.requestedOrientation = when {
+            fullscreen && locked -> ActivityInfo.SCREEN_ORIENTATION_LOCKED
+            fullscreen -> ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+            phone -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            else -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
     }
     DisposableEffect(activity) {
         onDispose {
