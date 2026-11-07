@@ -176,10 +176,10 @@ class PlaybackCoordinator(
         val selected = startIndex.coerceIn(0, all.lastIndex)
         val offset = if (selected >= PlaylistQueueSource.LIMIT) minOf(selected, all.size - PlaylistQueueSource.LIMIT) else 0
         val playable = all.drop(offset).take(PlaylistQueueSource.LIMIT)
-        shuffle?.let(player::setShuffle)
         player.setQueue(
             playable.map { it.toYtMedia() },
             playIndex = selected - offset,
+            shuffle = shuffle,
             source = source,
             origin = QueueOrigin.Playlist,
         )
@@ -201,8 +201,7 @@ class PlaybackCoordinator(
 
     /** Play local library [songs] as the queue, starting at [index]. [shuffle] null keeps the user's shuffle mode. */
     fun playLocal(songs: List<MediaStoreItem>, index: Int, shuffle: Boolean? = null) {
-        shuffle?.let(player::setShuffle)
-        player.setQueue(songs.map { it.toLocalMedia() }, playIndex = index, origin = QueueOrigin.Library)
+        player.setQueue(songs.map { it.toLocalMedia() }, playIndex = index, origin = QueueOrigin.Library, shuffle = shuffle)
     }
 
     /** Play just [song] now (queue of one). */

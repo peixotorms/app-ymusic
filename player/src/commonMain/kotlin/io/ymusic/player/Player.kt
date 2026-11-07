@@ -66,6 +66,7 @@ interface Player {
         queueId: String? = null,
         source: QueueSource? = null,
         origin: QueueOrigin = QueueOrigin.Unknown,
+        shuffle: Boolean? = null,
     )
 
     /** Fetch the queue source's next page now (the queue's "Load more" / retry). No-op without one. */

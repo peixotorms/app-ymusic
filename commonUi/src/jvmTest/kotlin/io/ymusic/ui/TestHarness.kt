@@ -135,9 +135,11 @@ internal class StubPlayer : Player {
         queueId: String?,
         source: io.ymusic.player.QueueSource?,
         origin: io.ymusic.player.QueueOrigin,
+        shuffle: Boolean?,
     ) {
         lastQueue = items
         lastPlayIndex = playIndex
+        if (shuffle != null) lastShuffle = shuffle
     }
 
     override fun loadMore() {}

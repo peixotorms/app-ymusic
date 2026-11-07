@@ -99,16 +99,15 @@ class QueueControllerTest {
     }
 
     @Test
-    fun shuffle_previous_walks_played_history() {
+    fun shuffle_previous_follows_the_visible_order() {
         val q = controller(5)
         q.setShuffle(true)
         val first = q.state.currentIndex
         val second = q.advance(userInitiated = false)!!
-        val third = q.advance(userInitiated = false)!!
+        q.advance(userInitiated = false)
         assertEquals(second, q.previous())
         assertEquals(first, q.previous())
-        assertNull(q.previous(), "history exhausted")
-        // Forward again re-records history from here.
+        assertNull(q.previous(), "start of the visible queue")
         val again = q.advance(userInitiated = false)!!
         assertEquals(first, q.previous(), "prev returns to where we branched, not $again")
     }

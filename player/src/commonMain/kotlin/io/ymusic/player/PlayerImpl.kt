@@ -51,7 +51,6 @@ internal class PlayerImpl(
     private var lastChange = QueueChange.Load
 
     /** [prepareNextIndex] came from a freshly loaded page — a user skip honors it too. */
-    private var nextFromPage = false
     private var rolledGeneration = -1
     private var source: QueueSource? = null
     private var more: QueueMore? = null
@@ -143,12 +142,13 @@ internal class PlayerImpl(
         queueId: String?,
         source: QueueSource?,
         origin: QueueOrigin,
+        shuffle: Boolean?,
     ) {
         if (released) return
         queueOrigin = origin
         lastChange = QueueChange.Load
         attachSource(source.takeIf { items.isNotEmpty() })
-        controller.setQueue(items, playIndex, queueId ?: Uuid.random().toString())
+        controller.setQueue(items, playIndex, queueId ?: Uuid.random().toString(), shuffle)
         setPlayWhenReadyIntent(playWhenReady)
         if (items.isEmpty()) {
             publishQueue()
@@ -302,8 +302,7 @@ internal class PlayerImpl(
 
     override fun skipNext() {
         if (released) return
-        val pagePick = prepareNextIndex.takeIf { nextFromPage }
-        val next = if (pagePick != null) pagePick.also { controller.commitNext(it) } else controller.advance(userInitiated = true)
+        val next = controller.advance(userInitiated = true)
         if (next != null) {
             lastChange = QueueChange.User
             publishQueue(refreshNext = false)
@@ -345,8 +344,15 @@ internal class PlayerImpl(
     }
 
     override fun setShuffle(enabled: Boolean) {
+        if (released || controller.state.shuffle == enabled) return
         controller.setShuffle(enabled)
-        publishQueue()
+        if (enabled && controller.state.currentItem != null) {
+            lastChange = QueueChange.User
+            publishQueue(refreshNext = false)
+            loadCurrent(0L)
+        } else {
+            publishQueue()
+        }
     }
 
     override var volume: Float
@@ -512,12 +518,10 @@ internal class PlayerImpl(
             preloadedItem = null
         }
         prepareNextArmed = preloadedItem != null && preloadedItem == candidate
-        nextFromPage = false
         if (rolledGeneration != loadGeneration) {
             rolledGeneration = loadGeneration
             // A failed page is retried once per track, not in a loop.
             more = more?.copy(error = null)
-            if (shufflePickLandsUnloaded()) startLoad(pickNext = true)
         }
         maybePreloadNext()
     }
@@ -532,19 +536,7 @@ internal class PlayerImpl(
     override fun loadMore() {
         if (released) return
         more = more?.copy(error = null)
-        startLoad(pickNext = false)
-    }
-
-    /** Known-length shuffle: the pick lands on the unloaded part with probability unloaded / (unplayed +
-     *  unloaded). It then plays from the ONE next page — later pages are under-weighted; accepted. */
-    private fun shufflePickLandsUnloaded(): Boolean {
-        if ((source?.eagerLoadTarget ?: 0) > 0) return false
-        val state = more ?: return false
-        val total = state.totalCount ?: return false
-        if (!controller.state.shuffle || controller.hasUpNext || !state.hasMore || state.loading || state.error != null) return false
-        val unloaded = total - controller.state.items.size
-        if (unloaded <= 0) return false
-        return random.nextInt(controller.unplayedCount() + unloaded) < unloaded
+        startLoad()
     }
 
     /** Any mode: the current item sits within the queue's last [LOAD_AHEAD] items. */
@@ -554,11 +546,11 @@ internal class PlayerImpl(
         val queue = controller.state
         if (queue.currentIndex < 0) return
         if (queue.items.size < (source?.eagerLoadTarget ?: 0) || queue.items.lastIndex - queue.currentIndex < LOAD_AHEAD) {
-            startLoad(pickNext = false)
+            startLoad()
         }
     }
 
-    private fun startLoad(pickNext: Boolean) {
+    private fun startLoad() {
         val src = source ?: return
         val state = more ?: return
         if (!state.hasMore || state.loading) return
@@ -577,7 +569,6 @@ internal class PlayerImpl(
                 return@launch
             }
             if (released || source !== src) return@launch
-            val firstNew = controller.state.items.size
             controller.add(page.items)
             more = more?.let { current ->
                 current.copy(
@@ -587,16 +578,8 @@ internal class PlayerImpl(
                     resumeToken = src.resumeToken.takeIf { page.hasMore },
                 )
             }
-            if (pickNext && page.items.isNotEmpty() && controller.state.shuffle) {
-                prepareNextIndex = firstNew + random.nextInt(page.items.size)
-                prepareNextArmed = false
-                nextFromPage = true
-                publishQueue(refreshNext = false)
-                maybePreloadNext()
-            } else {
-                val keepPrepared = src.eagerLoadTarget > 0 && preloadedItem != null && prepareNextArmed
-                publishQueue(refreshNext = !keepPrepared)
-            }
+            val keepPrepared = preloadedItem != null && prepareNextArmed
+            publishQueue(refreshNext = !keepPrepared)
         }
     }
 
