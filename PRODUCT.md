@@ -16,7 +16,7 @@ Listeners use the phone, Android Auto, and Google Cast speakers or televisions. 
 
 ## Capabilities and Constraints
 
-- Preserve authenticated YouTube Music ratings, playlist actions, queue management, shuffle/repeat, downloads, SponsorBlock, sleep timers, audio effects, captions, video quality, and existing error recovery.
+- Preserve authenticated YouTube Music ratings, playlist actions, queue management, shuffle/repeat, downloads, SponsorBlock, sleep timers, audio effects, video quality, and existing error recovery.
 - Android uses its own application identity and retains the current release version and signing identity. Updates are installed manually.
 - Cast currently relays original AAC audio through the phone. Television video casting remains separate work.
 - Reuse Kotlin Multiplatform and Compose. Preserve desktop keyboard controls, window resizing, and the shared native video surface.
@@ -32,3 +32,5 @@ The product name is YMusic, with attribution to the upstream project. The reques
 - Move controls into clear, reachable groups without silently removing features.
 - Use actual artwork and track metadata; preserve loading, unavailable, and error states.
 - Keep account data private and do not restore automatic crash or usage reporting.
+
+Playback captions, their menus/style settings, and fullscreen CC/aspect-stretching controls are intentionally removed. Preserve natural video proportions and the remaining playback controls.
