@@ -106,7 +106,7 @@ internal class PlayerImpl(
     private var ducked = false
 
     /** What the engines apply: [currentConfig] with the audio effects flattened while they are off
-     *  and the volume lowered while [ducked]. */
+     *  captions disabled, and the volume lowered while [ducked]. */
     private val engineConfig: PlaybackConfig
         get() = currentConfig.let {
             if (it.inAppAudioFx) {
@@ -114,7 +114,7 @@ internal class PlayerImpl(
             } else {
                 it.copy(eqBands = List(10) { 0f }, bassBoostDb = 0f, virtualizer = 1f, preampDb = 0f)
             }
-        }.let { if (ducked) it.copy(volume = it.volume * DUCK_VOLUME) else it }
+        }.copy(captionVisible = false).let { if (ducked) it.copy(volume = it.volume * DUCK_VOLUME) else it }
 
     /** The engine bound to the current item — internal routing state; not exposed (the UI hands one
      *  video container to the engines and each owns its own surface, so it never needs this). */

@@ -4,6 +4,8 @@ Module detail for the one-line summary in the root [`AGENTS.md`](../AGENTS.md) �
 
 The cross-platform playback layer.
 
+This fork disables playback captions at the facade’s `engineConfig` boundary. Every engine receives `captionVisible = false`, including loads, configuration changes, and engine handoffs. The app has no playback caption controls, renderer, or style settings. Generic engine capability and wire types remain for upstream compatibility; download subtitle handling is independent.
+
 - **MediaEngine SPI** — the common SPI is **`MediaEngine`** (a deliberately NARROW core both playback backends
   satisfy — status/progress + `init`/`reset` + `load` when `readyToLoad` / play/pause/seek/stop/`setConfig`/release).
   `PlayerImpl` waits for `readyToLoad` like UniPlayer (`init` cold, `reset` on `needReset`).
