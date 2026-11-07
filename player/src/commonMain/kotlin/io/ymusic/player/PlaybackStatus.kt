@@ -35,6 +35,7 @@ fun PlaybackState.isEnded(): Boolean = (this as? PlaybackState.Prepared)?.ended 
  *  report [VideoQualityState.AUDIO_ONLY] as the actual quality when it has none). */
 fun showsVideo(config: PlaybackConfig, quality: VideoQualityState): Boolean =
     !config.audioOnly &&
+        quality.hasVideo != false &&
         quality.preferredQuality != VideoQualityState.AUDIO_ONLY &&
         quality.actualQuality != VideoQualityState.AUDIO_ONLY
 

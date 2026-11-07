@@ -1,6 +1,8 @@
 package io.ymusic.ui
 
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -8,6 +10,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +21,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+
+val LocalActionIndication = staticCompositionLocalOf { true }
 
 val LocalActionGlyphOffset = staticCompositionLocalOf { 0.dp }
 
@@ -39,7 +44,7 @@ fun ActionIcon(
     ActionIconBox(
         modifier,
         Modifier.a11yActionLabel(contentDescription)
-            .clickable(enabled = enabled, role = Role.Button, onClick = onClick),
+            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = if (LocalActionIndication.current) LocalIndication.current else null, enabled = enabled, role = Role.Button, onClick = onClick),
         hitSize,
     ) {
         Icon(icon, null, Modifier.size(iconSize).offset(x = LocalActionGlyphOffset.current), tint = tint)
@@ -60,7 +65,7 @@ fun ActionIcon(
     ActionIconBox(
         modifier,
         Modifier.a11yActionLabel(contentDescription)
-            .clickable(enabled = enabled, role = Role.Button, onClick = onClick),
+            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = if (LocalActionIndication.current) LocalIndication.current else null, enabled = enabled, role = Role.Button, onClick = onClick),
         hitSize,
     ) {
         Icon(painter, null, Modifier.size(iconSize).offset(x = LocalActionGlyphOffset.current), tint = tint)
@@ -83,7 +88,7 @@ fun ToggleActionIcon(
     ActionIconBox(
         modifier,
         Modifier.a11yActionLabel(contentDescription)
-            .toggleable(value = checked, enabled = enabled, role = Role.Switch, onValueChange = onCheckedChange),
+            .toggleable(value = checked, interactionSource = remember { MutableInteractionSource() }, indication = if (LocalActionIndication.current) LocalIndication.current else null, enabled = enabled, role = Role.Switch, onValueChange = onCheckedChange),
         hitSize,
     ) {
         Icon(icon, null, Modifier.size(iconSize).offset(x = LocalActionGlyphOffset.current), tint = tint)
@@ -100,7 +105,7 @@ private fun ActionIconBox(
     Box(
         modifier
             .size(hitSize)
-            .clip(CircleShape)
+            .then(if (LocalActionIndication.current) Modifier.clip(CircleShape) else Modifier)
             .then(interaction),
         contentAlignment = Alignment.Center,
     ) {

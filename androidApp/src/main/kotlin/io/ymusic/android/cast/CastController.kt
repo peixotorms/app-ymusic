@@ -26,7 +26,11 @@ import com.google.android.gms.cast.framework.SessionManagerListener
 import io.ymusic.download.SabrSpecResolver
 import io.ymusic.player.LocalPlayer
 import io.ymusic.player.YtEngine
+import io.ymusic.ui.ActionIcon
+import io.ymusic.ui.DefaultAccent
+import io.ymusic.ui.DesignColors
 import io.ymusic.ui.LocalActionGlyphOffset
+import io.ymusic.ui.LocalActionIndication
 import io.ymusic.ui.resources.Res
 import io.ymusic.ui.resources.cast_play_on
 import kmpcommon.log.Logger
@@ -117,7 +121,7 @@ internal class CastController(
                 discoveryFailed = true
             }
         }
-        IconButton(onClick = {
+        val openPicker: () -> Unit = {
             try {
                 initialize()
                 discoveryFailed = false
@@ -126,8 +130,17 @@ internal class CastController(
                 discoveryFailed = true
             }
             show = true
-        }, modifier = modifier) {
-            Icon(if (casting) Icons.Outlined.CastConnected else Icons.Outlined.Cast, stringResource(Res.string.cast_play_on), Modifier.offset(x = iconOffset))
+        }
+        val icon = if (casting) Icons.Outlined.CastConnected else Icons.Outlined.Cast
+        val tint = if (casting) DefaultAccent else DesignColors.InkMuted
+        if (LocalActionIndication.current) {
+            IconButton(onClick = openPicker, modifier = modifier) {
+                Icon(icon, stringResource(Res.string.cast_play_on), Modifier.offset(x = iconOffset), tint = tint)
+            }
+        } else {
+            CompositionLocalProvider(LocalActionGlyphOffset provides iconOffset) {
+                ActionIcon(icon, stringResource(Res.string.cast_play_on), modifier = modifier, hitSize = 48.dp, tint = tint, onClick = openPicker)
+            }
         }
         if (!show) return
         val router = remember { MediaRouter.getInstance(context) }
