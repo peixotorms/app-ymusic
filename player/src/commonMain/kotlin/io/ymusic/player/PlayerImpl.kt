@@ -380,7 +380,7 @@ internal class PlayerImpl(
     override fun setInAppAudioFx(enabled: Boolean) = pushConfig(currentConfig.copy(inAppAudioFx = enabled))
 
     override fun setAudioBufferAheadSeconds(seconds: Int) {
-        pushConfig(currentConfig.copy(audioBufferAheadSeconds = seconds.coerceIn(30, 120)))
+        pushConfig(currentConfig.copy(audioBufferAheadSeconds = seconds.coerceIn(30, 600)))
     }
 
     override fun setAudioOnly(audioOnly: Boolean) {

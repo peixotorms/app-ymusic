@@ -50,9 +50,9 @@ internal fun AudioBufferRow(graph: AppGraph) {
             style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = DesignColors.Ink),
         )
         Box {
-            Text(audioBufferLabel(selected.coerceIn(30, 120)), style = TextStyle(fontSize = 13.sp, color = DesignColors.InkSecondary))
+            Text(audioBufferLabel(selected.coerceIn(30, 600)), style = TextStyle(fontSize = 13.sp, color = DesignColors.InkSecondary))
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                listOf(30, 60, 120).forEach { seconds ->
+                listOf(30, 60, 120, 180, 300, 600).forEach { seconds ->
                     DropdownMenuItem(
                         text = { Text(audioBufferLabel(seconds)) },
                         onClick = {

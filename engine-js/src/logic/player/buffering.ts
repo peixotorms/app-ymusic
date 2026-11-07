@@ -57,7 +57,7 @@ export class PlaybackBufferPolicy {
   configure(audioOnly: boolean, audioSeconds: unknown): void {
     this.audioOnly = audioOnly;
     if (typeof audioSeconds === "number" && Number.isFinite(audioSeconds)) {
-      this.audioTargetMs = Math.max(30, Math.min(120, audioSeconds)) * 1000;
+      this.audioTargetMs = Math.max(30, Math.min(600, audioSeconds)) * 1000;
     }
     this.filling = true;
   }
@@ -115,6 +115,10 @@ export class PlaybackBufferPolicy {
     if (videoId !== this.current) return null;
     if (!this.audioOnly) return 30000;
     return this.playedMs < 5000 ? 15000 : this.audioTargetMs;
+  }
+
+  capacityMs(): number {
+    return this.audioOnly ? this.audioTargetMs : 30000;
   }
 
   budget(videoId: string, positionMs: number, bufferedEndMs: number): BufferBudget | null {
@@ -178,9 +182,10 @@ export function configurePlayerBuffer(rec: Record<string, unknown>): void {
   const pc = (rec["playerConfig"] || {}) as Record<string, unknown>;
   const common = (pc["mediaCommonConfig"] || {}) as Record<string, unknown>;
   const dynamic = (common["dynamicReadaheadConfig"] || {}) as Record<string, unknown>;
-  dynamic["minReadAheadMediaTimeMs"] = 120000;
-  dynamic["maxReadAheadMediaTimeMs"] = 120000;
-  dynamic["readAheadGrowthRateMs"] = 120000;
+  const capacity = Math.max(120000, playbackBuffer.capacityMs());
+  dynamic["minReadAheadMediaTimeMs"] = capacity;
+  dynamic["maxReadAheadMediaTimeMs"] = 600000;
+  dynamic["readAheadGrowthRateMs"] = capacity;
   common["dynamicReadaheadConfig"] = dynamic;
   pc["mediaCommonConfig"] = common;
   rec["playerConfig"] = pc;
