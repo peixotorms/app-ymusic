@@ -9,6 +9,9 @@ colors:
   artwork-on-accent: "#151311"
   black: "#000000"
   white: "#FFFFFF"
+  player-ink-strong: "#F5F5F5"
+  player-ink: "#EDEDED"
+  player-ink-secondary: "#D0D0D0"
   dark-surface: "#101010"
   dark-surface-dim: "#1B1B1B"
   dark-surface-elevated: "#202020"
@@ -174,11 +177,11 @@ This is a Compose Multiplatform system with Android as the primary surface. Meas
 
 ## Colors
 
-The saved palette is neutral with a configurable accent; player and playlist surfaces derive their accent from the current artwork. The separate queue uses a fixed neutral dark palette.
+The saved palette is neutral with a configurable accent. Player backdrops and playlist surfaces derive color from artwork. Now Playing controls and the separate queue use neutral near-white foregrounds and the fixed default orange for active states.
 
 ### Primary
 
-`accent-default` is the saved-theme fallback. A custom accent is darkened to a maximum luminance of 0.3. `ArtworkTheme` uses its own runtime accent; the fallback artwork tint is a sampling fallback, not a permanent player color.
+`accent-default` is the saved-theme fallback. A custom accent is darkened to a maximum luminance of 0.3. Playlist `ArtworkTheme` uses its own runtime accent; the fallback artwork tint is a sampling fallback, not a permanent player color.
 
 The artwork loader requests a small sample, rejects transparent and near-black/near-white pixels, and selects a saturation-weighted dominant color bucket. The resulting tint transitions over 600 ms. The following formulas use Compose's `Color.lerp`:
 
@@ -198,15 +201,15 @@ The player backdrop begins at `lerp(tint, Black, 0.25)`, darkened further until 
 
 Saved dark browsing uses `dark-surface`, `dark-surface-dim`, and `dark-surface-elevated`. Light browsing uses white with the corresponding light surfaces. Text, fields, outlines, and dividers resolve through `DesignColors`. AMOLED sets Surface, SurfaceDim, SurfaceElevated, and SettingsCard to black; it retains the other dark roles. `skip-segment` identifies SponsorBlock intervals.
 
-The queue uses `DarkDesignColors` directly: `dark-surface` ground, `dark-surface-elevated` current-row highlight, and neutral text. Selected repeat and shuffle use `accent-default`; this palette is independent of artwork and the user's saved accent.
+The queue uses the fixed `PlayerControlColors` palette over `DarkDesignColors`: `dark-surface` ground, `dark-surface-elevated` current-row highlight, and neutral text. Selected repeat and shuffle and a connected Cast route use `accent-default`; this palette is independent of artwork and the user's saved accent. Other controls remain near-white, with grey reserved for disabled states.
 
-**The Theme Boundary Rule.** Player and playlist surfaces stay dark and artwork-derived. The queue uses the fixed dark palette. Browsing and the production mini-player inherit the saved app palette; the mini-player is outside the per-screen artwork theme.
+**The Theme Boundary Rule.** Player and playlist surfaces stay dark with artwork-derived backdrops. Player controls use fixed white/orange roles; fullscreen retains its original overlay palette. The queue uses the fixed dark palette. Browsing and the production mini-player inherit the saved app palette; the mini-player is outside the per-screen artwork theme.
 
 ## Typography
 
 The system uses the platform sans-serif face through Compose and Material defaults: Roboto on Android, with the platform default elsewhere. There is no separate decorative display font. Explicit music roles are recorded above; unspecified weight, tracking, and line height inherit native defaults.
 
-The playlist headline is centered over the hero and permits three lines. The track headline is left aligned and permits two. Compact playlist rows use `title-list` and `body-list`; the separate queue uses the larger `title-queue` and `body-queue`. Both list styles limit each text line to one line with ellipsis. Queue duration sits in its own 12sp column. The mini-player pairs `title-mini` with 12sp secondary text. Section and dialog headings share `title-section`.
+The playlist headline is centered over the hero and permits three lines. The track metadata block reserves capacity for two title lines and two artist lines. Text flows naturally with a 6dp gap between title and artist; unused capacity stays below it. Both ellipsize at two lines. Heart and overflow align at the top of the fixed block. Compact playlist rows use `title-list` and `body-list`; the separate queue uses the larger `title-queue` and `body-queue`. Both list styles limit each text line to one line with ellipsis. Queue duration sits in its own 12sp column. The mini-player pairs `title-mini` with 12sp secondary text. Section and dialog headings share `title-section`.
 
 **The Native Type Rule.** Keep text in sp and retain the existing wrapping and ellipsis behavior so larger system text remains usable.
 
@@ -216,7 +219,7 @@ The shared spacing steps live in `DesignSpacing`. Browsing uses a 16dp edge marg
 
 The portrait player does not scroll. A shared 16dp horizontal gutter and 8dp vertical padding sit inside safe drawing insets. The centered content column caps at 520dp; track details and seeking fill that column. Transport caps at 480dp without another horizontal inset. Flexible gaps keep the footer at the bottom.
 
-Artwork adapts to both viewport height and font scale. After safe insets and outer padding, controls reserve `250dp + 92dp × fontScale`. Available art height is the remaining height, clamped to zero. Audio artwork is square and no wider than the content column or available art height. Inline video uses a 16:9 slot with its width limited by the same height budget.
+Artwork adapts to both viewport height and font scale. After safe insets and outer padding, controls reserve `250dp + 130dp × fontScale`. Available art height is the remaining height, clamped to zero. Both audio artwork and inline video use the same square slot, no wider than the content column or available art height. The video retains its native aspect ratio within the square black region, centered vertically and horizontally; unknown dimensions use 16:9. The title/artist reservations and the square slot keep seeking and transport fixed across track and mode changes.
 
 The shared player uses two equal columns only when width is at least 600dp and exceeds height: artwork on the left, fixed controls on the right, with 16dp outer padding and a 24dp gap. Android ordinary screens stay portrait below 600dp smallest width, except TV devices. Tablets and TV retain system rotation. Explicit fullscreen video can use sensor rotation or the user's rotation lock; exiting restores the ordinary device policy.
 
@@ -236,19 +239,19 @@ Material's five corner roles use the `material-*` tokens. Music artwork, the min
 
 ### Playback controls
 
-The transport order is Repeat, Previous, Play/Pause, Next, Shuffle. Its play circle uses `player-play` in portrait and `player-play-landscape` in landscape. The main icon is 38dp, and outlined skip icons are 32dp inside 48dp targets. Active repeat and shuffle use the artwork accent.
+The transport order is Repeat, Previous, Play/Pause, Next, Shuffle. Its play circle uses `player-play` in portrait and `player-play-landscape` in landscape. The main icon is 38dp, and outlined skip icons are 32dp inside 48dp targets. Active repeat and shuffle use the fixed default orange; the active main playback control also turns orange. Inactive controls are near-white.
 
-The bottom strip has five stable slots: Sleep timer, Speed, queue chevrons, Equalizer, Cast. Each has a 48dp target within `player-footer`; an unavailable Cast action leaves its slot empty. Sleep, speed, and audio effects tint with the accent when active. Download, captions, SponsorBlock, fast seek, and other secondary actions remain in overflow.
+The bottom strip has five stable slots: Sleep timer, Speed, queue chevrons, Equalizer, Cast. Each has a 48dp target within `player-footer`; an unavailable Cast action leaves its slot empty. Sleep, speed/pitch, audio effects, and connected Cast tint with the fixed default orange when active; the queue chevrons remain neutral. Download, captions, SponsorBlock, fast seek, and other secondary actions remain in overflow.
 
 Heart and overflow keep separate 48dp targets while their glyphs shift inward by 6dp each. The player has no top toolbar. The chevrons or an upward swipe open the queue; system Back or a downward dismissal returns from the queue before closing the player. Desktop Escape follows the same queue/fullscreen priority.
 
 ### Inline video
 
-The native video region shows fit/fill, rotation where supported, and fullscreen viewing controls, each with a separate `music-action` target (48dp). Captions, buffering, and errors remain inside the video region. Track details, seeking, and transport appear once on the page. Caption selection is available through overflow and fullscreen. Fullscreen keeps its complete video overlay.
+The native video region shows rotation where supported and fullscreen viewing controls, each with a separate `music-action` target (48dp). Inline fit/fill is absent. Viewing icons hide after three seconds of ready playback and a tap restores them. Inline loading and paused states do not start this timer; fullscreen keeps its existing timing. The square black region masks the previous picture until the new video begins; a play/pause glyph sits inside the loading ring. Captions, buffering, and errors remain inside the region, and enabled captions also appear over audio artwork. Track details, seeking, and transport appear once on the page. Caption selection is available through overflow and fullscreen. Fullscreen keeps its complete video overlay.
 
 ### Seek and format
 
-The played track is a wave during playback and straight while paused. Its stroke is 3dp, wavelength 22dp, amplitude 3dp, and cycle 1600 ms with linear easing. The 13dp thumb sits in a 40dp bar. Animation runs only while playback is active and the window is visible, and respects Compose's motion scale. Timestamps flank the centered quality selector. Seeking commits on release; keyboard and accessibility seeking, buffering, and skip markers remain available.
+The played track is a wave during playback and straight while paused. Its stroke is 3dp, wavelength 22dp, amplitude 3dp, and cycle 1600 ms with linear easing. The 13dp thumb sits in a 40dp bar. Animation runs only while playback is active and the window is visible, and respects Compose's motion scale. Timestamps occupy the two edges independently of the fixed centered quality selector. The initial elapsed label is `00:00` and unknown duration is `--:--`. Only an explicit no-video capability disables the audio-mode selector for that song; unknown capability leaves it enabled. Seeking commits on release; keyboard and accessibility seeking, buffering, and skip markers remain available.
 
 ### Playlist actions and rows
 
@@ -258,7 +261,7 @@ Playlist rows use `music-artwork`, 16dp between artwork and text, and `ListRowVe
 
 ### Queue
 
-The queue is a separate full-size surface with safe insets, a fixed header, and an independently scrolling list. Collapse, Back, Escape, or a downward pull returns to the player. There is no search or filter row. Up next locates the current item; the header groups Repeat, Shuffle, and Cast. Repeat and Cast glyphs shift toward Shuffle by 12dp each while their 48dp targets remain separate.
+The queue is a separate full-size surface with safe insets, a fixed header, and an independently scrolling list. Collapse, Back, Escape, or a downward pull returns to the player. There is no search or filter row. Up next locates the current item; the header groups Repeat, Shuffle, and Cast. Repeat, Shuffle, and Cast retain adjacent 48dp targets. Their glyphs form a compact group: Repeat shifts inward by 12dp, Cast by −12dp, and Shuffle by −1.5dp to balance the different vector widths. These actions show active color without a circular press indication or clipping; their touch areas remain separate. Now Playing uses the same indication policy; fullscreen retains its existing behavior. Shuffle permutes the visible queue once and starts at the top; playback then follows that order. Turning it off restores the original session order while keeping the current item, and re-enabling it generates a new order.
 
 Rows use `queue-artwork`, 8dp gaps, 6dp vertical insets, and an 8dp end inset. The drag grip is a 26dp vector centered in `queue-grip`. Title and artist have their own column; duration and the 48dp overflow target follow it. The current row uses `queue-current-row` without an accent wash. Reordering, swipe removal, and loading/error/retry rows remain available.
 

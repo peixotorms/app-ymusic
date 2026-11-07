@@ -6,7 +6,7 @@
     "colorMeta": {
       "accent-default": {
         "role": "primary",
-        "displayName": "Saved-theme orange fallback"
+        "displayName": "Saved-theme fallback and fixed player active orange"
       },
       "artwork-fallback": {
         "role": "primary",
@@ -51,6 +51,18 @@
       "dark-icon-dots": {
         "role": "neutral",
         "displayName": "Neutral overflow icons"
+      },
+      "player-ink-strong": {
+        "role": "neutral",
+        "displayName": "Fixed player headline"
+      },
+      "player-ink": {
+        "role": "neutral",
+        "displayName": "Fixed player controls"
+      },
+      "player-ink-secondary": {
+        "role": "neutral",
+        "displayName": "Fixed player metadata"
       }
     },
     "typographyMeta": {
@@ -146,7 +158,7 @@
   },
   "components": [
     {
-      "name": "Filter chip — dark browsing",
+      "name": "Filter chip \u2014 dark browsing",
       "kind": "chip",
       "refersTo": "filter-chip-dark",
       "description": "Unselected FeedChip. The native component uses accent-tinted Material indication; this panel retains browser focus feedback.",
@@ -154,7 +166,7 @@
       "css": ".ds-chip{border-radius:999px;padding:7px 12px;font:13.5px sans-serif;color:#B2B2B2;background:transparent;border:1px solid #5C5C5C}.ds-chip:hover{cursor:pointer}.ds-chip:focus-visible{outline:auto}.ds-chip:active{border-color:#5C5C5C}"
     },
     {
-      "name": "Selected filter button — default accent",
+      "name": "Selected filter button \u2014 default accent",
       "kind": "button",
       "refersTo": "filter-chip-selected-default",
       "description": "Selected FeedChip, which exposes native button and selection semantics. The saved user accent replaces this default orange.",
@@ -162,7 +174,7 @@
       "css": ".ds-chip-selected{border-radius:999px;padding:7px 12px;font:13.5px sans-serif;color:#FFFFFF;background:#E8732A;border:1px solid #E8732A}.ds-chip-selected:hover{cursor:pointer}.ds-chip-selected:focus-visible{outline:auto}.ds-chip-selected:active{border-color:#E8732A}"
     },
     {
-      "name": "Search field — dark browsing",
+      "name": "Search field \u2014 dark browsing",
       "kind": "input",
       "refersTo": "search-input-dark",
       "description": "SearchInputBar pill with empty-field insets and an accent cursor. Native IME Search, autofocus, and conditional clear remain Compose behavior.",
@@ -170,7 +182,7 @@
       "css": ".ds-search{height:40px;border:0;border-radius:999px;padding:0 16px;background:#292929;color:#E2E2E2;caret-color:#E8732A;font:15px sans-serif}.ds-search::placeholder{color:#7E7E7E}.ds-search:hover{cursor:text}.ds-search:focus-visible{outline:auto}"
     },
     {
-      "name": "Discover tabs — default accent",
+      "name": "Discover tabs \u2014 default accent",
       "kind": "nav",
       "refersTo": "discover-tabs-default",
       "description": "Two representative icon tabs illustrate active color and the 2dp underline. Production supplies the available destinations and animates the indicator with Compose.",
@@ -178,7 +190,7 @@
       "css": ".ds-tabs{display:flex}.ds-tab{position:relative;flex:1;border:0;background:transparent;color:#7E7E7E;padding:8px 0}.ds-tab svg{display:block;width:24px;height:24px;margin:auto}.ds-tab-selected{color:#E8732A}.ds-tab-selected::after{content:\"\";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;background:#E8732A}.ds-tab:hover{cursor:pointer}.ds-tab:focus-visible{outline:auto}.ds-tab:active{background:transparent}"
     },
     {
-      "name": "Mini-player — saved dark palette",
+      "name": "Mini-player \u2014 saved dark palette",
       "kind": "card",
       "refersTo": "mini-player-dark",
       "description": "AppRoot mini-player geometry and saved dark colors. Generic text and an empty black artwork slot avoid embedding cover assets. The native progress value and controls remain live.",
@@ -186,7 +198,7 @@
       "css": ".ds-mini{display:flex;align-items:center;overflow:hidden;margin:8px 12px;border-radius:18px;background:#202020;color:#E2E2E2;font-family:sans-serif}.ds-mini-art{width:64px;height:64px;flex:none;background:#000000}.ds-mini-content{flex:1;min-width:0}.ds-mini-progress{height:2px;background:#E8732A}.ds-mini-row{display:flex;align-items:center;padding:6px 8px 8px 12px}.ds-mini-copy{flex:1;min-width:0}.ds-mini-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ds-mini-artist{font-size:12px;color:#9A9A9A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ds-mini-action{border:0;background:transparent;color:#C6C6C6;min-width:48px;min-height:48px;padding:0}.ds-mini-action svg{width:24px;height:24px}.ds-mini-action:hover{cursor:pointer}.ds-mini-action:focus-visible{outline:auto}.ds-mini-action:active{background:transparent}"
     },
     {
-      "name": "Elevated dialog — saved dark palette",
+      "name": "Elevated dialog \u2014 saved dark palette",
       "kind": "custom",
       "refersTo": "elevated-dialog",
       "description": "ElevatedBarDialog frame and choice-row spacing. Native dialogs constrain the body to window height and add bar shadows only when content can scroll beneath them.",
@@ -194,7 +206,7 @@
       "css": ".ds-dialog{min-width:280px;max-width:560px;border-radius:24px;overflow:hidden;background:#101010;color:#E2E2E2;font-family:sans-serif}.ds-dialog-title{font-size:17px;font-weight:700;padding:16px 24px;background:#1B1B1B;border-bottom:1px solid #2A2A2A}.ds-dialog-choice{padding:12px 24px}.ds-dialog-footer{padding:2px 12px;background:#1B1B1B;border-top:1px solid #2A2A2A;color:#9A9A9A}"
     },
     {
-      "name": "Current queue row — fixed dark palette",
+      "name": "Current queue row \u2014 fixed dark palette",
       "kind": "custom",
       "refersTo": "queue-current-row",
       "description": "Neutral current-row fill, larger artwork and type, a separate duration column, and a 48dp by 56dp grip. The blank artwork placeholder uses the native placeholder fill; reordering and row actions remain Compose behavior.",
@@ -214,7 +226,7 @@
     "rules": [
       {
         "name": "The Theme Boundary Rule",
-        "body": "Player and playlist surfaces stay dark and artwork-derived. The queue uses the fixed dark palette. Browsing and the production mini-player inherit the saved app palette; the mini-player is outside the per-screen artwork theme.",
+        "body": "Player and playlist surfaces stay dark with artwork-derived backdrops. Now Playing controls use fixed near-white and default orange active roles; the queue uses the same foregrounds over a fixed neutral ground. Fullscreen retains its existing overlay palette. Browsing and the production mini-player inherit the saved app palette.",
         "section": "colors"
       },
       {

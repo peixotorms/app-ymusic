@@ -30,9 +30,9 @@ The cross-platform playback layer.
   start then seeks to the end (ranges under 1 s are dropped). "Previous" restarts after a 0s intro
   skip when one is armed.
 
-- **Queue growth** — `setQueue(…, source = QueueSource)` grows a queue beyond its initial items. `QueueState.more` reports total/loading/error/end, and `Player.loadMore()` retries failures. A source can opt into `eagerLoadTarget`; playlist browse sources use 1,000 metadata entries and are loaded serially in the background. Once present, all entries participate in the normal shuffle cycle without repeats. Page arrivals preserve an already prepared next item. Replacing the queue cancels its pending source request.
+- **Queue order** — shuffle permutes the visible queue once and starts at index zero. Next, Previous, and automatic advances follow the displayed list. Disabling shuffle restores the session's original order while retaining the current entry; enabling it again generates a fresh order. Entry identities distinguish duplicates and survive edits. Explicit Play next remains consecutive. `setQueue(shuffle = …)` applies mode and queue atomically, avoiding an intermediate load from the old queue.
 
-  Sources without an eager target retain loading within the last ten items. Their known-length shuffle can load one extra page with probability unloaded / (unplayed + unloaded); later unloaded pages are still underweighted. This older radio/watch-panel behavior is separate from eagerly loaded playlists. A failed page is retried once per track or by `loadMore`.
+- **Queue growth** — `setQueue(…, source = QueueSource)` grows a queue beyond its initial items. `QueueState.more` reports total/loading/error/end, and `Player.loadMore()` retries failures. A source can opt into `eagerLoadTarget`; playlist browse sources use 1,000 metadata entries and are loaded serially in the background. Shuffled arrivals mix into the future tail while keeping the current and prepared next entries fixed. Other sources load within the last ten entries. Replacing the queue cancels its pending source request; failed pages remain retryable.
 
 - **PlayableItem** — the sealed source type (`LocalUri` | `YtVideoId`; the router picks an engine by variant).
 
@@ -102,7 +102,7 @@ The cross-platform playback layer.
   ios-player-lab spike); android/jvm compile-verified.
 
 - **Buffer ahead / queue preparation** — `PlaybackConfig.audioBufferAheadSeconds` defaults to 120
-  and is clamped to 30–120 by the facade. MSE forwards it through load and quality changes.
+  and is clamped to 30–600 by the facade. MSE forwards it through load and quality changes.
   Music queues prepare the next item only in the last minute and after the current buffer reaches
   its effective end (including an active SponsorBlock outro skip). Other media keeps its ten-second
   lead. Queue changes clear obsolete preloads; promoting the prepared item preserves its data.
@@ -110,3 +110,7 @@ The cross-platform playback layer.
   The buffer-end comparison allows one second for segment/duration rounding. MSE loads requesting playback retain their startup deadline until the playhead advances, including after an intro seek; metadata and a zero-position tick do not prove playback started. An explicit pause cancels this deadline. A startup stall reports E60051 after 15 seconds rather than remaining indefinitely at zero.
 
   The facade recovers one retryable E60051 per track load by resetting the YouTube session and loading the same queue item again at its current position. It preserves playback intent; a second failure is surfaced. Skipping or stopping cancels preparation through the existing load-generation checks.
+
+- **Video metadata** — MSE clears dimensions and source capabilities at each load. Catalog and picture events include an optional video ID; events for other queue items are discarded. `VideoQualityState.hasVideo` is nullable: only an explicit false rules out video for that source and disables its audio-mode video selector, without changing the user's global mode preference. Older bundles that omit it remain usable. Same-size video transitions still emit a fresh picture event.
+
+- **Captions** — the JS caption source follows the actively loaded video. Prefetched player responses are cached by video ID and activated when promoted, so another track's captions cannot replace the current ones. Closing the caption subscription does not wait for its HTTP fetch. Invalidated fetches cannot publish into a replacement session.

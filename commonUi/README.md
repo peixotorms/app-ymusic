@@ -42,8 +42,8 @@ The shared Compose Multiplatform app UI (jvm + android; iOS later).
   Skip data is provided by [SponsorBlock](https://sponsor.ajay.app/) under
   [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
-- **Playback buffering** — Settings → Playback → Audio buffer ahead offers 30/60/120 seconds,
-  default 120. YouTube audio starts normally with a 15-second starter target, then expands after
+- **Playback buffering** — Settings → Playback → Audio buffer ahead offers 30/60/120/180/300/600 seconds,
+  default 120. A target longer than the remaining song fills through the song's end. YouTube audio starts normally with a 15-second starter target, then expands after
   five seconds of actual playback. Refill resumes at target minus 15 seconds and stops at target;
   video targets 30 seconds, and live streams keep the existing policy. Queue audio preloading waits
   until the current track is buffered through its effective end and has at most 60 seconds left;
@@ -70,7 +70,7 @@ The shared Compose Multiplatform app UI (jvm + android; iOS later).
   a playlist/channel/music page lands on Discover's stack, a search runs there.
 
 - **PlaybackCoordinator** — play actions + display metadata for queue items. Play-now starts the video's
-  radio through `NextQueueSource` (the engine's `yt/queue` = /next panel; a video with no radio gets its related videos and stops). Playlist pages use `PlaylistQueueSource` and the existing playlist browse continuations, including WEB_REMIX for Music. They eagerly load metadata for up to 1,000 songs, deduplicate video IDs, keep a resume token, and surface failures for retry. This avoids the shorter watch-panel queue. Shuffle includes every loaded song; playback can begin before background metadata finishes. No audio is downloaded by this metadata paging. An already prepared next song survives later page arrivals.
+  radio through `NextQueueSource` (the engine's `yt/queue` = /next panel; a video with no radio gets its related videos and stops). Playlist pages use `PlaylistQueueSource` and the existing playlist browse continuations, including WEB_REMIX for Music. They eagerly load metadata for up to 1,000 songs, deduplicate video IDs, keep a resume token, and surface failures for retry. This avoids the shorter watch-panel queue. Shuffle reorders the visible list and starts at its first song; playback then follows that order. Turning it off restores the session's original order while retaining the current song; turning it on again generates a fresh order. New metadata is mixed into the future tail while keeping the prepared next song in place. Playback can begin before background metadata finishes. No audio is downloaded by this metadata paging. An already prepared next song survives later page arrivals.
   Watch-time ranking (Library Recent play / Top tracks, Discover Top tracks) lives in
   `PlayHistoryStore` (its own SQLite file), not `:media-store`.
 
